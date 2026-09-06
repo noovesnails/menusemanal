@@ -81,11 +81,18 @@
   .syncdot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
   .syncdot.ok{background:var(--ok);}
   .syncdot.err{background:var(--accent);}
+  .reminders{padding:0 16px 10px;display:flex;flex-direction:column;gap:6px;}
+  .reminder{border-radius:12px;padding:8px 12px;font-size:.78rem;display:flex;align-items:center;gap:8px;}
+  .reminder.pedro{background:var(--pedro-soft);color:var(--pedro);}
+  .reminder.nuria{background:var(--nuria-soft);color:var(--nuria);}
+  .reminder b{font-weight:700;}
 </style>
 
 <h1>Menú semanal</h1>
 <div class="sub" id="weekSub"></div>
 <div class="syncbar"><span class="syncdot" id="syncDot"></span><span id="syncText">Cargando…</span></div>
+
+<div class="reminders" id="reminders"></div>
 
 <div class="daypicker" id="dayPicker"></div>
 
@@ -105,6 +112,13 @@
    Fuente: PDFs de la nutricionista (Pedro 24-07-2026, Nuria 15-06-2026).
    Para cargar una nueva semana: sustituir este array WEEK por la siguiente semana. */
 const WEEK_START = "2026-09-07"; // lunes
+
+/* Ciclo de dieta por persona (independientes entre sí). Lo actualiza la skill /nuevo-menu en
+   cada visita a la nutricionista. Cualquier campo a null no se muestra en el recordatorio. */
+const NUTRI = {
+  pedro:{ proximaVisita:"2026-09-09", inicioNuevoPlan:"2026-09-14", finPlanActual:null, notaPendiente:"falta menú de Magda" },
+  nuria:{ proximaVisita:null, inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null }
+};
 
 const WEEK = [
   { name:"Lunes", date:"2026-09-07",
@@ -457,8 +471,23 @@ function renderCompra(){
           </div>`).join('')}</div>`);
 }
 
+function renderReminders(){
+  const el = document.getElementById('reminders');
+  const line = (cls,label,n) => {
+    const partes = [];
+    if(n.proximaVisita) partes.push(`cita con la nutri el ${fmtDate(n.proximaVisita)}`);
+    if(n.inicioNuevoPlan) partes.push(`nuevo plan desde el ${fmtDate(n.inicioNuevoPlan)}`);
+    if(n.finPlanActual) partes.push(`plan actual hasta el ${fmtDate(n.finPlanActual)}`);
+    if(!partes.length && !n.notaPendiente) return '';
+    const nota = n.notaPendiente ? ` — ${n.notaPendiente}` : '';
+    return `<div class="reminder ${cls}">🗓️ <span><b>${label}:</b> ${partes.join(' · ')}${nota}</span></div>`;
+  };
+  el.innerHTML = line('pedro','Pedro',NUTRI.pedro) + line('nuria','Nuria',NUTRI.nuria);
+}
+
 function render(){
   renderDayPicker();
+  renderReminders();
   renderMenu();
   renderNevera();
   renderCompra();
