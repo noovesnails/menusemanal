@@ -1,0 +1,371 @@
+<title>Menú Semanal</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2b2420; --muted:#8a7f74;
+    --accent:#a9455d; --accent-soft:#f3dde2; --line:#ece4dc;
+    --pedro:#6d8a6b; --pedro-soft:#e7efe6; --nuria:#c07a3f; --nuria-soft:#f6e6d5;
+    --ok:#5a8c5a;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1b1815; --card:#252220; --ink:#f1ece6; --muted:#a89e93;
+      --accent:#e08296; --accent-soft:#3a2429; --line:#3a3430;
+      --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
+      --ok:#7cb87c;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1b1815; --card:#252220; --ink:#f1ece6; --muted:#a89e93;
+    --accent:#e08296; --accent-soft:#3a2429; --line:#3a3430;
+    --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
+    --ok:#7cb87c;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:76px;}
+  h1{font-size:1.1rem;margin:0;padding:14px 16px 4px;letter-spacing:.2px;}
+  .sub{padding:0 16px 10px;color:var(--muted);font-size:.8rem;}
+
+  .daypicker{display:flex;gap:8px;overflow-x:auto;padding:4px 16px 14px;-webkit-overflow-scrolling:touch;}
+  .daychip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;text-align:center;min-width:58px;cursor:pointer;}
+  .daychip .dname{font-size:.7rem;color:var(--muted);text-transform:uppercase;}
+  .daychip .dnum{font-size:1.05rem;font-weight:600;}
+  .daychip.active{background:var(--accent);border-color:var(--accent);}
+  .daychip.active .dname,.daychip.active .dnum{color:#fff;}
+
+  main{padding:0 16px 8px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;}
+  .person{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:8px;font-size:.95rem;}
+  .dot{width:10px;height:10px;border-radius:50%;}
+  .dot.pedro{background:var(--pedro);} .dot.nuria{background:var(--nuria);}
+  .meal{margin-bottom:10px;}
+  .meal:last-child{margin-bottom:0;}
+  .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
+  .meal-title{font-size:.92rem;line-height:1.35;}
+
+  .section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 4px 8px;}
+  .ing-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);}
+  .ing-row:last-child{border-bottom:none;}
+  .ing-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);flex:0 0 auto;}
+  .ing-row label{font-size:.9rem;flex:1;}
+  .ing-row.checked label{color:var(--muted);text-decoration:line-through;}
+  .ing-src{font-size:.65rem;padding:2px 6px;border-radius:6px;flex:0 0 auto;}
+  .ing-src.pedro{background:var(--pedro-soft);color:var(--pedro);}
+  .ing-src.nuria{background:var(--nuria-soft);color:var(--nuria);}
+  .ing-src.both{background:var(--accent-soft);color:var(--accent);}
+
+  .empty{color:var(--muted);font-size:.85rem;padding:20px 4px;text-align:center;}
+
+  nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);}
+  nav button{flex:1;background:none;border:none;color:var(--muted);font-size:.68rem;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  nav button .ic{font-size:1.15rem;}
+  nav button.active{color:var(--accent);font-weight:700;}
+
+  .syncbar{display:flex;align-items:center;gap:6px;padding:0 16px 4px;font-size:.72rem;color:var(--muted);}
+  .syncdot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+  .syncdot.ok{background:var(--ok);}
+  .syncdot.err{background:var(--accent);}
+</style>
+
+<h1>Menú semanal</h1>
+<div class="sub" id="weekSub"></div>
+<div class="syncbar"><span class="syncdot" id="syncDot"></span><span id="syncText">Cargando…</span></div>
+
+<div class="daypicker" id="dayPicker"></div>
+
+<main id="viewMenu"></main>
+<main id="viewNevera" style="display:none"></main>
+<main id="viewCompra" style="display:none"></main>
+
+<nav>
+  <button class="tab active" data-tab="menu"><span class="ic">🍽️</span>Menú</button>
+  <button class="tab" data-tab="nevera"><span class="ic">🧊</span>Nevera</button>
+  <button class="tab" data-tab="compra"><span class="ic">🛒</span>Compra</button>
+</nav>
+
+<script>
+/* ---------- DATOS DE LA SEMANA ----------
+   Semana del lunes 7 al domingo 13 de septiembre de 2026.
+   Fuente: PDFs de la nutricionista (Pedro 24-07-2026, Nuria 15-06-2026).
+   Para cargar una nueva semana: sustituir este array WEEK por la siguiente semana. */
+const WEEK_START = "2026-09-07"; // lunes
+
+const WEEK = [
+  { name:"Lunes", date:"2026-09-07",
+    pedro:{
+      comida:{title:"Morcillo guisado con hueso de caña + puré de patata",
+        ing:["400 g morcillo","1 hueso de caña con tuétano","1 zanahoria","½ puerro","1 c/s aceite de oliva","250 g patata (para puré)"]},
+      cena:{title:"Crema de zanahoria con bacalao",
+        ing:["400 g zanahoria","200 g patata","300 g bacalao","1 c/s aceite de oliva"]}
+    },
+    nuria:{
+      comida:{title:"Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
+        ing:["1 patata pequeña","tomate natural","atún al natural","1 huevo","aceitunas negras"]},
+      cena:{title:"Puré de calabaza + hamburguesa casera de pollo 100%",
+        ing:["calabaza","pechuga de pollo picada (100%)"]}
+    }
+  },
+  { name:"Martes", date:"2026-09-08",
+    pedro:{
+      comida:{title:"Arroz meloso de almejas, mejillones y pescado blanco",
+        ing:["160 g arroz redondo","500 g mejillones","300 g almejas","200 g pescado blanco","1 l caldo de pescado","½ zanahoria","½ puerro","2 c/s aceite de oliva","perejil"]},
+      cena:{title:"Tortilla jugosa con puré de boniato",
+        ing:["3 huevos","300 g boniato","1 c/s aceite de oliva"]}
+    },
+    nuria:{
+      comida:{title:"Dorada con espinacas y calabacín a la plancha",
+        ing:["dorada","espinacas","calabacín"]},
+      cena:{title:"Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos",
+        ing:["140 g solomillos de pollo o pavo","tomate","canónigos","espárragos blancos o palmitos"]}
+    }
+  },
+  { name:"Miércoles", date:"2026-09-09",
+    pedro:{
+      comida:{title:"Hígado de ternera con puré de patata",
+        ing:["100 g hígado de ternera","250 g patata (para puré)","aceite de oliva"]},
+      cena:{title:"Lenguado con crema de calabacín",
+        ing:["150 g lenguado","2 calabacines","1 c/s aceite de oliva"]}
+    },
+    nuria:{
+      comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        ing:["brócoli","calabacín","champiñones","140 g pechuga de pollo"]},
+      cena:{title:"Puré de calabaza + gallineta (150g)",
+        ing:["calabaza","150 g gallineta"]}
+    }
+  },
+  { name:"Jueves", date:"2026-09-10",
+    pedro:{
+      comida:{title:"Arroz meloso con rape",
+        ing:["60 g arroz redondo","150 g rape","500-600 ml caldo de pescado","½ zanahoria","¼ puerro","1 c/s tomate triturado","1 c/s aceite de oliva"]},
+      cena:{title:"Revuelto cremoso con queso + crema de puerro y patata",
+        ing:["3 huevos","30 g queso curado rallado","puerro","patata (para la crema)"]}
+    },
+    nuria:{
+      comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        ing:["½ boniato","calabacín","zanahoria","130 g salmón"]},
+      cena:{title:"Tortilla de calabacín",
+        ing:["calabacín","1-2 huevos (claras a demanda)"]}
+    }
+  },
+  { name:"Viernes", date:"2026-09-11",
+    pedro:{
+      comida:{title:"Pasta con almejas",
+        ing:["160 g pasta","500 g almejas","½ puerro","2 c/s aceite de oliva","1 vaso caldo de pescado","perejil"]},
+      cena:{title:"Pollo desmenuzado con crema de calabaza",
+        ing:["150 g pollo","400 g calabaza","1 c/s aceite de oliva"]}
+    },
+    nuria:{
+      comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        ing:["1 vasito quinoa","calabaza","espinacas","1 huevo","1 c/s semillas de calabaza"]},
+      cena:{title:"Sepia a la plancha + calabacín, zanahoria y pimientos al horno",
+        ing:["sepia","calabacín","zanahoria","pimientos"]}
+    }
+  },
+  { name:"Sábado", date:"2026-09-12",
+    pedro:{
+      comida:{title:"Carrillada guisada con patata",
+        ing:["300 g carrillada","2 patatas medianas","1 zanahoria","2 c/s aceite de oliva"]},
+      cena:{title:"Tortilla francesa con queso + crema de verduras",
+        ing:["3 huevos","30 g queso curado rallado","verduras variadas (para la crema)"]}
+    },
+    nuria:{
+      comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
+        ing:["140 g pollo","pimiento","berenjena","cebolla (escalivada)"]},
+      cena:{title:"Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos",
+        ing:["mejillones o clochinas","tomate","canónigos","espárragos blancos o palmitos"]}
+    }
+  },
+  { name:"Domingo", date:"2026-09-13",
+    pedro:{
+      comida:{title:"Cocido nutritivo (morcillo, pollo, huesos, patas de pollo)",
+        ing:["morcillo","pollo","huesos","patas de pollo","zanahoria","puerro"]},
+      cena:{title:"Caballa con puré de calabaza",
+        ing:["150 g caballa","300 g calabaza","1 c/s aceite de oliva"]}
+    },
+    nuria:{
+      comida:{title:"Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        ing:["140 g corvina","tomatitos","aceitunas","perejil","ajo","hojas verdes"]},
+      cena:{title:"Tortilla de espinacas",
+        ing:["espinacas","1-2 huevos (claras a demanda)"]}
+    }
+  }
+];
+
+/* ---------- JSONBIN (estado compartido: check de nevera) ---------- */
+const JSONBIN_ID = "6a301b19f5f4af5e29f5ec66";
+const JSONBIN_KEY = "$2a$10$vFbnhWMCDqkb4eHXuuPjyOmhB88kcnaQjTnU/zfXL53RdRIcQpx56";
+const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
+
+let remoteRecord = {};   // contenido completo del bin (no tocar claves ajenas)
+let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
+let saveTimer = null;
+
+function setSync(state, text){
+  const dot = document.getElementById('syncDot');
+  dot.className = 'syncdot' + (state ? ' '+state : '');
+  document.getElementById('syncText').textContent = text;
+}
+
+async function loadRemote(){
+  try{
+    setSync('', 'Cargando…');
+    const res = await fetch(JSONBIN_BASE + "/latest", { headers: { "X-Master-Key": JSONBIN_KEY } });
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+    remoteRecord = data.record || {};
+    checks = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checks) || {};
+    setSync('ok', 'Sincronizado');
+  }catch(e){
+    console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
+    try{ checks = JSON.parse(localStorage.getItem('menuSemanalChecks')||'{}'); }catch(_){ checks = {}; }
+    setSync('err', 'Sin conexión (guardado local)');
+  }
+  render();
+}
+
+function scheduleSave(){
+  localStorage.setItem('menuSemanalChecks', JSON.stringify(checks));
+  clearTimeout(saveTimer);
+  setSync('', 'Guardando…');
+  saveTimer = setTimeout(saveRemote, 700);
+}
+
+async function saveRemote(){
+  try{
+    remoteRecord.menuSemanal = remoteRecord.menuSemanal || {};
+    remoteRecord.menuSemanal.checks = checks;
+    remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
+    const res = await fetch(JSONBIN_BASE, {
+      method: "PUT",
+      headers: { "Content-Type":"application/json", "X-Master-Key": JSONBIN_KEY },
+      body: JSON.stringify(remoteRecord)
+    });
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    setSync('ok', 'Sincronizado');
+  }catch(e){
+    console.warn("No se pudo guardar en JSONBin", e);
+    setSync('err', 'Guardado solo en local');
+  }
+}
+
+/* ---------- ESTADO UI ---------- */
+function todayIndex(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  for(let i=0;i<WEEK.length;i++){
+    const d = new Date(WEEK[i].date+"T00:00:00");
+    if(d.getTime()===today.getTime()) return i;
+  }
+  const start = new Date(WEEK_START+"T00:00:00");
+  return today < start ? 0 : WEEK.length-1;
+}
+let currentDay = todayIndex();
+let currentTab = 'menu';
+
+function fmtDate(iso){
+  const d = new Date(iso+"T00:00:00");
+  return d.getDate() + "/" + (d.getMonth()+1);
+}
+
+/* combina ingredientes de comida+cena de ambos, marcando la(s) fuente(s) */
+function fridgeItems(day){
+  const map = new Map(); // nombre -> Set(origen)
+  [["pedro",day.pedro],["nuria",day.nuria]].forEach(([who, person])=>{
+    ["comida","cena"].forEach(meal=>{
+      person[meal].ing.forEach(item=>{
+        if(!map.has(item)) map.set(item, new Set());
+        map.get(item).add(who);
+      });
+    });
+  });
+  return Array.from(map.entries()).map(([item, whoSet])=>({
+    item, who: whoSet.size===2 ? "both" : Array.from(whoSet)[0]
+  }));
+}
+
+function renderDayPicker(){
+  const el = document.getElementById('dayPicker');
+  el.innerHTML = "";
+  WEEK.forEach((d,i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'daychip' + (i===currentDay?' active':'');
+    chip.innerHTML = `<div class="dname">${d.name.slice(0,3)}</div><div class="dnum">${fmtDate(d.date)}</div>`;
+    chip.onclick = ()=>{ currentDay = i; render(); };
+    el.appendChild(chip);
+  });
+  document.getElementById('weekSub').textContent = WEEK[currentDay].name + " " + fmtDate(WEEK[currentDay].date) + " de septiembre 2026";
+}
+
+function renderMenu(){
+  const day = WEEK[currentDay];
+  const el = document.getElementById('viewMenu');
+  const block = (who,label,cls) => `
+    <div class="card">
+      <div class="person"><span class="dot ${cls}"></span>${label}</div>
+      <div class="meal"><div class="meal-label">Comida</div><div class="meal-title">${day[who].comida.title}</div></div>
+      <div class="meal"><div class="meal-label">Cena</div><div class="meal-title">${day[who].cena.title}</div></div>
+    </div>`;
+  el.innerHTML = block('pedro','Pedro','pedro') + block('nuria','Nuria','nuria');
+}
+
+function renderNevera(){
+  const day = WEEK[currentDay];
+  const items = fridgeItems(day);
+  const el = document.getElementById('viewNevera');
+  const dayChecks = checks[day.date] || {};
+  el.innerHTML = `<div class="section-title">Marca lo que ya tienes en la nevera</div>` +
+    `<div class="card">` +
+    items.map(({item,who})=>{
+      const isChecked = !!dayChecks[item];
+      return `<div class="ing-row ${isChecked?'checked':''}">
+        <input type="checkbox" data-item="${encodeURIComponent(item)}" ${isChecked?'checked':''}>
+        <label>${item}</label>
+        <span class="ing-src ${who}">${who==='both'?'ambos':who==='pedro'?'Pedro':'Nuria'}</span>
+      </div>`;
+    }).join('') + `</div>`;
+
+  el.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const item = decodeURIComponent(cb.dataset.item);
+      checks[day.date] = checks[day.date] || {};
+      checks[day.date][item] = cb.checked;
+      cb.closest('.ing-row').classList.toggle('checked', cb.checked);
+      scheduleSave();
+    });
+  });
+}
+
+function renderCompra(){
+  const day = WEEK[currentDay];
+  const items = fridgeItems(day);
+  const dayChecks = checks[day.date] || {};
+  const toBuy = items.filter(({item})=>!dayChecks[item]);
+  const el = document.getElementById('viewCompra');
+  el.innerHTML = `<div class="section-title">Por comprar hoy</div>` +
+    (toBuy.length===0
+      ? `<div class="empty">Todo lo de este día ya está en la nevera 🎉</div>`
+      : `<div class="card">${toBuy.map(({item,who})=>`
+          <div class="ing-row">
+            <span style="width:20px;text-align:center">•</span>
+            <label>${item}</label>
+            <span class="ing-src ${who}">${who==='both'?'ambos':who==='pedro'?'Pedro':'Nuria'}</span>
+          </div>`).join('')}</div>`);
+}
+
+function render(){
+  renderDayPicker();
+  renderMenu();
+  renderNevera();
+  renderCompra();
+}
+
+document.querySelectorAll('nav .tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    currentTab = btn.dataset.tab;
+    document.querySelectorAll('nav .tab').forEach(b=>b.classList.toggle('active', b===btn));
+    document.getElementById('viewMenu').style.display = currentTab==='menu' ? '' : 'none';
+    document.getElementById('viewNevera').style.display = currentTab==='nevera' ? '' : 'none';
+    document.getElementById('viewCompra').style.display = currentTab==='compra' ? '' : 'none';
+  });
+});
+
+loadRemote();
+</script>
