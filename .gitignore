@@ -1,2 +1,5 @@
 # Andamiaje de los agentes (handoff de fase e implement-epic)
 .agents/tasks/
+
+# Secretos locales
+.env
