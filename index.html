@@ -40,6 +40,8 @@
   .meal{margin-bottom:10px;}
   .meal:last-child{margin-bottom:0;}
   .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
+  .meal-body{display:flex;align-items:center;gap:10px;}
+  .meal-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
   .meal-title{font-size:.92rem;line-height:1.35;}
 
   .section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 4px 8px;}
@@ -127,6 +129,7 @@ const WEEK = [
     },
     nuria:{
       comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        img:"img/nuria-salteado-verduras.jpg",
         ing:["brócoli","calabacín","champiñones","140 g pechuga de pollo"]},
       cena:{title:"Puré de calabaza + gallineta (150g)",
         ing:["calabaza","150 g gallineta"]}
@@ -141,6 +144,7 @@ const WEEK = [
     },
     nuria:{
       comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        img:"img/nuria-salmon-boniato.jpg",
         ing:["½ boniato","calabacín","zanahoria","130 g salmón"]},
       cena:{title:"Tortilla de calabacín",
         ing:["calabacín","1-2 huevos (claras a demanda)"]}
@@ -155,6 +159,7 @@ const WEEK = [
     },
     nuria:{
       comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        img:"img/nuria-quinoa-huevo.jpg",
         ing:["1 vasito quinoa","calabaza","espinacas","1 huevo","1 c/s semillas de calabaza"]},
       cena:{title:"Sepia a la plancha + calabacín, zanahoria y pimientos al horno",
         ing:["sepia","calabacín","zanahoria","pimientos"]}
@@ -183,6 +188,7 @@ const WEEK = [
     },
     nuria:{
       comida:{title:"Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        img:"img/nuria-corvina-tomatitos.jpg",
         ing:["140 g corvina","tomatitos","aceitunas","perejil","ajo","hojas verdes"]},
       cena:{title:"Tortilla de espinacas",
         ing:["espinacas","1-2 huevos (claras a demanda)"]}
@@ -297,11 +303,19 @@ function renderDayPicker(){
 function renderMenu(){
   const day = WEEK[currentDay];
   const el = document.getElementById('viewMenu');
+  const meal = (m,label) => `
+    <div class="meal">
+      <div class="meal-label">${label}</div>
+      <div class="meal-body">
+        ${m.img ? `<img class="meal-thumb" src="${m.img}" alt="">` : ''}
+        <div class="meal-title">${m.title}</div>
+      </div>
+    </div>`;
   const block = (who,label,cls) => `
     <div class="card">
       <div class="person"><span class="dot ${cls}"></span>${label}</div>
-      <div class="meal"><div class="meal-label">Comida</div><div class="meal-title">${day[who].comida.title}</div></div>
-      <div class="meal"><div class="meal-label">Cena</div><div class="meal-title">${day[who].cena.title}</div></div>
+      ${meal(day[who].comida,'Comida')}
+      ${meal(day[who].cena,'Cena')}
     </div>`;
   el.innerHTML = block('pedro','Pedro','pedro') + block('nuria','Nuria','nuria');
 }
