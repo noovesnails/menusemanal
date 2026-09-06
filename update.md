@@ -42,3 +42,10 @@ App HTML de una sola página para consultar en el móvil el menú diario (comida
 
 ## Historial de cambios
 - **2026-09-06**: primera versión. Carpeta de proyecto creada, datos de Pedro y Nuria cargados para la semana 7–13 sept 2026, 3 pestañas (Menú/Nevera/Compra), sincronización con JSONBin existente, publicado como Artifact.
+- **2026-09-06**: proyecto movido a `C:\Users\Rocio\proyectos\menusemanal` e incorporado al flujo de `agent_flow` (`C:\Users\Rocio\proyectos\agent_flow`, skill `new-project`):
+  - Repo GitHub: https://github.com/noovesnails/menusemanal (público)
+  - Tablero: https://github.com/users/noovesnails/projects/3, con los 6 estados del flujo (Backlog → In Progress → Code Review → QA → Ready for prod → Done) y campo `Priority` (P0–P3)
+  - Labels de tipo creados (`feat`, `fix`, `refactor`, `test`, `chore`, `docs`, `skip-qa`, `blocked-external`); labels de fábrica de GitHub borrados
+  - Scaffold `.agents/` (rules, notes/INDEX.md), `.gitignore` con `.agents/tasks/`
+  - **Desviación documentada**: `AGENTS.md` y `CLAUDE.md` no son symlinks a `.agents/rules/global.md` como indica la skill — Windows sin modo desarrollador no permite crear symlinks reales a un usuario sin privilegios de administrador, y `ln -s` en Git Bash cae a copiar el contenido (rompe la sincronía). Se dejaron como ficheros puntero de una línea que remiten a `.agents/rules/global.md`, mismo patrón que la skill ya prevé para Cursor en Windows. Si en el futuro se activa el modo desarrollador, se pueden sustituir por symlinks reales.
+  - Siguiente paso natural: usar `/spec` para crear los primeros issues (ideas ya mencionadas: lista de la compra semanal acumulada, cantidades exactas para Nuria, deduplicar ingredientes).

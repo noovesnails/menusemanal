@@ -33,7 +33,8 @@ propios móviles con el estado sincronizado.
 
 ## Flujo de trabajo (GitHub)
 
-- **Repo**: `noovesnails/menusemanal` · **Tablero**: Project de `noovesnails` (enlazado al repo).
+- **Repo**: [`noovesnails/menusemanal`](https://github.com/noovesnails/menusemanal) · **Tablero**:
+  [Project 3 de noovesnails](https://github.com/users/noovesnails/projects/3) (enlazado al repo).
   Las tareas son **issues** de este repo.
 
 ### El estado vive en el tablero; los labels dicen el tipo
