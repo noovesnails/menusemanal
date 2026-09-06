@@ -1,0 +1,49 @@
+Criterio 2: al desplegar la receta se muestran raciones, ingredientes (antes que los pasos)
+y preparacion numerada.
+Criterio 3: cada receta indica "Thermomix TM7" o "Manual".
+
+Comando ejecutado (JS en la app real, http://localhost:8123, rama 2-boton-receta-thermomix,
+commit faf3426): abre (`.open = true`) cada `<details class="recipe">` de los 9 platos y lee su
+DOM: raciones, etiqueta de modo, numero de ingredientes, numero de pasos, y el orden real de los
+hijos del contenedor `.recipe-body`.
+
+  const days = document.querySelectorAll('#dayPicker .daychip');
+  const out = [];
+  for (const chip of days) {
+    chip.click();
+    await new Promise(r => setTimeout(r, 50));
+    const dayName = document.getElementById('weekSub').textContent;
+    const recipes = document.querySelectorAll('#viewMenu .recipe');
+    for (const r of recipes) {
+      r.open = true;
+      const title = r.closest('.meal').querySelector('.meal-title').textContent;
+      const body = r.querySelector('.recipe-body');
+      const servings = body.querySelector('.recipe-servings').textContent;
+      const mode = body.querySelector('.recipe-mode').textContent;
+      const ingCount = body.querySelectorAll('.recipe-ing li').length;
+      const stepsCount = body.querySelectorAll('.recipe-steps li').length;
+      const children = [...body.children].map(c => c.className);
+      out.push(`${dayName} | "${title}" | raciones="${servings}" | modo="${mode}" | ingredientes=${ingCount} | pasos=${stepsCount} | orden_DOM=[${children.join(', ')}]`);
+    }
+  }
+  out.join('\n')
+
+Salida real (cruda), una fila por cada uno de los 9 platos:
+
+Lunes 7/9 de septiembre 2026 | "Morcillo guisado con hueso de caña + puré de patata" | raciones="2 raciones" | modo="Thermomix TM7" | ingredientes=6 | pasos=6 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+Lunes 7/9 de septiembre 2026 | "Crema de zanahoria con bacalao" | raciones="2 raciones" | modo="Thermomix TM7" | ingredientes=4 | pasos=4 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+Lunes 7/9 de septiembre 2026 | "Puré de calabaza + hamburguesa casera de pollo 100%" | raciones="2 raciones" | modo="Thermomix TM7" | ingredientes=2 | pasos=5 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+Martes 8/9 de septiembre 2026 | "Arroz meloso de almejas, mejillones y pescado blanco" | raciones="2 raciones" | modo="Thermomix TM7" | ingredientes=9 | pasos=6 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+Jueves 10/9 de septiembre 2026 | "Arroz meloso con rape" | raciones="1 ración (así figura en el plan original)" | modo="Thermomix TM7" | ingredientes=7 | pasos=5 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+Jueves 10/9 de septiembre 2026 | "Revuelto cremoso con queso + crema de puerro y patata" | raciones="2 raciones" | modo="Manual" | ingredientes=4 | pasos=6 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+Viernes 11/9 de septiembre 2026 | "Pasta con almejas" | raciones="2 raciones" | modo="Manual" | ingredientes=6 | pasos=6 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+Sábado 12/9 de septiembre 2026 | "Carrillada guisada con patata" | raciones="2 raciones" | modo="Thermomix TM7" | ingredientes=4 | pasos=4 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+Domingo 13/9 de septiembre 2026 | "Cocido nutritivo (morcillo, pollo, huesos, patas de pollo)" | raciones="sin ración especificada en el plan original" | modo="Manual" | ingredientes=6 | pasos=4 | orden_DOM=[recipe-meta, recipe-subtitle, recipe-ing, recipe-subtitle, recipe-steps]
+
+Resultado:
+- Los 9 platos muestran raciones + modo + ingredientes (>0) + pasos (>0). CRITERIO 2: CUMPLIDO.
+- El orden DOM es identico en los 9: recipe-meta (raciones+modo) -> subtitulo "Ingredientes" ->
+  lista de ingredientes -> subtitulo "Preparación" -> lista de pasos. Ingredientes van antes que
+  los pasos en los 9 casos, tal como exige el criterio. CRITERIO 2 (orden): CUMPLIDO.
+- Aparecen ambas variantes de modo: "Thermomix TM7" (5 platos) y "Manual" (4 platos), con el texto
+  exacto exigido por el criterio. CRITERIO 3: CUMPLIDO.

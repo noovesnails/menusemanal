@@ -1,0 +1,70 @@
+Criterio 1: los 9 platos listados muestran boton "Receta".
+Criterio 4: el resto de platos NO muestran boton "Receta".
+
+Comando ejecutado (JS en la app real, http://localhost:8123, rama 2-boton-receta-thermomix,
+commit faf3426): recorre los 7 dias del selector, y para cada uno de los 28 platos (comida+cena
+x Pedro+Nuria) comprueba si existe el elemento `.recipe` (el bloque <details> del boton Receta).
+
+  const days = document.querySelectorAll('#dayPicker .daychip');
+  const results = [];
+  for (const chip of days) {
+    chip.click();
+    await new Promise(r => setTimeout(r, 50));
+    const dayName = document.getElementById('weekSub').textContent;
+    const meals = [...document.querySelectorAll('#viewMenu .meal')].map(m => {
+      const label = m.querySelector('.meal-label')?.textContent;
+      const title = m.querySelector('.meal-title')?.textContent;
+      const hasRecipe = !!m.querySelector('.recipe');
+      return `${label}: "${title}" -> boton Receta: ${hasRecipe}`;
+    });
+    results.push(`== ${dayName} ==\n` + meals.join('\n'));
+  }
+  results.join('\n\n')
+
+Salida real (cruda):
+
+== Lunes 7/9 de septiembre 2026 ==
+Comida: "Morcillo guisado con hueso de caña + puré de patata" -> boton Receta: true
+Cena: "Crema de zanahoria con bacalao" -> boton Receta: true
+Comida: "Ensalada de verano (patata, tomate, atún, huevo, aceitunas)" -> boton Receta: false
+Cena: "Puré de calabaza + hamburguesa casera de pollo 100%" -> boton Receta: true
+
+== Martes 8/9 de septiembre 2026 ==
+Comida: "Arroz meloso de almejas, mejillones y pescado blanco" -> boton Receta: true
+Cena: "Tortilla jugosa con puré de boniato" -> boton Receta: false
+Comida: "Dorada con espinacas y calabacín a la plancha" -> boton Receta: false
+Cena: "Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos" -> boton Receta: false
+
+== Miércoles 9/9 de septiembre 2026 ==
+Comida: "Hígado de ternera con puré de patata" -> boton Receta: false
+Cena: "Lenguado con crema de calabacín" -> boton Receta: false
+Comida: "Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)" -> boton Receta: false
+Cena: "Puré de calabaza + gallineta (150g)" -> boton Receta: false
+
+== Jueves 10/9 de septiembre 2026 ==
+Comida: "Arroz meloso con rape" -> boton Receta: true
+Cena: "Revuelto cremoso con queso + crema de puerro y patata" -> boton Receta: true
+Comida: "½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)" -> boton Receta: false
+Cena: "Tortilla de calabacín" -> boton Receta: false
+
+== Viernes 11/9 de septiembre 2026 ==
+Comida: "Pasta con almejas" -> boton Receta: true
+Cena: "Pollo desmenuzado con crema de calabaza" -> boton Receta: false
+Comida: "Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza" -> boton Receta: false
+Cena: "Sepia a la plancha + calabacín, zanahoria y pimientos al horno" -> boton Receta: false
+
+== Sábado 12/9 de septiembre 2026 ==
+Comida: "Carrillada guisada con patata" -> boton Receta: true
+Cena: "Tortilla francesa con queso + crema de verduras" -> boton Receta: false
+Comida: "Pollo a la plancha o asado (140g) + escalivada" -> boton Receta: false
+Cena: "Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos" -> boton Receta: false
+
+== Domingo 13/9 de septiembre 2026 ==
+Comida: "Cocido nutritivo (morcillo, pollo, huesos, patas de pollo)" -> boton Receta: true
+Cena: "Caballa con puré de calabaza" -> boton Receta: false
+Comida: "Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde" -> boton Receta: false
+Cena: "Tortilla de espinacas" -> boton Receta: false
+
+Resultado: 9 platos con boton "true" (exactamente los 9 listados en el issue #2), 19 platos con
+"false" (el resto). Recuento: Lunes 3, Martes 1, Miércoles 0, Jueves 2, Viernes 1, Sábado 1,
+Domingo 1 = 9. Coincide exactamente con la tabla del issue. CRITERIOS 1 y 4: CUMPLIDOS.

@@ -1,0 +1,76 @@
+Criterio 5: en viewport movil (375px), el boton y el desplegable no rompen el layout de las
+tarjetas .card (sin overflow horizontal, sin solaparse con el texto).
+
+HALLAZGO PREVIO (no bloqueante para este PR, ver seccion abajo): la emulacion movil del navegador
+(resize_window preset "mobile", 375x812) no bastaba por si sola para medir esto correctamente,
+porque index.html no tiene ninguna etiqueta <meta name="viewport">. Sin ella, el navegador móvil
+usa el ancho de layout por defecto (~980px) y hace zoom-out de toda la pagina para encajarla en
+la pantalla — asi que measir con `window.innerWidth` daba 981 en vez de 375, y una simple captura
+de pantalla "parecia" correcta porque todo aparece encogido, sin que el layout real a 375px CSS
+se llegue a ejercitar nunca. Confirmado con:
+
+  JSON.stringify({innerWidth: window.innerWidth, visualViewportWidth: window.visualViewport.width,
+    screenWidth: screen.width, outerWidth: window.outerWidth})
+  -> {"innerWidth":981,"visualViewportWidth":980.00,"screenWidth":375,"outerWidth":375}
+
+screen.width/outerWidth SI reportan 375 (el dispositivo emulado es correcto), pero innerWidth years
+980 confirma que el layout viewport real usado por el navegador es el del "desktop-fallback" de
+980px, no el ancho del dispositivo. Esto es un bug preexistente de index.html (falta el meta
+viewport), NO introducido por este PR — se reporta aparte como issue nuevo, no se toca aqui.
+
+METODO usado para poder validar el criterio 5 de verdad: se inyecto temporalmente (solo en memoria
+del navegador, sin tocar el fichero) una etiqueta <meta name="viewport" content="width=device-width,
+initial-scale=1"> para forzar el layout real a 375px CSS -tal como se comportaria una vez arreglado
+el bug de arriba-, y se repitio la medicion de overflow/solape con las 9 recetas desplegadas en los
+7 dias:
+
+  const meta = document.createElement('meta');
+  meta.name = 'viewport';
+  meta.content = 'width=device-width, initial-scale=1';
+  document.head.appendChild(meta);
+  // tras esto: innerWidth pasa de 981 a 375
+
+  const days = document.querySelectorAll('#dayPicker .daychip');
+  const results = [];
+  for (const chip of days) {
+    chip.click();
+    await new Promise(r => setTimeout(r, 50));
+    document.querySelectorAll('#viewMenu .recipe').forEach(r => r.open = true);
+    await new Promise(r => setTimeout(r, 50));
+    const dayName = document.getElementById('weekSub').textContent;
+    const vw = window.innerWidth;
+    const sw = document.documentElement.scrollWidth;
+    const overflow = sw > vw;
+    let overlapFound = false;
+    document.querySelectorAll('#viewMenu .card').forEach(card => {
+      const meals = [...card.querySelectorAll('.meal')];
+      for (let i = 0; i < meals.length - 1; i++) {
+        const r1 = meals[i].getBoundingClientRect();
+        const r2 = meals[i+1].getBoundingClientRect();
+        if (r1.bottom > r2.top) overlapFound = true;
+      }
+    });
+    results.push(`${dayName}: viewport=${vw} scrollWidth=${sw} overflow_horizontal=${overflow} solape_entre_meals=${overlapFound}`);
+  }
+  results.join('\n')
+
+Salida real (cruda), con las 9 recetas desplegadas simultaneamente por dia, viewport real 375px:
+
+viewport tras inyectar meta: innerWidth=375
+Lunes 7/9 de septiembre 2026: viewport=375 scrollWidth=375 overflow_horizontal=false solape_entre_meals=false
+Martes 8/9 de septiembre 2026: viewport=375 scrollWidth=375 overflow_horizontal=false solape_entre_meals=false
+Miércoles 9/9 de septiembre 2026: viewport=375 scrollWidth=375 overflow_horizontal=false solape_entre_meals=false
+Jueves 10/9 de septiembre 2026: viewport=375 scrollWidth=375 overflow_horizontal=false solape_entre_meals=false
+Viernes 11/9 de septiembre 2026: viewport=375 scrollWidth=375 overflow_horizontal=false solape_entre_meals=false
+Sábado 12/9 de septiembre 2026: viewport=375 scrollWidth=375 overflow_horizontal=false solape_entre_meals=false
+Domingo 13/9 de septiembre 2026: viewport=375 scrollWidth=375 overflow_horizontal=false solape_entre_meals=false
+
+Resultado: scrollWidth == viewport (375) en los 7 dias con todas las recetas desplegadas a la vez
+(peor caso, mas exigente que el criterio, que solo pide una receta abierta). Sin overflow
+horizontal, sin solape entre elementos .meal en ningun dia. CRITERIO 5: CUMPLIDO para el CSS que
+introduce este PR (.recipe, .recipe-body, .recipe-mode, etc.).
+
+NOTA IMPORTANTE: este resultado valida que el CSS de la feature de recetas es responsivo. NO
+valida que la app en un telefono real hoy renderice a 375px, porque el bug de la etiqueta meta
+viewport (descrito arriba) sigue presente en index.html — ese es un problema transversal de toda
+la app, preexistente a este PR, y se reporta como issue nuevo en vez de arreglarse aqui.
