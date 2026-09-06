@@ -67,7 +67,10 @@ campo del tablero.
   evidencias automatizadas); se define cuando haga falta.
 - **Dónde corre la app en local**: no hay servidor — se abre `index.html` directamente en el
   navegador, o se prueba la versión publicada como Artifact de Claude.
-- **Cómo se despliega**: no hay despliegue automático. Publicar es republicar el Artifact desde
-  `index.html` (mismo fichero → mismo link). `/deploy` termina en el merge a `main`.
+- **Cómo se despliega**: GitHub Pages sirve directamente desde `main` (raíz), activado el
+  2026-09-06. Cada merge a `main` dispara un build automático (~1-2 min) en
+  https://noovesnails.github.io/menusemanal/ — no hace falta ningún paso manual, `/deploy` termina
+  en el merge. Alternativa manual para pruebas puntuales: republicar el Artifact desde
+  `index.html` (mismo fichero → mismo link).
 - **Dónde se anota el desfase main↔producción**: en `.agents/notes/qa-pendiente-main.md` (se crea
   la primera vez que haga falta).
