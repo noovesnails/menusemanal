@@ -44,6 +44,19 @@
   .meal-body{display:flex;align-items:center;gap:10px;}
   .meal-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
   .meal-title{font-size:.92rem;line-height:1.35;}
+  .recipe{margin-top:6px;}
+  .recipe-btn{font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;display:inline-block;padding:3px 0;}
+  .recipe-btn::-webkit-details-marker{display:none;}
+  .recipe-btn::before{content:"📖 ";}
+  .recipe-body{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);}
+  .recipe-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+  .recipe-servings{font-size:.78rem;color:var(--muted);}
+  .recipe-mode{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px;}
+  .recipe-mode.thermomix{background:var(--pedro-soft);color:var(--pedro);}
+  .recipe-mode.manual{background:var(--nuria-soft);color:var(--nuria);}
+  .recipe-subtitle{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 4px;}
+  .recipe-ing,.recipe-steps{margin:0;padding-left:1.15rem;font-size:.85rem;line-height:1.5;}
+  .recipe-ing li,.recipe-steps li{margin-bottom:3px;}
 
   .section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 4px 8px;}
   .ing-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);}
@@ -96,21 +109,50 @@ const WEEK = [
   { name:"Lunes", date:"2026-09-07",
     pedro:{
       comida:{title:"Morcillo guisado con hueso de caña + puré de patata",
-        ing:["400 g morcillo","1 hueso de caña con tuétano","1 zanahoria","½ puerro","1 c/s aceite de oliva","250 g patata (para puré)"]},
+        ing:["400 g morcillo","1 hueso de caña con tuétano","1 zanahoria","½ puerro","1 c/s aceite de oliva","250 g patata (para puré)"],
+        recipe:{servings:"2 raciones", mode:"thermomix", steps:[
+          "Pon la zanahoria y el puerro troceados en el vaso: 5 seg/vel 5.",
+          "Añade el aceite y sofríe: 5 min/120°/vel 1.",
+          "Incorpora el morcillo y el hueso de caña. Dora: 5 min/120°/giro a la izquierda/vel cuchara.",
+          "Cubre con agua hasta el máximo del vaso. Cierra con la válvula en posición de cocción y programa 35 min/presión/vel cuchara.",
+          "Despresuriza, retira el hueso y mezcla parte del tuétano con el caldo para enriquecer la salsa.",
+          "Sirve con el puré de patata (patata cocida y triturada aparte, con un poco de su agua y aceite)."
+        ]}},
       cena:{title:"Crema de zanahoria con bacalao",
-        ing:["400 g zanahoria","200 g patata","300 g bacalao","1 c/s aceite de oliva"]}
+        ing:["400 g zanahoria","200 g patata","300 g bacalao","1 c/s aceite de oliva"],
+        recipe:{servings:"2 raciones", mode:"thermomix", steps:[
+          "Pon la zanahoria y la patata troceadas en el vaso con agua hasta cubrir: 20 min/100°/vel 1.",
+          "Añade el aceite de oliva y tritura: 1 min/vel 5-10 en progresivo, hasta que quede fina.",
+          "Cocina el bacalao al vapor en el Varoma sobre el vaso mientras hierve la crema, o a la plancha aparte.",
+          "Sirve el bacalao desmigado sobre la crema."
+        ]}}
     },
     nuria:{
       comida:{title:"Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
         ing:["1 patata pequeña","tomate natural","atún al natural","1 huevo","aceitunas negras"]},
       cena:{title:"Puré de calabaza + hamburguesa casera de pollo 100%",
-        ing:["calabaza","pechuga de pollo picada (100%)"]}
+        ing:["calabaza","pechuga de pollo picada (100%)"],
+        recipe:{servings:"2 raciones", mode:"thermomix", steps:[
+          "Trocea la calabaza y ponla en el vaso con un vaso de agua: 20 min/100°/vel 1.",
+          "Cuela el exceso de agua, añade un chorrito de aceite de oliva y tritura: 1 min/vel 5-10 en progresivo.",
+          "Si la pechuga no viene ya picada, pícala en el vaso limpio y seco: 5 seg/vel 5.",
+          "Forma las hamburguesas con la carne picada, sazona y cocínalas a la plancha 3-4 min por cada lado.",
+          "Sirve las hamburguesas sobre el puré de calabaza."
+        ]}}
     }
   },
   { name:"Martes", date:"2026-09-08",
     pedro:{
       comida:{title:"Arroz meloso de almejas, mejillones y pescado blanco",
-        ing:["160 g arroz redondo","500 g mejillones","300 g almejas","200 g pescado blanco","1 l caldo de pescado","½ zanahoria","½ puerro","2 c/s aceite de oliva","perejil"]},
+        ing:["160 g arroz redondo","500 g mejillones","300 g almejas","200 g pescado blanco","1 l caldo de pescado","½ zanahoria","½ puerro","2 c/s aceite de oliva","perejil"],
+        recipe:{servings:"2 raciones", mode:"thermomix", steps:[
+          "Pon los mejillones y las almejas en el Varoma. Programa 15 min/Varoma/vel 1 con el caldo de pescado en el vaso, hasta que se abran. Retira la carne y reserva, colando el caldo de apertura junto con el caldo de pescado.",
+          "Pon la zanahoria y el puerro en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.",
+          "Añade el arroz y rehoga: 1 min/100°/giro a la izquierda/vel cuchara.",
+          "Incorpora el caldo colado (unos 500-600 ml): 16-18 min/100°/giro a la izquierda/vel cuchara, sin cubilete para que evapore y quede meloso.",
+          "En los últimos 3-4 min añade el pescado blanco, los mejillones y las almejas reservados.",
+          "Termina con perejil picado y un chorrito de aceite de oliva virgen extra."
+        ]}},
       cena:{title:"Tortilla jugosa con puré de boniato",
         ing:["3 huevos","300 g boniato","1 c/s aceite de oliva"]}
     },
@@ -139,9 +181,24 @@ const WEEK = [
   { name:"Jueves", date:"2026-09-10",
     pedro:{
       comida:{title:"Arroz meloso con rape",
-        ing:["60 g arroz redondo","150 g rape","500-600 ml caldo de pescado","½ zanahoria","¼ puerro","1 c/s tomate triturado","1 c/s aceite de oliva"]},
+        ing:["60 g arroz redondo","150 g rape","500-600 ml caldo de pescado","½ zanahoria","¼ puerro","1 c/s tomate triturado","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (así figura en el plan original)", mode:"thermomix", steps:[
+          "Pon la zanahoria y el puerro en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.",
+          "Incorpora el tomate triturado y cocina 2 min/100°/vel 1.",
+          "Añade el arroz y rehoga: 1 min/100°/giro a la izquierda/vel cuchara.",
+          "Vierte el caldo de pescado caliente: 12 min/100°/giro a la izquierda/vel cuchara, sin cubilete.",
+          "A los 12 min incorpora el rape troceado y cocina 3-4 min más hasta que el arroz quede meloso."
+        ]}},
       cena:{title:"Revuelto cremoso con queso + crema de puerro y patata",
-        ing:["3 huevos","30 g queso curado rallado","puerro","patata (para la crema)"]}
+        ing:["3 huevos","30 g queso curado rallado","puerro","patata (para la crema)"],
+        recipe:{servings:"2 raciones", mode:"manual", steps:[
+          "Crema de puerro y patata: cuece el puerro y la patata troceados en agua con sal hasta que estén muy tiernos.",
+          "Escurre (reservando un poco del caldo de cocción) y tritura con un chorrito de aceite de oliva hasta obtener una crema fina, aligerando con el caldo reservado si hace falta.",
+          "Revuelto: bate ligeramente los huevos.",
+          "Cocina a fuego bajo removiendo continuamente para que quede cremoso, sin cuajar del todo.",
+          "Añade el queso curado rallado al final, fuera del fuego, para que funda con el calor residual.",
+          "Sirve el revuelto acompañado de la crema de puerro y patata."
+        ]}}
     },
     nuria:{
       comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
@@ -154,7 +211,15 @@ const WEEK = [
   { name:"Viernes", date:"2026-09-11",
     pedro:{
       comida:{title:"Pasta con almejas",
-        ing:["160 g pasta","500 g almejas","½ puerro","2 c/s aceite de oliva","1 vaso caldo de pescado","perejil"]},
+        ing:["160 g pasta","500 g almejas","½ puerro","2 c/s aceite de oliva","1 vaso caldo de pescado","perejil"],
+        recipe:{servings:"2 raciones", mode:"manual", steps:[
+          "Deja las almejas en agua con sal 1-2 horas para que suelten la arena.",
+          "Sofríe el puerro picado lentamente en el aceite de oliva.",
+          "Añade las almejas y el caldo de pescado, y tapa hasta que se abran.",
+          "Mientras, cuece la pasta en agua con sal según el tiempo del paquete y escúrrela.",
+          "Incorpora la pasta cocida a la sartén con las almejas y su jugo, y mezcla bien.",
+          "Termina con perejil picado y un chorrito de aceite de oliva virgen extra."
+        ]}},
       cena:{title:"Pollo desmenuzado con crema de calabaza",
         ing:["150 g pollo","400 g calabaza","1 c/s aceite de oliva"]}
     },
@@ -169,7 +234,13 @@ const WEEK = [
   { name:"Sábado", date:"2026-09-12",
     pedro:{
       comida:{title:"Carrillada guisada con patata",
-        ing:["300 g carrillada","2 patatas medianas","1 zanahoria","2 c/s aceite de oliva"]},
+        ing:["300 g carrillada","2 patatas medianas","1 zanahoria","2 c/s aceite de oliva"],
+        recipe:{servings:"2 raciones", mode:"thermomix", steps:[
+          "Pon la zanahoria en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 3 min/120°/vel 1.",
+          "Incorpora la carrillada y dórala: 5 min/120°/giro a la izquierda/vel cuchara.",
+          "Cubre con agua hasta el máximo del vaso. Cierra con la válvula en posición de cocción y programa 25 min/presión/vel cuchara.",
+          "Despresuriza y sirve con las patatas cocidas o asadas aparte."
+        ]}},
       cena:{title:"Tortilla francesa con queso + crema de verduras",
         ing:["3 huevos","30 g queso curado rallado","verduras variadas (para la crema)"]}
     },
@@ -183,7 +254,13 @@ const WEEK = [
   { name:"Domingo", date:"2026-09-13",
     pedro:{
       comida:{title:"Cocido nutritivo (morcillo, pollo, huesos, patas de pollo)",
-        ing:["morcillo","pollo","huesos","patas de pollo","zanahoria","puerro"]},
+        ing:["morcillo","pollo","huesos","patas de pollo","zanahoria","puerro"],
+        recipe:{servings:"sin ración especificada en el plan original", mode:"manual", steps:[
+          "Cubre todos los ingredientes (morcillo, pollo, huesos, patas de pollo, zanahoria y puerro) con agua en una olla grande.",
+          "Cocina a fuego lento durante 3-4 horas, espumando de vez en cuando.",
+          "Cuela el caldo.",
+          "Sirve el caldo acompañado de la carne desmenuzada y la zanahoria muy cocida."
+        ]}},
       cena:{title:"Caballa con puré de calabaza",
         ing:["150 g caballa","300 g calabaza","1 c/s aceite de oliva"]}
     },
@@ -311,6 +388,20 @@ function renderMenu(){
         ${m.img ? `<img class="meal-thumb" src="${m.img}" alt="">` : ''}
         <div class="meal-title">${m.title}</div>
       </div>
+      ${m.recipe ? `
+      <details class="recipe">
+        <summary class="recipe-btn">Receta</summary>
+        <div class="recipe-body">
+          <div class="recipe-meta">
+            <span class="recipe-servings">${m.recipe.servings}</span>
+            <span class="recipe-mode ${m.recipe.mode}">${m.recipe.mode==='thermomix' ? 'Thermomix TM7' : 'Manual'}</span>
+          </div>
+          <div class="recipe-subtitle">Ingredientes</div>
+          <ul class="recipe-ing">${m.ing.map(i=>`<li>${i}</li>`).join('')}</ul>
+          <div class="recipe-subtitle">Preparación</div>
+          <ol class="recipe-steps">${m.recipe.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+        </div>
+      </details>` : ''}
     </div>`;
   const block = (who,label,cls) => `
     <div class="card">
