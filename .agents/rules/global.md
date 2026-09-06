@@ -63,8 +63,8 @@ campo del tablero.
 
 - **Estrategia de merge**: commit de merge (no squash) — así los commits de implementación y de
   arreglo del review quedan identificables en el historial.
-- **Commit de evidencias de QA**: no aplica todavía (proyecto de un solo fichero sin QA con
-  evidencias automatizadas); se define cuando haga falta.
+- **Commit de evidencias de QA**: se conserva en `main` (no se revierte tras el merge). Las
+  evidencias quedan versionadas permanentemente en `.qa-evidence/issue-<N>/`.
 - **Dónde corre la app en local**: no hay servidor — se abre `index.html` directamente en el
   navegador, o se prueba la versión publicada como Artifact de Claude.
 - **Cómo se despliega**: GitHub Pages sirve directamente desde `main` (raíz), activado el
