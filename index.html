@@ -7,6 +7,7 @@
     --accent:#a9455d; --accent-soft:#f3dde2; --line:#ece4dc;
     --pedro:#6d8a6b; --pedro-soft:#e7efe6; --nuria:#c07a3f; --nuria-soft:#f6e6d5;
     --rocio:#5b7ea6; --rocio-soft:#e4ecf5;
+    --paqui:#9c6bb0; --paqui-soft:#ede3f2; --sole:#b0506b; --sole-soft:#f4e0e5;
     --ok:#5a8c5a;
   }
   @media (prefers-color-scheme: dark){
@@ -15,6 +16,7 @@
       --accent:#e08296; --accent-soft:#3a2429; --line:#3a3430;
       --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
       --rocio:#8ba9cf; --rocio-soft:#232a33;
+      --paqui:#c49bd8; --paqui-soft:#332a38; --sole:#dc8a9d; --sole-soft:#38262a;
       --ok:#7cb87c;
     }
   }
@@ -23,6 +25,7 @@
     --accent:#e08296; --accent-soft:#3a2429; --line:#3a3430;
     --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
     --rocio:#8ba9cf; --rocio-soft:#232a33;
+    --paqui:#c49bd8; --paqui-soft:#332a38; --sole:#dc8a9d; --sole-soft:#38262a;
     --ok:#7cb87c;
   }
   *{box-sizing:border-box;}
@@ -42,6 +45,7 @@
   .person{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:8px;font-size:.95rem;}
   .dot{width:10px;height:10px;border-radius:50%;}
   .dot.pedro{background:var(--pedro);} .dot.nuria{background:var(--nuria);} .dot.rocio{background:var(--rocio);}
+  .dot.paqui{background:var(--paqui);} .dot.sole{background:var(--sole);}
   .meal{margin-bottom:10px;}
   .meal:last-child{margin-bottom:0;}
   .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
@@ -82,6 +86,8 @@
   .ing-src.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .ing-src.nuria{background:var(--nuria-soft);color:var(--nuria);}
   .ing-src.rocio{background:var(--rocio-soft);color:var(--rocio);}
+  .ing-src.paqui{background:var(--paqui-soft);color:var(--paqui);}
+  .ing-src.sole{background:var(--sole-soft);color:var(--sole);}
   .ing-src.multi{background:var(--accent-soft);color:var(--accent);}
 
   .empty{color:var(--muted);font-size:.85rem;padding:20px 4px;text-align:center;}
@@ -101,12 +107,16 @@
   .reminder.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .reminder.nuria{background:var(--nuria-soft);color:var(--nuria);}
   .reminder.rocio{background:var(--rocio-soft);color:var(--rocio);}
+  .reminder.paqui{background:var(--paqui-soft);color:var(--paqui);}
+  .reminder.sole{background:var(--sole-soft);color:var(--sole);}
   .reminder b{font-weight:700;}
   .personpicker{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;}
   .personchip{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.75rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);}
   .personchip.on.pedro{background:var(--pedro);border-color:var(--pedro);color:#fff;}
   .personchip.on.nuria{background:var(--nuria);border-color:var(--nuria);color:#fff;}
   .personchip.on.rocio{background:var(--rocio);border-color:var(--rocio);color:#fff;}
+  .personchip.on.paqui{background:var(--paqui);border-color:var(--paqui);color:#fff;}
+  .personchip.on.sole{background:var(--sole);border-color:var(--sole);color:#fff;}
 </style>
 
 <h1>Menú semanal</h1>
@@ -141,15 +151,19 @@ const WEEK_START = "2026-09-07"; // lunes
 const PERSONAS = {
   pedro:{ nombre:"Pedro" },
   nuria:{ nombre:"Nuria" },
-  rocio:{ nombre:"Rocío" }
+  rocio:{ nombre:"Rocío" },
+  paqui:{ nombre:"Paqui" },
+  sole:{ nombre:"Sole" }
 };
 
 /* Ciclo de dieta por persona (independientes entre sí). Lo actualiza la skill /nuevo-menu en
    cada visita a la nutricionista. Cualquier campo a null no se muestra en el recordatorio. */
 const NUTRI = {
-  pedro:{ proximaVisita:"2026-09-30T18:00", inicioNuevoPlan:"2026-09-14", finPlanActual:null, notaPendiente:"falta menú de Magda" },
+  pedro:{ proximaVisita:"2026-09-30T18:00", inicioNuevoPlan:"2026-09-14", finPlanActual:"2026-09-27", notaPendiente:null },
   nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null },
-  rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null }
+  rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null },
+  paqui:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
+  sole:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null }
 };
 
 /* Opciones de desayuno/almuerzo/merienda por persona: no varían por día, la persona elige cada
@@ -158,13 +172,19 @@ const NUTRI = {
 const OPCIONES = {
   pedro:{
     desayuno:[
-      "Yogur griego sin lactosa (200g) + canela/cacao puro al gusto + pera madura o manzana asada",
-      "2 tostadas de pan de calidad (se pueden combinar con: 80g queso fresco sin lactosa, 2 lonchas de pechuga de pollo, 1/3 aguacate, huevo duro, o anchoas/lomitos de caballa)",
-      "Tortilla de 2 huevos + opcional jamón cocido, lomitos de caballa o 1/3 aguacate",
-      "Yogur griego sin lactosa + proteína whey (30g) + 10g crema de almendra + manzana o pera asada",
-      "Revuelto o tortilla de 2 huevos con jamón cocido o queso curado (1 c/s de aceite)",
-      "Batido: plátano/pera madura/manzana asada + kéfir sin lactosa + whey (30g) + 1 c/s crema de almendra",
-      "Pan (60g) con aguacate y huevo o queso"
+      "Café o té (sin azúcar ni edulcorantes) + leche sin lactosa + yogur griego sin lactosa (200g) + canela/cacao puro al gusto + pera madura o manzana asada + 15-20g whey",
+      "Café o té + leche sin lactosa + 2 tostadas de pan de calidad (60g) + tomate triturado + (60-80g queso fresco sin lactosa, o 2 lonchas de pechuga de pollo alto % carne, o huevo duro)",
+      "Café o té + leche sin lactosa + tortilla de 2 huevos (revuelto/tortilla/cocidos/plancha) + opcional jamón cocido alto % carne, lomitos de caballa o 1/3 aguacate"
+    ],
+    almuerzo:[
+      "Yogur natural o kéfir sin lactosa (150-200g) + 1 fruta",
+      "1 fruta + 15-20g nueces o almendras",
+      "Batido de 200ml leche sin lactosa + 20-25g whey + canela"
+    ],
+    merienda:[
+      "Yogur natural o kéfir sin lactosa (150-200g) + 1 fruta",
+      "1 fruta + 15-20g nueces o almendras",
+      "Batido de 200ml leche sin lactosa + 20-25g whey + canela"
     ]
   },
   nuria:{
@@ -175,6 +195,25 @@ const OPCIONES = {
     merienda:[
       "Fruta + frutos secos",
       "Yogur sin lactosa + fruta natural y canela"
+    ]
+  },
+  paqui:{
+    desayuno:[
+      "170g de yogur alto en proteína/skyr + kiwi + canela/cacao puro + 5-10g de nueces o semillas",
+      "1 tostada de pan de masa madre de centeno o espelta (máx. 40g) + fuente proteica (60-80g pavo, 80-100g cottage/requesón, o 1 huevo + 120g claras)"
+    ],
+    merienda:[
+      "Fruta natural"
+    ]
+  },
+  sole:{
+    desayuno:[
+      "Yogur natural/proteico/kéfir natural + fruta natural + 1 c/s de frutos secos o semillas + canela/cacao puro",
+      "½ aguacate + 1 queso fresco sin lactosa o 1 huevo + fruta natural y unas nueces o almendras naturales",
+      "Copos de avena (2 c/s) con 2 c/s de chía (remojado toda la noche) + fruta natural y 1 yogur sin lactosa o kéfir sin lactosa"
+    ],
+    merienda:[
+      "Fruta natural + yogur sin lactosa + opcional 5 almendras, avellanas o nueces"
     ]
   }
 };
@@ -345,6 +384,482 @@ const WEEK = [
       cena:{title:"Tortilla de espinacas",
         ing:["espinacas","1-2 huevos (claras a demanda)"]}
     }
+  },
+  { name:"Lunes", date:"2026-09-14",
+    pedro:{
+      comida:{title:"Merluza (160g) al vapor o papillote con calabacín/zanahoria + patata pequeña",
+        ing:["160 g merluza","calabacín","zanahoria","1 patata pequeña","1 c/s aceite de oliva"]},
+      cena:{title:"Tortilla de calabacín (2 huevos) + 50g queso fresco",
+        ing:["2 huevos","calabacín","50 g queso fresco"]}
+    },
+    paqui:{
+      comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        ing:["acelgas","ajo","120 g gallineta"]},
+      cena:{title:"Tortilla de calabacín (1 huevo + 120g de claras)",
+        ing:["1 huevo","120 g claras de huevo","calabacín"]}
+    },
+    sole:{
+      comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        ing:["acelgas","ajo","120 g gallineta"]},
+      cena:{title:"Tortilla de calabacín (1 huevo + 120g de claras)",
+        ing:["1 huevo","120 g claras de huevo","calabacín"]}
+    }
+  },
+  { name:"Martes", date:"2026-09-15",
+    pedro:{
+      comida:{title:"Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín",
+        ing:["60 g arroz","150 g pollo","zanahoria","calabacín","1 c/s aceite de oliva"]},
+      cena:{title:"Bacalao (150g) con pisto suave (calabacín, berenjena y tomate bien cocinados)",
+        ing:["150 g bacalao","calabacín","berenjena","tomate"]}
+    },
+    paqui:{
+      comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
+      cena:{title:"Pimiento asado + bacalao a la plancha (120g) + alcaparras opcionales",
+        ing:["pimiento","120 g bacalao","alcaparras (opcional)"]}
+    },
+    sole:{
+      comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
+      cena:{title:"Puré de calabaza + bacalao a la plancha (120g)",
+        ing:["calabaza (para puré)","120 g bacalao"]}
+    }
+  },
+  { name:"Miércoles", date:"2026-09-16",
+    pedro:{
+      comida:{title:"Pasta (60g) con gambas (150g peso comestible) + almejas y calabacín",
+        ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"]},
+      cena:{title:"Crema de calabacín + pollo (150g)",
+        ing:["calabacín (para crema)","150 g pollo"]}
+    },
+    paqui:{
+      comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
+        ing:["100 g lentejas (peso cocido)","zanahoria","calabacín","tomate","1 huevo"]},
+      cena:{title:"Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca, cebolla picadita y pepino",
+        ing:["300 g langostino (150 g pelado)","tomate natural","albahaca","cebolla","pepino"]}
+    },
+    sole:{
+      comida:{title:"1 vasito de quinoa o arroz integral + canónigos, tomate, 1/3 aguacate + 80g queso fresco sin lactosa",
+        ing:["1 vasito quinoa o arroz integral","canónigos","tomate","1/3 aguacate","80 g queso fresco sin lactosa"]},
+      cena:{title:"Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca",
+        ing:["300 g langostino (150 g pelado)","tomate natural","albahaca"]}
+    }
+  },
+  { name:"Jueves", date:"2026-09-17",
+    pedro:{
+      comida:{title:"Albóndigas caseras (150g de carne picada de pavo) con puré de calabaza",
+        ing:["150 g carne picada de pavo","calabaza (para puré)","1 c/s aceite de oliva"]},
+      cena:{title:"Revuelto de 2 huevos con 100g gambas y espinacas (50-80g)",
+        ing:["2 huevos","100 g gambas","50-80 g espinacas"]}
+    },
+    paqui:{
+      comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
+        ing:["120 g pechuga de pollo","espárragos"]},
+      cena:{title:"Gazpacho + tortilla de 1 huevo + 1 lata de atún al natural, escurrido",
+        ing:["gazpacho","1 huevo","1 lata de atún al natural"]}
+    },
+    sole:{
+      comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
+        ing:["120 g pechuga de pollo","espárragos"]},
+      cena:{title:"Canónigos con remolacha en rodajas + tortilla de 1 huevo + 1 lata de atún al natural, reducido en sal, escurrido",
+        ing:["canónigos","remolacha","1 huevo","1 lata de atún al natural"]}
+    }
+  },
+  { name:"Viernes", date:"2026-09-18",
+    pedro:{
+      comida:{title:"Salmón (150g) al horno con boniato (1 pequeño) y calabacín + limón y hierbas aromáticas",
+        ing:["150 g salmón","1 boniato pequeño","calabacín","limón","hierbas aromáticas","1 c/s aceite de oliva"]},
+      cena:{title:"Hamburguesa casera de pollo/pavo (150g) + berenjena y tomate asados",
+        ing:["150 g pollo o pavo (picado)","berenjena","tomate"]}
+    },
+    paqui:{
+      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        ing:["130 g merluza","calabacín","tomatitos cherry"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
+        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"]}
+    },
+    sole:{
+      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        ing:["130 g merluza","calabacín","tomatitos cherry"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
+        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"]}
+    }
+  },
+  { name:"Sábado", date:"2026-09-19",
+    pedro:{
+      comida:{title:"Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","1 c/s aceite de oliva"]},
+      cena:{title:"Crema de calabaza + merluza (150g)",
+        ing:["calabaza (para crema)","150 g merluza"]}
+    },
+    paqui:{
+      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
+        ing:["120 g conejo o pollo","brotes","pepino","tomate"]},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca, cebolla y piparras o pepinillos",
+        ing:["mejillones","tomate natural","albahaca","cebolla","piparras o pepinillos"]}
+    },
+    sole:{
+      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, zanahoria, tomate",
+        ing:["120 g conejo o pollo","brotes","zanahoria","tomate"]},
+      cena:{title:"Mejillones al vapor 250-300g con concha (100-120g limpios) + tomate natural con albahaca",
+        ing:["250-300 g mejillones con concha","tomate natural","albahaca"]}
+    }
+  },
+  { name:"Domingo", date:"2026-09-20",
+    pedro:{
+      comida:{title:"Solomillo de cerdo (150g) con 1 patata pequeña + pimientos y berenjena asados",
+        ing:["150 g solomillo de cerdo","1 patata pequeña","pimientos","berenjena","1 c/s aceite de oliva"]},
+      cena:{title:"Tortilla (2 huevos) de atún (1 lata de atún al natural, escurrida) + tomate pelado/cocinado o calabacín",
+        ing:["2 huevos","1 lata de atún al natural","tomate o calabacín"]}
+    },
+    paqui:{
+      comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
+        ing:["130 g lubina","pimiento","calabacín"]},
+      cena:{title:"Hervido de brócoli + pollo a la plancha (120g)",
+        ing:["brócoli","120 g pollo"]}
+    },
+    sole:{
+      comida:{title:"Filete de lubina al horno (130g) + calabacín al horno + remolacha en rodajas",
+        ing:["130 g lubina","calabacín","remolacha"]},
+      cena:{title:"Puré de calabaza + pollo a la plancha (120g)",
+        ing:["calabaza (para puré)","120 g pollo"]}
+    }
+  },
+  { name:"Lunes", date:"2026-09-21",
+    pedro:{
+      comida:{title:"Merluza (160g) al vapor o papillote con calabacín/zanahoria + patata pequeña",
+        ing:["160 g merluza","calabacín","zanahoria","1 patata pequeña","1 c/s aceite de oliva"]},
+      cena:{title:"Tortilla de calabacín (2 huevos) + 50g queso fresco",
+        ing:["2 huevos","calabacín","50 g queso fresco"]}
+    },
+    paqui:{
+      comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        ing:["acelgas","ajo","120 g gallineta"]},
+      cena:{title:"Tortilla de calabacín (1 huevo + 120g de claras)",
+        ing:["1 huevo","120 g claras de huevo","calabacín"]}
+    },
+    sole:{
+      comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        ing:["acelgas","ajo","120 g gallineta"]},
+      cena:{title:"Tortilla de calabacín (1 huevo + 120g de claras)",
+        ing:["1 huevo","120 g claras de huevo","calabacín"]}
+    }
+  },
+  { name:"Martes", date:"2026-09-22",
+    pedro:{
+      comida:{title:"Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín",
+        ing:["60 g arroz","150 g pollo","zanahoria","calabacín","1 c/s aceite de oliva"]},
+      cena:{title:"Bacalao (150g) con pisto suave (calabacín, berenjena y tomate bien cocinados)",
+        ing:["150 g bacalao","calabacín","berenjena","tomate"]}
+    },
+    paqui:{
+      comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
+      cena:{title:"Pimiento asado + bacalao a la plancha (120g) + alcaparras opcionales",
+        ing:["pimiento","120 g bacalao","alcaparras (opcional)"]}
+    },
+    sole:{
+      comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
+      cena:{title:"Puré de calabaza + bacalao a la plancha (120g)",
+        ing:["calabaza (para puré)","120 g bacalao"]}
+    }
+  },
+  { name:"Miércoles", date:"2026-09-23",
+    pedro:{
+      comida:{title:"Pasta (60g) con gambas (150g peso comestible) + almejas y calabacín",
+        ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"]},
+      cena:{title:"Crema de calabacín + pollo (150g)",
+        ing:["calabacín (para crema)","150 g pollo"]}
+    },
+    paqui:{
+      comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
+        ing:["100 g lentejas (peso cocido)","zanahoria","calabacín","tomate","1 huevo"]},
+      cena:{title:"Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca, cebolla picadita y pepino",
+        ing:["300 g langostino (150 g pelado)","tomate natural","albahaca","cebolla","pepino"]}
+    },
+    sole:{
+      comida:{title:"1 vasito de quinoa o arroz integral + canónigos, tomate, 1/3 aguacate + 80g queso fresco sin lactosa",
+        ing:["1 vasito quinoa o arroz integral","canónigos","tomate","1/3 aguacate","80 g queso fresco sin lactosa"]},
+      cena:{title:"Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca",
+        ing:["300 g langostino (150 g pelado)","tomate natural","albahaca"]}
+    }
+  },
+  { name:"Jueves", date:"2026-09-24",
+    pedro:{
+      comida:{title:"Albóndigas caseras (150g de carne picada de pavo) con puré de calabaza",
+        ing:["150 g carne picada de pavo","calabaza (para puré)","1 c/s aceite de oliva"]},
+      cena:{title:"Revuelto de 2 huevos con 100g gambas y espinacas (50-80g)",
+        ing:["2 huevos","100 g gambas","50-80 g espinacas"]}
+    },
+    paqui:{
+      comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
+        ing:["120 g pechuga de pollo","espárragos"]},
+      cena:{title:"Gazpacho + tortilla de 1 huevo + 1 lata de atún al natural, escurrido",
+        ing:["gazpacho","1 huevo","1 lata de atún al natural"]}
+    },
+    sole:{
+      comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
+        ing:["120 g pechuga de pollo","espárragos"]},
+      cena:{title:"Canónigos con remolacha en rodajas + tortilla de 1 huevo + 1 lata de atún al natural, reducido en sal, escurrido",
+        ing:["canónigos","remolacha","1 huevo","1 lata de atún al natural"]}
+    }
+  },
+  { name:"Viernes", date:"2026-09-25",
+    pedro:{
+      comida:{title:"Salmón (150g) al horno con boniato (1 pequeño) y calabacín + limón y hierbas aromáticas",
+        ing:["150 g salmón","1 boniato pequeño","calabacín","limón","hierbas aromáticas","1 c/s aceite de oliva"]},
+      cena:{title:"Hamburguesa casera de pollo/pavo (150g) + berenjena y tomate asados",
+        ing:["150 g pollo o pavo (picado)","berenjena","tomate"]}
+    },
+    paqui:{
+      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        ing:["130 g merluza","calabacín","tomatitos cherry"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
+        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"]}
+    },
+    sole:{
+      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        ing:["130 g merluza","calabacín","tomatitos cherry"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
+        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"]}
+    }
+  },
+  { name:"Sábado", date:"2026-09-26",
+    pedro:{
+      comida:{title:"Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","1 c/s aceite de oliva"]},
+      cena:{title:"Crema de calabaza + merluza (150g)",
+        ing:["calabaza (para crema)","150 g merluza"]}
+    },
+    paqui:{
+      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
+        ing:["120 g conejo o pollo","brotes","pepino","tomate"]},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca, cebolla y piparras o pepinillos",
+        ing:["mejillones","tomate natural","albahaca","cebolla","piparras o pepinillos"]}
+    },
+    sole:{
+      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, zanahoria, tomate",
+        ing:["120 g conejo o pollo","brotes","zanahoria","tomate"]},
+      cena:{title:"Mejillones al vapor 250-300g con concha (100-120g limpios) + tomate natural con albahaca",
+        ing:["250-300 g mejillones con concha","tomate natural","albahaca"]}
+    }
+  },
+  { name:"Domingo", date:"2026-09-27",
+    pedro:{
+      comida:{title:"Solomillo de cerdo (150g) con 1 patata pequeña + pimientos y berenjena asados",
+        ing:["150 g solomillo de cerdo","1 patata pequeña","pimientos","berenjena","1 c/s aceite de oliva"]},
+      cena:{title:"Tortilla (2 huevos) de atún (1 lata de atún al natural, escurrida) + tomate pelado/cocinado o calabacín",
+        ing:["2 huevos","1 lata de atún al natural","tomate o calabacín"]}
+    },
+    paqui:{
+      comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
+        ing:["130 g lubina","pimiento","calabacín"]},
+      cena:{title:"Hervido de brócoli + pollo a la plancha (120g)",
+        ing:["brócoli","120 g pollo"]}
+    },
+    sole:{
+      comida:{title:"Filete de lubina al horno (130g) + calabacín al horno + remolacha en rodajas",
+        ing:["130 g lubina","calabacín","remolacha"]},
+      cena:{title:"Puré de calabaza + pollo a la plancha (120g)",
+        ing:["calabaza (para puré)","120 g pollo"]}
+    }
+  },
+  { name:"Lunes", date:"2026-09-28",
+    paqui:{
+      comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        ing:["acelgas","ajo","120 g gallineta"]},
+      cena:{title:"Tortilla de calabacín (1 huevo + 120g de claras)",
+        ing:["1 huevo","120 g claras de huevo","calabacín"]}
+    },
+    sole:{
+      comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        ing:["acelgas","ajo","120 g gallineta"]},
+      cena:{title:"Tortilla de calabacín (1 huevo + 120g de claras)",
+        ing:["1 huevo","120 g claras de huevo","calabacín"]}
+    }
+  },
+  { name:"Martes", date:"2026-09-29",
+    paqui:{
+      comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
+      cena:{title:"Pimiento asado + bacalao a la plancha (120g) + alcaparras opcionales",
+        ing:["pimiento","120 g bacalao","alcaparras (opcional)"]}
+    },
+    sole:{
+      comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
+      cena:{title:"Puré de calabaza + bacalao a la plancha (120g)",
+        ing:["calabaza (para puré)","120 g bacalao"]}
+    }
+  },
+  { name:"Miércoles", date:"2026-09-30",
+    paqui:{
+      comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
+        ing:["100 g lentejas (peso cocido)","zanahoria","calabacín","tomate","1 huevo"]},
+      cena:{title:"Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca, cebolla picadita y pepino",
+        ing:["300 g langostino (150 g pelado)","tomate natural","albahaca","cebolla","pepino"]}
+    },
+    sole:{
+      comida:{title:"1 vasito de quinoa o arroz integral + canónigos, tomate, 1/3 aguacate + 80g queso fresco sin lactosa",
+        ing:["1 vasito quinoa o arroz integral","canónigos","tomate","1/3 aguacate","80 g queso fresco sin lactosa"]},
+      cena:{title:"Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca",
+        ing:["300 g langostino (150 g pelado)","tomate natural","albahaca"]}
+    }
+  },
+  { name:"Jueves", date:"2026-10-01",
+    paqui:{
+      comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
+        ing:["120 g pechuga de pollo","espárragos"]},
+      cena:{title:"Gazpacho + tortilla de 1 huevo + 1 lata de atún al natural, escurrido",
+        ing:["gazpacho","1 huevo","1 lata de atún al natural"]}
+    },
+    sole:{
+      comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
+        ing:["120 g pechuga de pollo","espárragos"]},
+      cena:{title:"Canónigos con remolacha en rodajas + tortilla de 1 huevo + 1 lata de atún al natural, reducido en sal, escurrido",
+        ing:["canónigos","remolacha","1 huevo","1 lata de atún al natural"]}
+    }
+  },
+  { name:"Viernes", date:"2026-10-02",
+    paqui:{
+      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        ing:["130 g merluza","calabacín","tomatitos cherry"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
+        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"]}
+    },
+    sole:{
+      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        ing:["130 g merluza","calabacín","tomatitos cherry"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
+        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"]}
+    }
+  },
+  { name:"Sábado", date:"2026-10-03",
+    paqui:{
+      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
+        ing:["120 g conejo o pollo","brotes","pepino","tomate"]},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca, cebolla y piparras o pepinillos",
+        ing:["mejillones","tomate natural","albahaca","cebolla","piparras o pepinillos"]}
+    },
+    sole:{
+      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, zanahoria, tomate",
+        ing:["120 g conejo o pollo","brotes","zanahoria","tomate"]},
+      cena:{title:"Mejillones al vapor 250-300g con concha (100-120g limpios) + tomate natural con albahaca",
+        ing:["250-300 g mejillones con concha","tomate natural","albahaca"]}
+    }
+  },
+  { name:"Domingo", date:"2026-10-04",
+    paqui:{
+      comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
+        ing:["130 g lubina","pimiento","calabacín"]},
+      cena:{title:"Hervido de brócoli + pollo a la plancha (120g)",
+        ing:["brócoli","120 g pollo"]}
+    },
+    sole:{
+      comida:{title:"Filete de lubina al horno (130g) + calabacín al horno + remolacha en rodajas",
+        ing:["130 g lubina","calabacín","remolacha"]},
+      cena:{title:"Puré de calabaza + pollo a la plancha (120g)",
+        ing:["calabaza (para puré)","120 g pollo"]}
+    }
+  },
+  { name:"Lunes", date:"2026-10-05",
+    paqui:{
+      comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        ing:["acelgas","ajo","120 g gallineta"]},
+      cena:{title:"Tortilla de calabacín (1 huevo + 120g de claras)",
+        ing:["1 huevo","120 g claras de huevo","calabacín"]}
+    },
+    sole:{
+      comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        ing:["acelgas","ajo","120 g gallineta"]},
+      cena:{title:"Tortilla de calabacín (1 huevo + 120g de claras)",
+        ing:["1 huevo","120 g claras de huevo","calabacín"]}
+    }
+  },
+  { name:"Martes", date:"2026-10-06",
+    paqui:{
+      comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
+      cena:{title:"Pimiento asado + bacalao a la plancha (120g) + alcaparras opcionales",
+        ing:["pimiento","120 g bacalao","alcaparras (opcional)"]}
+    },
+    sole:{
+      comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
+      cena:{title:"Puré de calabaza + bacalao a la plancha (120g)",
+        ing:["calabaza (para puré)","120 g bacalao"]}
+    }
+  },
+  { name:"Miércoles", date:"2026-10-07",
+    paqui:{
+      comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
+        ing:["100 g lentejas (peso cocido)","zanahoria","calabacín","tomate","1 huevo"]},
+      cena:{title:"Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca, cebolla picadita y pepino",
+        ing:["300 g langostino (150 g pelado)","tomate natural","albahaca","cebolla","pepino"]}
+    },
+    sole:{
+      comida:{title:"1 vasito de quinoa o arroz integral + canónigos, tomate, 1/3 aguacate + 80g queso fresco sin lactosa",
+        ing:["1 vasito quinoa o arroz integral","canónigos","tomate","1/3 aguacate","80 g queso fresco sin lactosa"]},
+      cena:{title:"Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca",
+        ing:["300 g langostino (150 g pelado)","tomate natural","albahaca"]}
+    }
+  },
+  { name:"Jueves", date:"2026-10-08",
+    paqui:{
+      comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
+        ing:["120 g pechuga de pollo","espárragos"]},
+      cena:{title:"Gazpacho + tortilla de 1 huevo + 1 lata de atún al natural, escurrido",
+        ing:["gazpacho","1 huevo","1 lata de atún al natural"]}
+    },
+    sole:{
+      comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
+        ing:["120 g pechuga de pollo","espárragos"]},
+      cena:{title:"Canónigos con remolacha en rodajas + tortilla de 1 huevo + 1 lata de atún al natural, reducido en sal, escurrido",
+        ing:["canónigos","remolacha","1 huevo","1 lata de atún al natural"]}
+    }
+  },
+  { name:"Viernes", date:"2026-10-09",
+    paqui:{
+      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        ing:["130 g merluza","calabacín","tomatitos cherry"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
+        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"]}
+    },
+    sole:{
+      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        ing:["130 g merluza","calabacín","tomatitos cherry"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
+        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"]}
+    }
+  },
+  { name:"Sábado", date:"2026-10-10",
+    paqui:{
+      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
+        ing:["120 g conejo o pollo","brotes","pepino","tomate"]},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca, cebolla y piparras o pepinillos",
+        ing:["mejillones","tomate natural","albahaca","cebolla","piparras o pepinillos"]}
+    },
+    sole:{
+      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, zanahoria, tomate",
+        ing:["120 g conejo o pollo","brotes","zanahoria","tomate"]},
+      cena:{title:"Mejillones al vapor 250-300g con concha (100-120g limpios) + tomate natural con albahaca",
+        ing:["250-300 g mejillones con concha","tomate natural","albahaca"]}
+    }
+  },
+  { name:"Domingo", date:"2026-10-11",
+    paqui:{
+      comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
+        ing:["130 g lubina","pimiento","calabacín"]},
+      cena:{title:"Hervido de brócoli + pollo a la plancha (120g)",
+        ing:["brócoli","120 g pollo"]}
+    },
+    sole:{
+      comida:{title:"Filete de lubina al horno (130g) + calabacín al horno + remolacha en rodajas",
+        ing:["130 g lubina","calabacín","remolacha"]},
+      cena:{title:"Puré de calabaza + pollo a la plancha (120g)",
+        ing:["calabaza (para puré)","120 g pollo"]}
+    }
   }
 ];
 
@@ -429,6 +944,12 @@ function fmtDate(iso){
   return d.getDate() + "/" + (d.getMonth()+1);
 }
 
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function fmtMesAnio(iso){
+  const d = new Date(iso+"T00:00:00");
+  return "de " + MESES[d.getMonth()] + " " + d.getFullYear();
+}
+
 /* combina ingredientes de comida+cena de ambos, marcando la(s) fuente(s) */
 /* separa un ingrediente en {nombre, cantidad}: "140 g de pollo" -> {nombre:"pollo", cantidad:"140 g"};
    "pollo" (sin cantidad reconocida) -> {nombre:"pollo", cantidad:null}. El nombre es la clave de
@@ -494,7 +1015,7 @@ function renderDayPicker(){
     chip.onclick = ()=>{ currentDay = i; render(); };
     el.appendChild(chip);
   });
-  document.getElementById('weekSub').textContent = WEEK[currentDay].name + " " + fmtDate(WEEK[currentDay].date) + " de septiembre 2026";
+  document.getElementById('weekSub').textContent = WEEK[currentDay].name + " " + fmtDate(WEEK[currentDay].date) + " " + fmtMesAnio(WEEK[currentDay].date);
 }
 
 function renderMenu(){
