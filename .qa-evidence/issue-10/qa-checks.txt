@@ -1,0 +1,36 @@
+QA funcional issue #10 / PR #15 - rama 10-dedup-compra, commit e5be6d3.
+Vehiculo: navegador integrado + javascript_tool contra http://localhost:8123 (sin Playwright/Docker).
+
+=== Criterio 3: orden alfabetico (los 7 dias) ===
+Comando: recorre los 7 dias, compara el array de nombres renderizados con su version .sort('es').
+
+Lunes 7/9 de septiembre 2026: true
+Martes 8/9 de septiembre 2026: true
+Miércoles 9/9 de septiembre 2026: true
+Jueves 10/9 de septiembre 2026: true
+Viernes 11/9 de septiembre 2026: true
+Sábado 12/9 de septiembre 2026: true
+Domingo 13/9 de septiembre 2026: true
+
+CUMPLIDO en los 7 dias.
+
+=== Criterio 4: icono por linea (primeras 5 de Compra, Domingo) ===
+🥕 | 🫒 | 🐟 | 🥕 | 🐟
+(verduras, aceite, pescado — coherentes con el ingrediente real de cada linea)
+CUMPLIDO.
+
+=== Hallazgo de review 1 (regex g/l) re-verificado tras el fix ===
+normalizarIngrediente("3 guindillas")    = {nombre:"guindillas", cantidad:"3"}   (antes: "uindillas")
+normalizarIngrediente("1 litro de leche") = {nombre:"litro de leche", cantidad:"1"} (antes: "itro de leche")
+normalizarIngrediente("400 g morcillo")  = {nombre:"morcillo", cantidad:"400 g"}  (caso ya-correcto, sigue igual)
+CONFIRMADO ARREGLADO, sin regresion en el caso ya-correcto.
+
+=== Hallazgo de review 2 (persistencia por key estable) re-verificado ===
+Comando: toggle de la primera casilla de Nevera dos veces, leyendo checks[fecha][key] en cada paso.
+
+primer click  -> {key:"aceite de oliva", storedUnderKey:false, rowChecked:false}
+segundo click -> {storedUnderKey:true, rowChecked:true}
+
+El valor de checks[fecha]["aceite de oliva"] (clave estable, no el texto "Aceite de oliva (1 c/s)")
+cambia en sincronia exacta con el estado visual de la casilla en ambos sentidos.
+CONFIRMADO ARREGLADO.
