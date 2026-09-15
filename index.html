@@ -384,7 +384,7 @@ function fmtDate(iso){
    "pollo" (sin cantidad reconocida) -> {nombre:"pollo", cantidad:null}. El nombre es la clave de
    fusión: dos apariciones con el mismo nombre son el mismo ingrediente aunque una lleve cantidad. */
 function normalizarIngrediente(item){
-  const m = item.match(/^((?:\d+(?:[.,]\d+)?(?:-\d+(?:[.,]\d+)?)?|½|¼|⅓|⅔|¾)(?:\s*(?:g|kg|ml|l|c\/s|c\/c|ud\.?|unidades?))?)\s*(?:de\s+)?(.+)$/i);
+  const m = item.match(/^((?:\d+(?:[.,]\d+)?(?:-\d+(?:[.,]\d+)?)?|½|¼|⅓|⅔|¾)(?:\s*(?:g|kg|ml|l|c\/s|c\/c|ud\.?|unidades?)\b)?)\s*(?:de\s+)?(.+)$/i);
   if(!m) return {nombre:item.trim(), cantidad:null};
   return {nombre:m[2].trim(), cantidad:m[1].trim()};
 }
