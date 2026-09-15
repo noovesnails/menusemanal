@@ -1,0 +1,30 @@
+Criterio 8 (anadido en refine): la etiqueta "quien lo necesita" de Nevera/Compra funciona para una
+tercera persona (antes era un ternario pedro?'Pedro':'Nuria' que etiquetaria mal a Rocio).
+
+Comando (JS en la app real, http://localhost:8123, rama 6-n-personas-rocio, commit 68f46ba):
+prueba la funcion origen() con 1, 2 y 3 personas, y lee la pestana Compra real.
+
+  JSON.stringify({
+    una: origen(["nuria"]),
+    dos: origen(["pedro","nuria"]),
+    tres: origen(["pedro","nuria","rocio"])
+  })
+  // + click en la pestana Compra y lectura de su texto renderizado
+
+Salida real (cruda):
+
+origen(["nuria"])                  = {cls:"nuria", label:"Nuria"}
+origen(["pedro","nuria"])          = {cls:"multi", label:"Pedro · Nuria"}
+origen(["pedro","nuria","rocio"])  = {cls:"multi", label:"Pedro · Nuria · Rocío"}
+
+Pestaña Compra (domingo, dia por defecto al pasar de la fecha del array):
+POR COMPRAR HOY
+• morcillo   -> Pedro
+• pollo      -> Pedro
+• huesos     -> Pedro
+• patas de pollo -> Pedro
+(resto de la lista con el mismo patron, un ingrediente por linea con su persona)
+
+Resultado: origen() etiqueta correctamente 1, 2 y 3 personas (no solo el caso "both" de antes), y
+la pestaña Compra real muestra "Pedro"/"Nuria" correctamente para ingredientes de un solo origen.
+CRITERIO 8: CUMPLIDO.

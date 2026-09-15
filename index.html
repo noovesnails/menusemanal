@@ -6,6 +6,7 @@
     --bg:#faf7f2; --card:#ffffff; --ink:#2b2420; --muted:#8a7f74;
     --accent:#a9455d; --accent-soft:#f3dde2; --line:#ece4dc;
     --pedro:#6d8a6b; --pedro-soft:#e7efe6; --nuria:#c07a3f; --nuria-soft:#f6e6d5;
+    --rocio:#5b7ea6; --rocio-soft:#e4ecf5;
     --ok:#5a8c5a;
   }
   @media (prefers-color-scheme: dark){
@@ -13,6 +14,7 @@
       --bg:#1b1815; --card:#252220; --ink:#f1ece6; --muted:#a89e93;
       --accent:#e08296; --accent-soft:#3a2429; --line:#3a3430;
       --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
+      --rocio:#8ba9cf; --rocio-soft:#232a33;
       --ok:#7cb87c;
     }
   }
@@ -20,6 +22,7 @@
     --bg:#1b1815; --card:#252220; --ink:#f1ece6; --muted:#a89e93;
     --accent:#e08296; --accent-soft:#3a2429; --line:#3a3430;
     --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
+    --rocio:#8ba9cf; --rocio-soft:#232a33;
     --ok:#7cb87c;
   }
   *{box-sizing:border-box;}
@@ -38,7 +41,7 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;}
   .person{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:8px;font-size:.95rem;}
   .dot{width:10px;height:10px;border-radius:50%;}
-  .dot.pedro{background:var(--pedro);} .dot.nuria{background:var(--nuria);}
+  .dot.pedro{background:var(--pedro);} .dot.nuria{background:var(--nuria);} .dot.rocio{background:var(--rocio);}
   .meal{margin-bottom:10px;}
   .meal:last-child{margin-bottom:0;}
   .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
@@ -68,7 +71,8 @@
   .ing-src{font-size:.65rem;padding:2px 6px;border-radius:6px;flex:0 0 auto;}
   .ing-src.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .ing-src.nuria{background:var(--nuria-soft);color:var(--nuria);}
-  .ing-src.both{background:var(--accent-soft);color:var(--accent);}
+  .ing-src.rocio{background:var(--rocio-soft);color:var(--rocio);}
+  .ing-src.multi{background:var(--accent-soft);color:var(--accent);}
 
   .empty{color:var(--muted);font-size:.85rem;padding:20px 4px;text-align:center;}
 
@@ -86,6 +90,7 @@
   .reminder{border-radius:12px;padding:8px 12px;font-size:.78rem;display:flex;align-items:center;gap:8px;}
   .reminder.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .reminder.nuria{background:var(--nuria-soft);color:var(--nuria);}
+  .reminder.rocio{background:var(--rocio-soft);color:var(--rocio);}
   .reminder b{font-weight:700;}
 </style>
 
@@ -114,11 +119,20 @@
    Para cargar una nueva semana: sustituir este array WEEK por la siguiente semana. */
 const WEEK_START = "2026-09-07"; // lunes
 
+/* Nombre legible y color de cada persona. Añadir aquí una entrada al incorporar a alguien nuevo
+   (y su par --id/--id-soft en las variables CSS de :root). */
+const PERSONAS = {
+  pedro:{ nombre:"Pedro" },
+  nuria:{ nombre:"Nuria" },
+  rocio:{ nombre:"Rocío" }
+};
+
 /* Ciclo de dieta por persona (independientes entre sí). Lo actualiza la skill /nuevo-menu en
    cada visita a la nutricionista. Cualquier campo a null no se muestra en el recordatorio. */
 const NUTRI = {
-  pedro:{ proximaVisita:"2026-09-09", inicioNuevoPlan:"2026-09-14", finPlanActual:null, notaPendiente:"falta menú de Magda" },
-  nuria:{ proximaVisita:null, inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null }
+  pedro:{ proximaVisita:"2026-09-30T18:00", inicioNuevoPlan:"2026-09-14", finPlanActual:null, notaPendiente:"falta menú de Magda" },
+  nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null },
+  rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null }
 };
 
 const WEEK = [
@@ -368,7 +382,8 @@ function fmtDate(iso){
 /* combina ingredientes de comida+cena de ambos, marcando la(s) fuente(s) */
 function fridgeItems(day){
   const map = new Map(); // nombre -> Set(origen)
-  [["pedro",day.pedro],["nuria",day.nuria]].forEach(([who, person])=>{
+  Object.keys(PERSONAS).filter(id=>day[id]).forEach(who=>{
+    const person = day[who];
     ["comida","cena"].forEach(meal=>{
       person[meal].ing.forEach(item=>{
         if(!map.has(item)) map.set(item, new Set());
@@ -377,8 +392,14 @@ function fridgeItems(day){
     });
   });
   return Array.from(map.entries()).map(([item, whoSet])=>({
-    item, who: whoSet.size===2 ? "both" : Array.from(whoSet)[0]
+    item, who: Array.from(whoSet)
   }));
+}
+
+/* etiqueta + clase CSS del origen de un ingrediente a partir de la lista de personas que lo necesitan */
+function origen(whoArr){
+  if(whoArr.length===1) return {cls:whoArr[0], label:PERSONAS[whoArr[0]].nombre};
+  return {cls:"multi", label: whoArr.map(id=>PERSONAS[id].nombre).join(" · ")};
 }
 
 function renderDayPicker(){
@@ -419,13 +440,13 @@ function renderMenu(){
         </div>
       </details>` : ''}
     </div>`;
-  const block = (who,label,cls) => `
+  const block = (who) => `
     <div class="card">
-      <div class="person"><span class="dot ${cls}"></span>${label}</div>
+      <div class="person"><span class="dot ${who}"></span>${PERSONAS[who].nombre}</div>
       ${meal(day[who].comida,'Comida')}
       ${meal(day[who].cena,'Cena')}
     </div>`;
-  el.innerHTML = block('pedro','Pedro','pedro') + block('nuria','Nuria','nuria');
+  el.innerHTML = Object.keys(PERSONAS).filter(id=>day[id]).map(block).join('');
 }
 
 function renderNevera(){
@@ -437,10 +458,11 @@ function renderNevera(){
     `<div class="card">` +
     items.map(({item,who})=>{
       const isChecked = !!dayChecks[item];
+      const o = origen(who);
       return `<div class="ing-row ${isChecked?'checked':''}">
         <input type="checkbox" data-item="${encodeURIComponent(item)}" ${isChecked?'checked':''}>
         <label>${item}</label>
-        <span class="ing-src ${who}">${who==='both'?'ambos':who==='pedro'?'Pedro':'Nuria'}</span>
+        <span class="ing-src ${o.cls}">${o.label}</span>
       </div>`;
     }).join('') + `</div>`;
 
@@ -468,22 +490,26 @@ function renderCompra(){
           <div class="ing-row">
             <span style="width:20px;text-align:center">•</span>
             <label>${item}</label>
-            <span class="ing-src ${who}">${who==='both'?'ambos':who==='pedro'?'Pedro':'Nuria'}</span>
+            <span class="ing-src ${origen(who).cls}">${origen(who).label}</span>
           </div>`).join('')}</div>`);
 }
 
 function renderReminders(){
   const el = document.getElementById('reminders');
-  const line = (cls,label,n) => {
+  const fmtVisita = iso => {
+    const [fecha, hora] = iso.split("T");
+    return hora ? `${fmtDate(fecha)} a las ${hora}` : fmtDate(fecha);
+  };
+  const line = (who,n) => {
     const partes = [];
-    if(n.proximaVisita) partes.push(`cita con la nutri el ${fmtDate(n.proximaVisita)}`);
+    if(n.proximaVisita) partes.push(`cita con la nutri el ${fmtVisita(n.proximaVisita)}`);
     if(n.inicioNuevoPlan) partes.push(`nuevo plan desde el ${fmtDate(n.inicioNuevoPlan)}`);
     if(n.finPlanActual) partes.push(`plan actual hasta el ${fmtDate(n.finPlanActual)}`);
     if(!partes.length && !n.notaPendiente) return '';
     const nota = n.notaPendiente ? ` — ${n.notaPendiente}` : '';
-    return `<div class="reminder ${cls}">🗓️ <span><b>${label}:</b> ${partes.join(' · ')}${nota}</span></div>`;
+    return `<div class="reminder ${who}">🗓️ <span><b>${PERSONAS[who].nombre}:</b> ${partes.join(' · ')}${nota}</span></div>`;
   };
-  el.innerHTML = line('pedro','Pedro',NUTRI.pedro) + line('nuria','Nuria',NUTRI.nuria);
+  el.innerHTML = Object.keys(PERSONAS).filter(id=>NUTRI[id]).map(id=>line(id,NUTRI[id])).join('');
 }
 
 function render(){

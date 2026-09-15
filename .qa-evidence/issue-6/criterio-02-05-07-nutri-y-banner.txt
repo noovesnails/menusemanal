@@ -1,0 +1,29 @@
+Criterio 2: entrada rocio en NUTRI con proximaVisita:"2026-09-16", resto null.
+Criterio 3: NUTRI.pedro.proximaVisita = "2026-09-30T18:00".
+Criterio 4: NUTRI.nuria.proximaVisita = "2026-09-16".
+Criterio 5: NUTRI admite un numero variable de personas (3 hoy).
+Criterio 7: el banner de recordatorio muestra la linea de Rocio.
+
+Comando (JS en la app real, http://localhost:8123, rama 6-n-personas-rocio, commit 68f46ba):
+
+  JSON.stringify({
+    NUTRI_pedro: NUTRI.pedro,
+    NUTRI_nuria: NUTRI.nuria,
+    NUTRI_rocio: NUTRI.rocio,
+    banner: document.getElementById('reminders').innerText
+  })
+
+Salida real (cruda):
+
+NUTRI.pedro = {"proximaVisita":"2026-09-30T18:00","inicioNuevoPlan":"2026-09-14","finPlanActual":null,"notaPendiente":"falta menú de Magda"}
+NUTRI.nuria = {"proximaVisita":"2026-09-16","inicioNuevoPlan":null,"finPlanActual":null,"notaPendiente":null}
+NUTRI.rocio = {"proximaVisita":"2026-09-16","inicioNuevoPlan":null,"finPlanActual":null,"notaPendiente":null}
+
+banner (texto renderizado):
+🗓️ Pedro: cita con la nutri el 30/9 a las 18:00 · nuevo plan desde el 14/9 — falta menú de Magda
+🗓️ Nuria: cita con la nutri el 16/9
+🗓️ Rocío: cita con la nutri el 16/9
+
+Resultado: los 3 valores de NUTRI coinciden exactamente con lo pedido, y el banner los muestra
+correctamente formateados (fecha+hora para Pedro, solo fecha para Nuria/Rocío).
+CRITERIOS 2, 3, 4, 5 y 7: CUMPLIDOS.
