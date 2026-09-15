@@ -1,0 +1,30 @@
+Criterio 1: las tarjetas del Menu se derivan de WEEK (numero variable de personas), sin Rocio
+hasta que tenga platos.
+Criterio 6: sin regresion visible para Pedro/Nuria.
+
+Comando (JS en la app real, http://localhost:8123, rama 6-n-personas-rocio, commit 68f46ba):
+recorre los 7 dias y lista las tarjetas de persona (`.person`) mostradas en cada uno.
+
+  const days = document.querySelectorAll('#dayPicker .daychip');
+  const out = [];
+  for (const chip of days) {
+    chip.click();
+    await new Promise(r => setTimeout(r, 50));
+    const dayName = document.getElementById('weekSub').textContent;
+    const cards = [...document.querySelectorAll('#viewMenu .person')].map(p => p.textContent.trim());
+    out.push(`${dayName}: personas mostradas = [${cards.join(', ')}]`);
+  }
+  out.join('\n')
+
+Salida real (cruda):
+
+Lunes 7/9 de septiembre 2026: personas mostradas = [Pedro, Nuria]
+Martes 8/9 de septiembre 2026: personas mostradas = [Pedro, Nuria]
+Miércoles 9/9 de septiembre 2026: personas mostradas = [Pedro, Nuria]
+Jueves 10/9 de septiembre 2026: personas mostradas = [Pedro, Nuria]
+Viernes 11/9 de septiembre 2026: personas mostradas = [Pedro, Nuria]
+Sábado 12/9 de septiembre 2026: personas mostradas = [Pedro, Nuria]
+Domingo 13/9 de septiembre 2026: personas mostradas = [Pedro, Nuria]
+
+Resultado: en los 7 dias solo aparecen Pedro y Nuria (Rocio no tiene entrada en WEEK todavia),
+sin errores ni tarjetas vacias. CRITERIOS 1 y 6: CUMPLIDOS.
