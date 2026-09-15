@@ -423,7 +423,7 @@ function fridgeItems(day){
     .map(([nombre, {cantidades, who}])=>{
       const cant = cantidades.size ? ` (${Array.from(cantidades).join(" + ")})` : "";
       const label = nombre.charAt(0).toUpperCase() + nombre.slice(1);
-      return { item: label + cant, icono: iconoIngrediente(nombre), who: Array.from(who) };
+      return { item: label + cant, key: nombre, icono: iconoIngrediente(nombre), who: Array.from(who) };
     })
     .sort((a,b)=>a.item.localeCompare(b.item, "es"));
 }
@@ -488,11 +488,11 @@ function renderNevera(){
   const dayChecks = checks[day.date] || {};
   el.innerHTML = `<div class="section-title">Marca lo que ya tienes en la nevera</div>` +
     `<div class="card">` +
-    items.map(({item,who})=>{
-      const isChecked = !!dayChecks[item];
+    items.map(({item,key,who})=>{
+      const isChecked = !!dayChecks[key];
       const o = origen(who);
       return `<div class="ing-row ${isChecked?'checked':''}">
-        <input type="checkbox" data-item="${encodeURIComponent(item)}" ${isChecked?'checked':''}>
+        <input type="checkbox" data-key="${encodeURIComponent(key)}" ${isChecked?'checked':''}>
         <label>${item}</label>
         <span class="ing-src ${o.cls}">${o.label}</span>
       </div>`;
@@ -500,9 +500,9 @@ function renderNevera(){
 
   el.querySelectorAll('input[type=checkbox]').forEach(cb=>{
     cb.addEventListener('change', ()=>{
-      const item = decodeURIComponent(cb.dataset.item);
+      const key = decodeURIComponent(cb.dataset.key);
       checks[day.date] = checks[day.date] || {};
-      checks[day.date][item] = cb.checked;
+      checks[day.date][key] = cb.checked;
       cb.closest('.ing-row').classList.toggle('checked', cb.checked);
       scheduleSave();
     });
@@ -513,7 +513,7 @@ function renderCompra(){
   const day = WEEK[currentDay];
   const items = fridgeItems(day);
   const dayChecks = checks[day.date] || {};
-  const toBuy = items.filter(({item})=>!dayChecks[item]);
+  const toBuy = items.filter(({key})=>!dayChecks[key]);
   const el = document.getElementById('viewCompra');
   el.innerHTML = `<div class="section-title">Por comprar hoy</div>` +
     (toBuy.length===0
