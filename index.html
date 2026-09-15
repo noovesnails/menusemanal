@@ -107,6 +107,7 @@
   .syncdot.err{background:var(--accent);}
   .refresh-btn{margin-left:auto;background:none;border:none;color:var(--muted);font-size:.72rem;padding:2px 4px;cursor:pointer;display:flex;align-items:center;gap:3px;}
   .reminders{padding:0 16px 10px;display:flex;flex-direction:column;gap:6px;}
+  .reminders-footer{padding-top:14px;margin-top:6px;border-top:1px solid var(--line);}
   .reminder{border-radius:12px;padding:8px 12px;font-size:.78rem;display:flex;align-items:center;gap:8px;}
   .reminder.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .reminder.nuria{background:var(--nuria-soft);color:var(--nuria);}
@@ -127,8 +128,6 @@
 <div class="sub" id="weekSub"></div>
 <div class="syncbar"><span class="syncdot" id="syncDot"></span><span id="syncText">Cargando…</span><button class="refresh-btn" id="refreshBtn">🔄 Actualizar</button></div>
 
-<div class="reminders" id="reminders"></div>
-
 <div class="personpicker" id="personPicker"></div>
 
 <div class="daypicker" id="dayPicker"></div>
@@ -136,6 +135,8 @@
 <main id="viewMenu"></main>
 <main id="viewNevera" style="display:none"></main>
 <main id="viewCompra" style="display:none"></main>
+
+<div class="reminders reminders-footer" id="reminders"></div>
 
 <nav>
   <button class="tab active" data-tab="menu"><span class="ic">🍽️</span>Menú</button>
