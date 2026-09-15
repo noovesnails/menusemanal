@@ -1244,9 +1244,16 @@ let currentTab = 'menu';
 let modoReceta = localStorage.getItem('modoReceta') === 'manual' ? 'manual' : 'thermomix';
 
 /* personas visibles en la vista Menú, por defecto todas las que tengan al menos un plato en WEEK */
-let personasVisibles = new Set(
-  Object.keys(PERSONAS).filter(id => WEEK.some(day => day[id]))
-);
+let personasVisibles;
+try{
+  const guardadas = JSON.parse(localStorage.getItem('personasVisibles'));
+  personasVisibles = Array.isArray(guardadas) ? new Set(guardadas.filter(id=>PERSONAS[id])) : null;
+}catch(_){ personasVisibles = null; }
+if(!personasVisibles || !personasVisibles.size){
+  personasVisibles = new Set(
+    Object.keys(PERSONAS).filter(id => WEEK.some(day => day[id]))
+  );
+}
 
 function fmtDate(iso){
   const d = new Date(iso+"T00:00:00");
@@ -1405,6 +1412,7 @@ function renderPersonPicker(){
     btn.addEventListener('click', ()=>{
       const id = btn.dataset.id;
       if(personasVisibles.has(id)) personasVisibles.delete(id); else personasVisibles.add(id);
+      localStorage.setItem('personasVisibles', JSON.stringify(Array.from(personasVisibles)));
       btn.classList.toggle('on');
       renderMenu();
       renderNevera();
