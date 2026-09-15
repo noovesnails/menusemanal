@@ -1,0 +1,40 @@
+Reproduccion del bug original del issue #10 (aceite de oliva duplicado, miercoles, Pedro),
+contra el codigo ya arreglado (rama 10-dedup-compra, commit e5be6d3).
+
+Antes del fix (verificado en /implement, sesion anterior): "aceite de oliva" y "1 c/s aceite de
+oliva" aparecian como 2 lineas separadas en Nevera para Pedro el miercoles.
+
+Comando (JS en la app real, http://localhost:8123):
+
+  document.querySelectorAll('#dayPicker .daychip')[2].click(); // Miércoles
+  document.querySelector('nav button[data-tab="nevera"]').click();
+  document.getElementById('viewNevera').innerText
+
+Salida real (cruda):
+
+MARCA LO QUE YA TIENES EN LA NEVERA
+Aceite de oliva (1 c/s)
+Pedro
+Brócoli
+Nuria
+Calabacín
+Nuria
+Calabacines (2)
+Pedro
+Calabaza
+Nuria
+Champiñones
+Nuria
+Gallineta (150 g)
+Nuria
+Hígado de ternera (100 g)
+Pedro
+Lenguado (150 g)
+Pedro
+Patata (para puré) (250 g)
+Pedro
+Pechuga de pollo (140 g)
+Nuria
+
+Resultado: "Aceite de oliva (1 c/s)" aparece UNA sola vez (antes salian 2 lineas). EL BUG YA NO
+SE REPRODUCE.
