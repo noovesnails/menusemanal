@@ -175,7 +175,7 @@ const PERSONAS = {
    cada visita a la nutricionista. Cualquier campo a null no se muestra en el recordatorio. */
 const NUTRI = {
   pedro:{ proximaVisita:"2026-09-30T18:00", inicioNuevoPlan:"2026-09-14", finPlanActual:"2026-09-27", notaPendiente:null },
-  nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null },
+  nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:"repite el menú de la semana del 7/9 hasta que llegue el nuevo plan" },
   rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null },
   paqui:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
   sole:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null }
@@ -407,6 +407,12 @@ const WEEK = [
       cena:{title:"Tortilla de calabacín (2 huevos) + 50g queso fresco",
         ing:["2 huevos","calabacín","50 g queso fresco"]}
     },
+    nuria:{
+      comida:{title:"Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
+        ing:["1 patata pequeña","tomate natural","atún al natural","1 huevo","aceitunas negras"]},
+      cena:{title:"Puré de calabaza + hamburguesa casera de pollo 100%",
+        ing:["calabaza","pechuga de pollo picada (100%)"]}
+    },
     paqui:{
       comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
         ing:["acelgas","ajo","120 g gallineta"]},
@@ -426,6 +432,12 @@ const WEEK = [
         ing:["60 g arroz","150 g pollo","zanahoria","calabacín","1 c/s aceite de oliva"]},
       cena:{title:"Bacalao (150g) con pisto suave (calabacín, berenjena y tomate bien cocinados)",
         ing:["150 g bacalao","calabacín","berenjena","tomate"]}
+    },
+    nuria:{
+      comida:{title:"Dorada con espinacas y calabacín a la plancha",
+        ing:["dorada","espinacas","calabacín"]},
+      cena:{title:"Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos",
+        ing:["140 g solomillos de pollo o pavo","tomate","canónigos","espárragos blancos o palmitos"]}
     },
     paqui:{
       comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
@@ -447,6 +459,13 @@ const WEEK = [
       cena:{title:"Crema de calabacín + pollo (150g)",
         ing:["calabacín (para crema)","150 g pollo"]}
     },
+    nuria:{
+      comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        img:"img/nuria-salteado-verduras.jpg",
+        ing:["brócoli","calabacín","champiñones","140 g pechuga de pollo"]},
+      cena:{title:"Puré de calabaza + gallineta (150g)",
+        ing:["calabaza","150 g gallineta"]}
+    },
     paqui:{
       comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
         ing:["100 g lentejas (peso cocido)","zanahoria","calabacín","tomate","1 huevo"]},
@@ -466,6 +485,13 @@ const WEEK = [
         ing:["150 g carne picada de pavo","calabaza (para puré)","1 c/s aceite de oliva"]},
       cena:{title:"Revuelto de 2 huevos con 100g gambas y espinacas (50-80g)",
         ing:["2 huevos","100 g gambas","50-80 g espinacas"]}
+    },
+    nuria:{
+      comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        img:"img/nuria-salmon-boniato.jpg",
+        ing:["½ boniato","calabacín","zanahoria","130 g salmón"]},
+      cena:{title:"Tortilla de calabacín",
+        ing:["calabacín","1-2 huevos (claras a demanda)"]}
     },
     paqui:{
       comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
@@ -487,6 +513,13 @@ const WEEK = [
       cena:{title:"Hamburguesa casera de pollo/pavo (150g) + berenjena y tomate asados",
         ing:["150 g pollo o pavo (picado)","berenjena","tomate"]}
     },
+    nuria:{
+      comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        img:"img/nuria-quinoa-huevo.jpg",
+        ing:["1 vasito quinoa","calabaza","espinacas","1 huevo","1 c/s semillas de calabaza"]},
+      cena:{title:"Sepia a la plancha + calabacín, zanahoria y pimientos al horno",
+        ing:["sepia","calabacín","zanahoria","pimientos"]}
+    },
     paqui:{
       comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
         ing:["130 g merluza","calabacín","tomatitos cherry"]},
@@ -506,6 +539,12 @@ const WEEK = [
         ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","1 c/s aceite de oliva"]},
       cena:{title:"Crema de calabaza + merluza (150g)",
         ing:["calabaza (para crema)","150 g merluza"]}
+    },
+    nuria:{
+      comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
+        ing:["140 g pollo","pimiento","berenjena","cebolla (escalivada)"]},
+      cena:{title:"Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos",
+        ing:["mejillones o clochinas","tomate","canónigos","espárragos blancos o palmitos"]}
     },
     paqui:{
       comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
@@ -527,6 +566,13 @@ const WEEK = [
       cena:{title:"Tortilla (2 huevos) de atún (1 lata de atún al natural, escurrida) + tomate pelado/cocinado o calabacín",
         ing:["2 huevos","1 lata de atún al natural","tomate o calabacín"]}
     },
+    nuria:{
+      comida:{title:"Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        img:"img/nuria-corvina-tomatitos.jpg",
+        ing:["140 g corvina","tomatitos","aceitunas","perejil","ajo","hojas verdes"]},
+      cena:{title:"Tortilla de espinacas",
+        ing:["espinacas","1-2 huevos (claras a demanda)"]}
+    },
     paqui:{
       comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
         ing:["130 g lubina","pimiento","calabacín"]},
@@ -546,6 +592,12 @@ const WEEK = [
         ing:["160 g merluza","calabacín","zanahoria","1 patata pequeña","1 c/s aceite de oliva"]},
       cena:{title:"Tortilla de calabacín (2 huevos) + 50g queso fresco",
         ing:["2 huevos","calabacín","50 g queso fresco"]}
+    },
+    nuria:{
+      comida:{title:"Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
+        ing:["1 patata pequeña","tomate natural","atún al natural","1 huevo","aceitunas negras"]},
+      cena:{title:"Puré de calabaza + hamburguesa casera de pollo 100%",
+        ing:["calabaza","pechuga de pollo picada (100%)"]}
     },
     paqui:{
       comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
@@ -567,6 +619,12 @@ const WEEK = [
       cena:{title:"Bacalao (150g) con pisto suave (calabacín, berenjena y tomate bien cocinados)",
         ing:["150 g bacalao","calabacín","berenjena","tomate"]}
     },
+    nuria:{
+      comida:{title:"Dorada con espinacas y calabacín a la plancha",
+        ing:["dorada","espinacas","calabacín"]},
+      cena:{title:"Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos",
+        ing:["140 g solomillos de pollo o pavo","tomate","canónigos","espárragos blancos o palmitos"]}
+    },
     paqui:{
       comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
         ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
@@ -586,6 +644,13 @@ const WEEK = [
         ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"]},
       cena:{title:"Crema de calabacín + pollo (150g)",
         ing:["calabacín (para crema)","150 g pollo"]}
+    },
+    nuria:{
+      comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        img:"img/nuria-salteado-verduras.jpg",
+        ing:["brócoli","calabacín","champiñones","140 g pechuga de pollo"]},
+      cena:{title:"Puré de calabaza + gallineta (150g)",
+        ing:["calabaza","150 g gallineta"]}
     },
     paqui:{
       comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
@@ -607,6 +672,13 @@ const WEEK = [
       cena:{title:"Revuelto de 2 huevos con 100g gambas y espinacas (50-80g)",
         ing:["2 huevos","100 g gambas","50-80 g espinacas"]}
     },
+    nuria:{
+      comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        img:"img/nuria-salmon-boniato.jpg",
+        ing:["½ boniato","calabacín","zanahoria","130 g salmón"]},
+      cena:{title:"Tortilla de calabacín",
+        ing:["calabacín","1-2 huevos (claras a demanda)"]}
+    },
     paqui:{
       comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
         ing:["120 g pechuga de pollo","espárragos"]},
@@ -626,6 +698,13 @@ const WEEK = [
         ing:["150 g salmón","1 boniato pequeño","calabacín","limón","hierbas aromáticas","1 c/s aceite de oliva"]},
       cena:{title:"Hamburguesa casera de pollo/pavo (150g) + berenjena y tomate asados",
         ing:["150 g pollo o pavo (picado)","berenjena","tomate"]}
+    },
+    nuria:{
+      comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        img:"img/nuria-quinoa-huevo.jpg",
+        ing:["1 vasito quinoa","calabaza","espinacas","1 huevo","1 c/s semillas de calabaza"]},
+      cena:{title:"Sepia a la plancha + calabacín, zanahoria y pimientos al horno",
+        ing:["sepia","calabacín","zanahoria","pimientos"]}
     },
     paqui:{
       comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
@@ -647,6 +726,12 @@ const WEEK = [
       cena:{title:"Crema de calabaza + merluza (150g)",
         ing:["calabaza (para crema)","150 g merluza"]}
     },
+    nuria:{
+      comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
+        ing:["140 g pollo","pimiento","berenjena","cebolla (escalivada)"]},
+      cena:{title:"Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos",
+        ing:["mejillones o clochinas","tomate","canónigos","espárragos blancos o palmitos"]}
+    },
     paqui:{
       comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
         ing:["120 g conejo o pollo","brotes","pepino","tomate"]},
@@ -667,6 +752,13 @@ const WEEK = [
       cena:{title:"Tortilla (2 huevos) de atún (1 lata de atún al natural, escurrida) + tomate pelado/cocinado o calabacín",
         ing:["2 huevos","1 lata de atún al natural","tomate o calabacín"]}
     },
+    nuria:{
+      comida:{title:"Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        img:"img/nuria-corvina-tomatitos.jpg",
+        ing:["140 g corvina","tomatitos","aceitunas","perejil","ajo","hojas verdes"]},
+      cena:{title:"Tortilla de espinacas",
+        ing:["espinacas","1-2 huevos (claras a demanda)"]}
+    },
     paqui:{
       comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
         ing:["130 g lubina","pimiento","calabacín"]},
@@ -681,6 +773,12 @@ const WEEK = [
     }
   },
   { name:"Lunes", date:"2026-09-28",
+    nuria:{
+      comida:{title:"Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
+        ing:["1 patata pequeña","tomate natural","atún al natural","1 huevo","aceitunas negras"]},
+      cena:{title:"Puré de calabaza + hamburguesa casera de pollo 100%",
+        ing:["calabaza","pechuga de pollo picada (100%)"]}
+    },
     paqui:{
       comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
         ing:["acelgas","ajo","120 g gallineta"]},
@@ -695,6 +793,12 @@ const WEEK = [
     }
   },
   { name:"Martes", date:"2026-09-29",
+    nuria:{
+      comida:{title:"Dorada con espinacas y calabacín a la plancha",
+        ing:["dorada","espinacas","calabacín"]},
+      cena:{title:"Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos",
+        ing:["140 g solomillos de pollo o pavo","tomate","canónigos","espárragos blancos o palmitos"]}
+    },
     paqui:{
       comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
         ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
@@ -709,6 +813,13 @@ const WEEK = [
     }
   },
   { name:"Miércoles", date:"2026-09-30",
+    nuria:{
+      comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        img:"img/nuria-salteado-verduras.jpg",
+        ing:["brócoli","calabacín","champiñones","140 g pechuga de pollo"]},
+      cena:{title:"Puré de calabaza + gallineta (150g)",
+        ing:["calabaza","150 g gallineta"]}
+    },
     paqui:{
       comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
         ing:["100 g lentejas (peso cocido)","zanahoria","calabacín","tomate","1 huevo"]},
@@ -723,6 +834,13 @@ const WEEK = [
     }
   },
   { name:"Jueves", date:"2026-10-01",
+    nuria:{
+      comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        img:"img/nuria-salmon-boniato.jpg",
+        ing:["½ boniato","calabacín","zanahoria","130 g salmón"]},
+      cena:{title:"Tortilla de calabacín",
+        ing:["calabacín","1-2 huevos (claras a demanda)"]}
+    },
     paqui:{
       comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
         ing:["120 g pechuga de pollo","espárragos"]},
@@ -737,6 +855,13 @@ const WEEK = [
     }
   },
   { name:"Viernes", date:"2026-10-02",
+    nuria:{
+      comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        img:"img/nuria-quinoa-huevo.jpg",
+        ing:["1 vasito quinoa","calabaza","espinacas","1 huevo","1 c/s semillas de calabaza"]},
+      cena:{title:"Sepia a la plancha + calabacín, zanahoria y pimientos al horno",
+        ing:["sepia","calabacín","zanahoria","pimientos"]}
+    },
     paqui:{
       comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
         ing:["130 g merluza","calabacín","tomatitos cherry"]},
@@ -751,6 +876,12 @@ const WEEK = [
     }
   },
   { name:"Sábado", date:"2026-10-03",
+    nuria:{
+      comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
+        ing:["140 g pollo","pimiento","berenjena","cebolla (escalivada)"]},
+      cena:{title:"Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos",
+        ing:["mejillones o clochinas","tomate","canónigos","espárragos blancos o palmitos"]}
+    },
     paqui:{
       comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
         ing:["120 g conejo o pollo","brotes","pepino","tomate"]},
@@ -765,6 +896,13 @@ const WEEK = [
     }
   },
   { name:"Domingo", date:"2026-10-04",
+    nuria:{
+      comida:{title:"Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        img:"img/nuria-corvina-tomatitos.jpg",
+        ing:["140 g corvina","tomatitos","aceitunas","perejil","ajo","hojas verdes"]},
+      cena:{title:"Tortilla de espinacas",
+        ing:["espinacas","1-2 huevos (claras a demanda)"]}
+    },
     paqui:{
       comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
         ing:["130 g lubina","pimiento","calabacín"]},
@@ -779,6 +917,12 @@ const WEEK = [
     }
   },
   { name:"Lunes", date:"2026-10-05",
+    nuria:{
+      comida:{title:"Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
+        ing:["1 patata pequeña","tomate natural","atún al natural","1 huevo","aceitunas negras"]},
+      cena:{title:"Puré de calabaza + hamburguesa casera de pollo 100%",
+        ing:["calabaza","pechuga de pollo picada (100%)"]}
+    },
     paqui:{
       comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
         ing:["acelgas","ajo","120 g gallineta"]},
@@ -793,6 +937,12 @@ const WEEK = [
     }
   },
   { name:"Martes", date:"2026-10-06",
+    nuria:{
+      comida:{title:"Dorada con espinacas y calabacín a la plancha",
+        ing:["dorada","espinacas","calabacín"]},
+      cena:{title:"Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos",
+        ing:["140 g solomillos de pollo o pavo","tomate","canónigos","espárragos blancos o palmitos"]}
+    },
     paqui:{
       comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
         ing:["120 g pollo","puerro","calabacín","tomate triturado"]},
@@ -807,6 +957,13 @@ const WEEK = [
     }
   },
   { name:"Miércoles", date:"2026-10-07",
+    nuria:{
+      comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        img:"img/nuria-salteado-verduras.jpg",
+        ing:["brócoli","calabacín","champiñones","140 g pechuga de pollo"]},
+      cena:{title:"Puré de calabaza + gallineta (150g)",
+        ing:["calabaza","150 g gallineta"]}
+    },
     paqui:{
       comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
         ing:["100 g lentejas (peso cocido)","zanahoria","calabacín","tomate","1 huevo"]},
@@ -821,6 +978,13 @@ const WEEK = [
     }
   },
   { name:"Jueves", date:"2026-10-08",
+    nuria:{
+      comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        img:"img/nuria-salmon-boniato.jpg",
+        ing:["½ boniato","calabacín","zanahoria","130 g salmón"]},
+      cena:{title:"Tortilla de calabacín",
+        ing:["calabacín","1-2 huevos (claras a demanda)"]}
+    },
     paqui:{
       comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
         ing:["120 g pechuga de pollo","espárragos"]},
@@ -835,6 +999,13 @@ const WEEK = [
     }
   },
   { name:"Viernes", date:"2026-10-09",
+    nuria:{
+      comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        img:"img/nuria-quinoa-huevo.jpg",
+        ing:["1 vasito quinoa","calabaza","espinacas","1 huevo","1 c/s semillas de calabaza"]},
+      cena:{title:"Sepia a la plancha + calabacín, zanahoria y pimientos al horno",
+        ing:["sepia","calabacín","zanahoria","pimientos"]}
+    },
     paqui:{
       comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
         ing:["130 g merluza","calabacín","tomatitos cherry"]},
@@ -849,6 +1020,12 @@ const WEEK = [
     }
   },
   { name:"Sábado", date:"2026-10-10",
+    nuria:{
+      comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
+        ing:["140 g pollo","pimiento","berenjena","cebolla (escalivada)"]},
+      cena:{title:"Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos",
+        ing:["mejillones o clochinas","tomate","canónigos","espárragos blancos o palmitos"]}
+    },
     paqui:{
       comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
         ing:["120 g conejo o pollo","brotes","pepino","tomate"]},
@@ -863,6 +1040,13 @@ const WEEK = [
     }
   },
   { name:"Domingo", date:"2026-10-11",
+    nuria:{
+      comida:{title:"Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        img:"img/nuria-corvina-tomatitos.jpg",
+        ing:["140 g corvina","tomatitos","aceitunas","perejil","ajo","hojas verdes"]},
+      cena:{title:"Tortilla de espinacas",
+        ing:["espinacas","1-2 huevos (claras a demanda)"]}
+    },
     paqui:{
       comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
         ing:["130 g lubina","pimiento","calabacín"]},
@@ -1041,13 +1225,16 @@ function origen(whoArr){
 function renderDayPicker(){
   const el = document.getElementById('dayPicker');
   el.innerHTML = "";
+  let activeChip = null;
   WEEK.forEach((d,i)=>{
     const chip = document.createElement('div');
     chip.className = 'daychip' + (i===currentDay?' active':'');
     chip.innerHTML = `<div class="dname">${d.name.slice(0,3)}</div><div class="dnum">${fmtDate(d.date)}</div>`;
     chip.onclick = ()=>{ currentDay = i; render(); };
     el.appendChild(chip);
+    if(i===currentDay) activeChip = chip;
   });
+  if(activeChip) el.scrollLeft = activeChip.offsetLeft - el.offsetLeft;
   document.getElementById('weekSub').textContent = WEEK[currentDay].name + " " + fmtDate(WEEK[currentDay].date) + " " + fmtMesAnio(WEEK[currentDay].date);
 }
 
