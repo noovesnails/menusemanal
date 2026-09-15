@@ -380,20 +380,52 @@ function fmtDate(iso){
 }
 
 /* combina ingredientes de comida+cena de ambos, marcando la(s) fuente(s) */
+/* separa un ingrediente en {nombre, cantidad}: "140 g de pollo" -> {nombre:"pollo", cantidad:"140 g"};
+   "pollo" (sin cantidad reconocida) -> {nombre:"pollo", cantidad:null}. El nombre es la clave de
+   fusión: dos apariciones con el mismo nombre son el mismo ingrediente aunque una lleve cantidad. */
+function normalizarIngrediente(item){
+  const m = item.match(/^((?:\d+(?:[.,]\d+)?(?:-\d+(?:[.,]\d+)?)?|½|¼|⅓|⅔|¾)(?:\s*(?:g|kg|ml|l|c\/s|c\/c|ud\.?|unidades?))?)\s*(?:de\s+)?(.+)$/i);
+  if(!m) return {nombre:item.trim(), cantidad:null};
+  return {nombre:m[2].trim(), cantidad:m[1].trim()};
+}
+
+const ICONOS_INGREDIENTE = [
+  [/pollo|pavo|carrillada|morcillo|jamón|ternera|hígado|caña/i, "🍗"],
+  [/pescado|bacalao|salmón|atún|merluza|rape|lenguado|dorada|corvina|caballa|gallineta|mejillon|almeja|gamba|sepia/i, "🐟"],
+  [/huevo/i, "🥚"],
+  [/queso|yogur|leche|kéfir/i, "🧀"],
+  [/arroz|pasta|quinoa|pan\b/i, "🌾"],
+  [/aceite|vinagre|sal\b|perejil|especias|ajo/i, "🫒"],
+  [/zanahoria|puerro|calabaz|brócoli|espinaca|tomate|pimiento|cebolla|patata|boniato|champiñ|aceituna|calabacín|calabacin|verdura/i, "🥕"],
+  [/almendra|nuez|nueces|semilla|frutos secos/i, "🥜"],
+  [/manzana|pera|plátano|fruta|kiwi|naranja/i, "🍎"]
+];
+function iconoIngrediente(nombre){
+  const hit = ICONOS_INGREDIENTE.find(([re]) => re.test(nombre));
+  return hit ? hit[1] : "🛒";
+}
+
 function fridgeItems(day){
-  const map = new Map(); // nombre -> Set(origen)
+  const map = new Map(); // nombre normalizado -> {cantidades:Set, who:Set}
   Object.keys(PERSONAS).filter(id=>day[id]).forEach(who=>{
     const person = day[who];
     ["comida","cena"].forEach(meal=>{
       person[meal].ing.forEach(item=>{
-        if(!map.has(item)) map.set(item, new Set());
-        map.get(item).add(who);
+        const {nombre, cantidad} = normalizarIngrediente(item);
+        if(!map.has(nombre)) map.set(nombre, {cantidades:new Set(), who:new Set()});
+        const entry = map.get(nombre);
+        if(cantidad) entry.cantidades.add(cantidad);
+        entry.who.add(who);
       });
     });
   });
-  return Array.from(map.entries()).map(([item, whoSet])=>({
-    item, who: Array.from(whoSet)
-  }));
+  return Array.from(map.entries())
+    .map(([nombre, {cantidades, who}])=>{
+      const cant = cantidades.size ? ` (${Array.from(cantidades).join(" + ")})` : "";
+      const label = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+      return { item: label + cant, icono: iconoIngrediente(nombre), who: Array.from(who) };
+    })
+    .sort((a,b)=>a.item.localeCompare(b.item, "es"));
 }
 
 /* etiqueta + clase CSS del origen de un ingrediente a partir de la lista de personas que lo necesitan */
@@ -486,9 +518,9 @@ function renderCompra(){
   el.innerHTML = `<div class="section-title">Por comprar hoy</div>` +
     (toBuy.length===0
       ? `<div class="empty">Todo lo de este día ya está en la nevera 🎉</div>`
-      : `<div class="card">${toBuy.map(({item,who})=>`
+      : `<div class="card">${toBuy.map(({item,icono,who})=>`
           <div class="ing-row">
-            <span style="width:20px;text-align:center">•</span>
+            <span style="width:20px;text-align:center">${icono}</span>
             <label>${item}</label>
             <span class="ing-src ${origen(who).cls}">${origen(who).label}</span>
           </div>`).join('')}</div>`);
