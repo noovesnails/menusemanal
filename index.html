@@ -82,6 +82,10 @@
   .ing-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);flex:0 0 auto;}
   .ing-row label{font-size:.9rem;flex:1;}
   .ing-row.checked label{color:var(--muted);text-decoration:line-through;}
+  .suelto-del{font-size:.8rem;color:var(--muted);cursor:pointer;flex:0 0 auto;padding:2px 4px;}
+  .suelto-form{display:flex;gap:8px;padding:4px 4px 12px;border-bottom:1px solid var(--line);margin-bottom:4px;}
+  .suelto-form input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.88rem;background:var(--bg);color:var(--ink);}
+  .suelto-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;}
   .ing-src{font-size:.65rem;padding:2px 6px;border-radius:6px;flex:0 0 auto;}
   .ing-src.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .ing-src.nuria{background:var(--nuria-soft);color:var(--nuria);}
@@ -870,6 +874,7 @@ const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
 
 let remoteRecord = {};   // contenido completo del bin (no tocar claves ajenas)
 let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
+let itemsSueltos = [];   // [{id, nombre, comprado}] artículos de compra que no vienen del menú
 let saveTimer = null;
 
 function setSync(state, text){
@@ -886,10 +891,12 @@ async function loadRemote(){
     const data = await res.json();
     remoteRecord = data.record || {};
     checks = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checks) || {};
+    itemsSueltos = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos) || [];
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
     try{ checks = JSON.parse(localStorage.getItem('menuSemanalChecks')||'{}'); }catch(_){ checks = {}; }
+    try{ itemsSueltos = JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'[]'); }catch(_){ itemsSueltos = []; }
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
@@ -897,6 +904,7 @@ async function loadRemote(){
 
 function scheduleSave(){
   localStorage.setItem('menuSemanalChecks', JSON.stringify(checks));
+  localStorage.setItem('menuSemanalItemsSueltos', JSON.stringify(itemsSueltos));
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
   saveTimer = setTimeout(saveRemote, 700);
@@ -906,6 +914,7 @@ async function saveRemote(){
   try{
     remoteRecord.menuSemanal = remoteRecord.menuSemanal || {};
     remoteRecord.menuSemanal.checks = checks;
+    remoteRecord.menuSemanal.itemsSueltos = itemsSueltos;
     remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
     const res = await fetch(JSONBIN_BASE, {
       method: "PUT",
@@ -942,6 +951,14 @@ let personasVisibles = new Set(
 function fmtDate(iso){
   const d = new Date(iso+"T00:00:00");
   return d.getDate() + "/" + (d.getMonth()+1);
+}
+
+/* Único punto de entrada de texto libre escrito por el usuario (itemsSueltos); todo lo demás en
+   la app viene de constantes propias, no necesita escaparse. */
+function escapeHtml(s){
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
 }
 
 const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
@@ -1148,7 +1165,45 @@ function renderCompra(){
             <span style="width:20px;text-align:center">${icono}</span>
             <label>${item}</label>
             <span class="ing-src ${origen(who).cls}">${origen(who).label}</span>
-          </div>`).join('')}</div>`);
+          </div>`).join('')}</div>`) +
+    `<div class="section-title">Otros</div>` +
+    `<div class="card">
+      <form id="sueltoForm" class="suelto-form">
+        <input type="text" id="sueltoInput" placeholder="Añadir artículo (papel higiénico...)" autocomplete="off">
+        <button type="submit">Añadir</button>
+      </form>
+      ${itemsSueltos.length ? itemsSueltos.map(it=>`
+        <div class="ing-row suelto-row ${it.comprado?'checked':''}">
+          <input type="checkbox" data-id="${it.id}" ${it.comprado?'checked':''}>
+          <label>${escapeHtml(it.nombre)}</label>
+          <span class="suelto-del" data-id="${it.id}">✕</span>
+        </div>`).join('') : ''}
+    </div>`;
+
+  const sueltoForm = document.getElementById('sueltoForm');
+  sueltoForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const input = document.getElementById('sueltoInput');
+    const nombre = input.value.trim();
+    if(!nombre) return;
+    itemsSueltos.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), nombre, comprado:false });
+    scheduleSave();
+    renderCompra();
+  });
+  el.querySelectorAll('.suelto-row input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const it = itemsSueltos.find(x=>x.id===cb.dataset.id);
+      if(it){ it.comprado = cb.checked; scheduleSave(); }
+      cb.closest('.ing-row').classList.toggle('checked', cb.checked);
+    });
+  });
+  el.querySelectorAll('.suelto-del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      itemsSueltos = itemsSueltos.filter(x=>x.id!==btn.dataset.id);
+      scheduleSave();
+      renderCompra();
+    });
+  });
 }
 
 function renderReminders(){
