@@ -92,6 +92,11 @@
   .reminder.nuria{background:var(--nuria-soft);color:var(--nuria);}
   .reminder.rocio{background:var(--rocio-soft);color:var(--rocio);}
   .reminder b{font-weight:700;}
+  .personpicker{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;}
+  .personchip{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.75rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);}
+  .personchip.on.pedro{background:var(--pedro);border-color:var(--pedro);color:#fff;}
+  .personchip.on.nuria{background:var(--nuria);border-color:var(--nuria);color:#fff;}
+  .personchip.on.rocio{background:var(--rocio);border-color:var(--rocio);color:#fff;}
 </style>
 
 <h1>Menú semanal</h1>
@@ -99,6 +104,8 @@
 <div class="syncbar"><span class="syncdot" id="syncDot"></span><span id="syncText">Cargando…</span><button class="refresh-btn" id="refreshBtn">🔄 Actualizar</button></div>
 
 <div class="reminders" id="reminders"></div>
+
+<div class="personpicker" id="personPicker"></div>
 
 <div class="daypicker" id="dayPicker"></div>
 
@@ -374,6 +381,11 @@ function todayIndex(){
 let currentDay = todayIndex();
 let currentTab = 'menu';
 
+/* personas visibles en la vista Menú, por defecto todas las que tengan al menos un plato en WEEK */
+let personasVisibles = new Set(
+  Object.keys(PERSONAS).filter(id => WEEK.some(day => day[id]))
+);
+
 function fmtDate(iso){
   const d = new Date(iso+"T00:00:00");
   return d.getDate() + "/" + (d.getMonth()+1);
@@ -478,7 +490,22 @@ function renderMenu(){
       ${meal(day[who].comida,'Comida')}
       ${meal(day[who].cena,'Cena')}
     </div>`;
-  el.innerHTML = Object.keys(PERSONAS).filter(id=>day[id]).map(block).join('');
+  el.innerHTML = Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id)).map(block).join('');
+}
+
+function renderPersonPicker(){
+  const el = document.getElementById('personPicker');
+  el.innerHTML = Object.keys(PERSONAS).map(id => `
+    <button class="personchip ${id} ${personasVisibles.has(id)?'on':''}" data-id="${id}">${PERSONAS[id].nombre}</button>
+  `).join('');
+  el.querySelectorAll('.personchip').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.id;
+      if(personasVisibles.has(id)) personasVisibles.delete(id); else personasVisibles.add(id);
+      btn.classList.toggle('on');
+      renderMenu();
+    });
+  });
 }
 
 function renderNevera(){
@@ -547,6 +574,7 @@ function renderReminders(){
 function render(){
   renderDayPicker();
   renderReminders();
+  renderPersonPicker();
   renderMenu();
   renderNevera();
   renderCompra();
