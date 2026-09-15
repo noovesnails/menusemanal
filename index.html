@@ -953,6 +953,14 @@ function fmtDate(iso){
   return d.getDate() + "/" + (d.getMonth()+1);
 }
 
+/* Único punto de entrada de texto libre escrito por el usuario (itemsSueltos); todo lo demás en
+   la app viene de constantes propias, no necesita escaparse. */
+function escapeHtml(s){
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
 const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 function fmtMesAnio(iso){
   const d = new Date(iso+"T00:00:00");
@@ -1167,7 +1175,7 @@ function renderCompra(){
       ${itemsSueltos.length ? itemsSueltos.map(it=>`
         <div class="ing-row suelto-row ${it.comprado?'checked':''}">
           <input type="checkbox" data-id="${it.id}" ${it.comprado?'checked':''}>
-          <label>${it.nombre}</label>
+          <label>${escapeHtml(it.nombre)}</label>
           <span class="suelto-del" data-id="${it.id}">✕</span>
         </div>`).join('') : ''}
     </div>`;
