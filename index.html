@@ -490,7 +490,10 @@ function renderMenu(){
       ${meal(day[who].comida,'Comida')}
       ${meal(day[who].cena,'Cena')}
     </div>`;
-  el.innerHTML = Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id)).map(block).join('');
+  const visibles = Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id));
+  el.innerHTML = visibles.length
+    ? visibles.map(block).join('')
+    : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`;
 }
 
 function renderPersonPicker(){
