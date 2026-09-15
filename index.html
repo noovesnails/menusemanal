@@ -48,6 +48,10 @@
   .meal-body{display:flex;align-items:center;gap:10px;}
   .meal-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
   .meal-title{font-size:.92rem;line-height:1.35;}
+  .opciones-block{margin-top:14px;}
+  .opciones-cards{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .opcion-card{flex:1 1 140px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.82rem;line-height:1.3;cursor:pointer;background:var(--bg);}
+  .opcion-card.elegida{border-color:var(--accent);background:var(--accent-soft);}
   .recipe{margin-top:6px;}
   .recipe-btn{font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;display:inline-block;padding:3px 0;}
   .recipe-btn::-webkit-details-marker{display:none;}
@@ -140,6 +144,33 @@ const NUTRI = {
   pedro:{ proximaVisita:"2026-09-30T18:00", inicioNuevoPlan:"2026-09-14", finPlanActual:null, notaPendiente:"falta menú de Magda" },
   nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null },
   rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null }
+};
+
+/* Opciones de desayuno/almuerzo/merienda por persona: no varían por día, la persona elige cada
+   vez lo que le apetece. Solo se listan las categorías con contenido real en el plan de la
+   nutricionista — si a alguien le falta una categoría, no se inventa. */
+const OPCIONES = {
+  pedro:{
+    desayuno:[
+      "Yogur griego sin lactosa (200g) + canela/cacao puro al gusto + pera madura o manzana asada",
+      "2 tostadas de pan de calidad (se pueden combinar con: 80g queso fresco sin lactosa, 2 lonchas de pechuga de pollo, 1/3 aguacate, huevo duro, o anchoas/lomitos de caballa)",
+      "Tortilla de 2 huevos + opcional jamón cocido, lomitos de caballa o 1/3 aguacate",
+      "Yogur griego sin lactosa + proteína whey (30g) + 10g crema de almendra + manzana o pera asada",
+      "Revuelto o tortilla de 2 huevos con jamón cocido o queso curado (1 c/s de aceite)",
+      "Batido: plátano/pera madura/manzana asada + kéfir sin lactosa + whey (30g) + 1 c/s crema de almendra",
+      "Pan (60g) con aguacate y huevo o queso"
+    ]
+  },
+  nuria:{
+    desayuno:[
+      "1 o 2 tostadas de pan de Fibra de Mercadona + algo verde (rúcula, canónigos, perejil...) o 1 tostada de pan de masa madre de calidad",
+      "Añadir: aguacate + 1 huevo / 50g queso fresco sin lactosa / 2 lonchas de jamón serrano (máx. 2 veces/semana) / aguacate + pechuga de pollo"
+    ],
+    merienda:[
+      "Fruta + frutos secos",
+      "Yogur sin lactosa + fruta natural y canela"
+    ]
+  }
 };
 
 const WEEK = [
@@ -484,16 +515,33 @@ function renderMenu(){
         </div>
       </details>` : ''}
     </div>`;
+  const CATS = {desayuno:'Desayuno', almuerzo:'Almuerzo', merienda:'Merienda'};
+  const opciones = (who) => {
+    const o = OPCIONES[who];
+    if(!o) return '';
+    return Object.keys(CATS).filter(cat=>o[cat] && o[cat].length).map(cat => `
+      <div class="opciones-block">
+        <div class="meal-label">${CATS[cat]}</div>
+        <div class="opciones-cards">
+          ${o[cat].map((texto,i)=>`<div class="opcion-card" data-who="${who}" data-cat="${cat}" data-i="${i}">${texto}</div>`).join('')}
+        </div>
+      </div>`).join('');
+  };
   const block = (who) => `
     <div class="card">
       <div class="person"><span class="dot ${who}"></span>${PERSONAS[who].nombre}</div>
       ${meal(day[who].comida,'Comida')}
       ${meal(day[who].cena,'Cena')}
+      ${opciones(who)}
     </div>`;
   const visibles = Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id));
   el.innerHTML = visibles.length
     ? visibles.map(block).join('')
     : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`;
+
+  el.querySelectorAll('.opcion-card').forEach(card=>{
+    card.addEventListener('click', ()=> card.classList.toggle('elegida'));
+  });
 }
 
 function renderPersonPicker(){
