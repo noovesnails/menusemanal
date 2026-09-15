@@ -94,6 +94,10 @@
   .peso-form select,.peso-form input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.85rem;background:var(--bg);color:var(--ink);}
   .peso-form input[type=number]{width:80px;}
   .peso-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;}
+  .peso-chart{width:100%;height:100px;margin-bottom:6px;overflow:visible;}
+  .peso-chart-line{fill:none;stroke:var(--chart-color, var(--accent));stroke-width:2;}
+  .peso-chart-dot{fill:var(--chart-color, var(--accent));}
+  .peso-chart-label{font-size:7px;fill:var(--muted);}
   .ing-src{font-size:.65rem;padding:2px 6px;border-radius:6px;flex:0 0 auto;}
   .ing-src.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .ing-src.nuria{background:var(--nuria-soft);color:var(--nuria);}
@@ -429,7 +433,14 @@ const WEEK = [
   { name:"Martes", date:"2026-09-15",
     pedro:{
       comida:{title:"Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín",
-        ing:["60 g arroz","150 g pollo","zanahoria","calabacín","1 c/s aceite de oliva"]},
+        ing:["60 g arroz","150 g pollo","zanahoria","calabacín","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Pon la zanahoria y el calabacín troceados en el vaso: 4 seg/vel 5.",
+          "Añade el aceite y sofríe: 5 min/120°/vel 1.",
+          "Incorpora el pollo troceado y dora: 3 min/120°/giro a la izquierda/vel cuchara.",
+          "Añade el arroz y rehoga: 1 min/100°/giro a la izquierda/vel cuchara.",
+          "Vierte agua o caldo hasta cubrir: 14-16 min/100°/giro a la izquierda/vel cuchara, sin cubilete."
+        ]}}},
       cena:{title:"Bacalao (150g) con pisto suave (calabacín, berenjena y tomate bien cocinados)",
         ing:["150 g bacalao","calabacín","berenjena","tomate"]}
     },
@@ -455,9 +466,22 @@ const WEEK = [
   { name:"Miércoles", date:"2026-09-16",
     pedro:{
       comida:{title:"Pasta (60g) con gambas (150g peso comestible) + almejas y calabacín",
-        ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"]},
+        ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", manual:{steps:[
+          "Sofríe el calabacín troceado en una sartén con un poco de aceite.",
+          "Añade las almejas (previamente en remojo con sal 1-2 horas) y las gambas, y saltea unos minutos.",
+          "Incorpora un chorrito de agua o caldo, tapa y cocina hasta que las almejas se abran.",
+          "Cuece la pasta en agua con sal según el tiempo del paquete y escúrrela.",
+          "Mezcla la pasta con el sofrito de gambas y almejas, y sirve."
+        ]}}},
       cena:{title:"Crema de calabacín + pollo (150g)",
-        ing:["calabacín (para crema)","150 g pollo"]}
+        ing:["calabacín (para crema)","150 g pollo"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Pon el calabacín troceado en el vaso con agua hasta cubrir: 20 min/100°/vel 1.",
+          "Añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo, hasta que quede fina.",
+          "Cocina el pollo a la plancha o al vapor en el Varoma mientras hierve la crema.",
+          "Sirve el pollo troceado sobre la crema de calabacín."
+        ]}}}
     },
     nuria:{
       comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
@@ -482,7 +506,14 @@ const WEEK = [
   { name:"Jueves", date:"2026-09-17",
     pedro:{
       comida:{title:"Albóndigas caseras (150g de carne picada de pavo) con puré de calabaza",
-        ing:["150 g carne picada de pavo","calabaza (para puré)","1 c/s aceite de oliva"]},
+        ing:["150 g carne picada de pavo","calabaza (para puré)","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Trocea la calabaza y ponla en el vaso con un vaso de agua: 20 min/100°/vel 1.",
+          "Cuela el exceso de agua, añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.",
+          "Con el vaso limpio y seco, forma las albóndigas con la carne de pavo picada y sazona.",
+          "Cocina las albóndigas a la plancha o al vapor en el Varoma mientras se hace el puré, 8-10 min dándoles la vuelta.",
+          "Sirve las albóndigas sobre el puré de calabaza."
+        ]}}},
       cena:{title:"Revuelto de 2 huevos con 100g gambas y espinacas (50-80g)",
         ing:["2 huevos","100 g gambas","50-80 g espinacas"]}
     },
@@ -511,7 +542,14 @@ const WEEK = [
       comida:{title:"Salmón (150g) al horno con boniato (1 pequeño) y calabacín + limón y hierbas aromáticas",
         ing:["150 g salmón","1 boniato pequeño","calabacín","limón","hierbas aromáticas","1 c/s aceite de oliva"]},
       cena:{title:"Hamburguesa casera de pollo/pavo (150g) + berenjena y tomate asados",
-        ing:["150 g pollo o pavo (picado)","berenjena","tomate"]}
+        ing:["150 g pollo o pavo (picado)","berenjena","tomate"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Si la carne no viene ya picada, pícala en el vaso limpio y seco: 5 seg/vel 5.",
+          "Forma las hamburguesas con la carne picada y sazona.",
+          "Cocínalas a la plancha 3-4 min por cada lado.",
+          "Mientras, asa la berenjena y el tomate al horno hasta que estén tiernos.",
+          "Sirve las hamburguesas con la berenjena y el tomate asados."
+        ]}}}
     },
     nuria:{
       comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
@@ -536,9 +574,23 @@ const WEEK = [
   { name:"Sábado", date:"2026-09-19",
     pedro:{
       comida:{title:"Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
-        ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","1 c/s aceite de oliva"]},
+        ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Pon los mejillones/almejas en el Varoma. Programa 15 min/Varoma/vel 1 con caldo o agua en el vaso, hasta que se abran. Retira la carne y reserva, colando el caldo de apertura.",
+          "Pon la judía verde troceada en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.",
+          "Añade el calamar troceado y rehoga: 2 min/120°/vel cuchara.",
+          "Incorpora el arroz y rehoga: 1 min/100°/giro a la izquierda/vel cuchara.",
+          "Vierte el caldo colado: 16-18 min/100°/giro a la izquierda/vel cuchara, sin cubilete para que evapore y quede meloso.",
+          "En los últimos 3-4 min añade las gambas, los mejillones y las almejas reservados."
+        ]}}},
       cena:{title:"Crema de calabaza + merluza (150g)",
-        ing:["calabaza (para crema)","150 g merluza"]}
+        ing:["calabaza (para crema)","150 g merluza"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Pon la calabaza troceada en el vaso con agua hasta cubrir: 20 min/100°/vel 1.",
+          "Añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.",
+          "Cocina la merluza al vapor en el Varoma sobre el vaso mientras hierve la crema, o a la plancha aparte.",
+          "Sirve la merluza sobre la crema de calabaza."
+        ]}}}
     },
     nuria:{
       comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
@@ -615,7 +667,14 @@ const WEEK = [
   { name:"Martes", date:"2026-09-22",
     pedro:{
       comida:{title:"Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín",
-        ing:["60 g arroz","150 g pollo","zanahoria","calabacín","1 c/s aceite de oliva"]},
+        ing:["60 g arroz","150 g pollo","zanahoria","calabacín","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Pon la zanahoria y el calabacín troceados en el vaso: 4 seg/vel 5.",
+          "Añade el aceite y sofríe: 5 min/120°/vel 1.",
+          "Incorpora el pollo troceado y dora: 3 min/120°/giro a la izquierda/vel cuchara.",
+          "Añade el arroz y rehoga: 1 min/100°/giro a la izquierda/vel cuchara.",
+          "Vierte agua o caldo hasta cubrir: 14-16 min/100°/giro a la izquierda/vel cuchara, sin cubilete."
+        ]}}},
       cena:{title:"Bacalao (150g) con pisto suave (calabacín, berenjena y tomate bien cocinados)",
         ing:["150 g bacalao","calabacín","berenjena","tomate"]}
     },
@@ -641,9 +700,22 @@ const WEEK = [
   { name:"Miércoles", date:"2026-09-23",
     pedro:{
       comida:{title:"Pasta (60g) con gambas (150g peso comestible) + almejas y calabacín",
-        ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"]},
+        ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", manual:{steps:[
+          "Sofríe el calabacín troceado en una sartén con un poco de aceite.",
+          "Añade las almejas (previamente en remojo con sal 1-2 horas) y las gambas, y saltea unos minutos.",
+          "Incorpora un chorrito de agua o caldo, tapa y cocina hasta que las almejas se abran.",
+          "Cuece la pasta en agua con sal según el tiempo del paquete y escúrrela.",
+          "Mezcla la pasta con el sofrito de gambas y almejas, y sirve."
+        ]}}},
       cena:{title:"Crema de calabacín + pollo (150g)",
-        ing:["calabacín (para crema)","150 g pollo"]}
+        ing:["calabacín (para crema)","150 g pollo"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Pon el calabacín troceado en el vaso con agua hasta cubrir: 20 min/100°/vel 1.",
+          "Añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo, hasta que quede fina.",
+          "Cocina el pollo a la plancha o al vapor en el Varoma mientras hierve la crema.",
+          "Sirve el pollo troceado sobre la crema de calabacín."
+        ]}}}
     },
     nuria:{
       comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
@@ -668,7 +740,14 @@ const WEEK = [
   { name:"Jueves", date:"2026-09-24",
     pedro:{
       comida:{title:"Albóndigas caseras (150g de carne picada de pavo) con puré de calabaza",
-        ing:["150 g carne picada de pavo","calabaza (para puré)","1 c/s aceite de oliva"]},
+        ing:["150 g carne picada de pavo","calabaza (para puré)","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Trocea la calabaza y ponla en el vaso con un vaso de agua: 20 min/100°/vel 1.",
+          "Cuela el exceso de agua, añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.",
+          "Con el vaso limpio y seco, forma las albóndigas con la carne de pavo picada y sazona.",
+          "Cocina las albóndigas a la plancha o al vapor en el Varoma mientras se hace el puré, 8-10 min dándoles la vuelta.",
+          "Sirve las albóndigas sobre el puré de calabaza."
+        ]}}},
       cena:{title:"Revuelto de 2 huevos con 100g gambas y espinacas (50-80g)",
         ing:["2 huevos","100 g gambas","50-80 g espinacas"]}
     },
@@ -697,7 +776,14 @@ const WEEK = [
       comida:{title:"Salmón (150g) al horno con boniato (1 pequeño) y calabacín + limón y hierbas aromáticas",
         ing:["150 g salmón","1 boniato pequeño","calabacín","limón","hierbas aromáticas","1 c/s aceite de oliva"]},
       cena:{title:"Hamburguesa casera de pollo/pavo (150g) + berenjena y tomate asados",
-        ing:["150 g pollo o pavo (picado)","berenjena","tomate"]}
+        ing:["150 g pollo o pavo (picado)","berenjena","tomate"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Si la carne no viene ya picada, pícala en el vaso limpio y seco: 5 seg/vel 5.",
+          "Forma las hamburguesas con la carne picada y sazona.",
+          "Cocínalas a la plancha 3-4 min por cada lado.",
+          "Mientras, asa la berenjena y el tomate al horno hasta que estén tiernos.",
+          "Sirve las hamburguesas con la berenjena y el tomate asados."
+        ]}}}
     },
     nuria:{
       comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
@@ -722,9 +808,23 @@ const WEEK = [
   { name:"Sábado", date:"2026-09-26",
     pedro:{
       comida:{title:"Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
-        ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","1 c/s aceite de oliva"]},
+        ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","1 c/s aceite de oliva"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Pon los mejillones/almejas en el Varoma. Programa 15 min/Varoma/vel 1 con caldo o agua en el vaso, hasta que se abran. Retira la carne y reserva, colando el caldo de apertura.",
+          "Pon la judía verde troceada en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.",
+          "Añade el calamar troceado y rehoga: 2 min/120°/vel cuchara.",
+          "Incorpora el arroz y rehoga: 1 min/100°/giro a la izquierda/vel cuchara.",
+          "Vierte el caldo colado: 16-18 min/100°/giro a la izquierda/vel cuchara, sin cubilete para que evapore y quede meloso.",
+          "En los últimos 3-4 min añade las gambas, los mejillones y las almejas reservados."
+        ]}}},
       cena:{title:"Crema de calabaza + merluza (150g)",
-        ing:["calabaza (para crema)","150 g merluza"]}
+        ing:["calabaza (para crema)","150 g merluza"],
+        recipe:{servings:"1 ración (según las cantidades del plan)", thermomix:{steps:[
+          "Pon la calabaza troceada en el vaso con agua hasta cubrir: 20 min/100°/vel 1.",
+          "Añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.",
+          "Cocina la merluza al vapor en el Varoma sobre el vaso mientras hierve la crema, o a la plancha aparte.",
+          "Sirve la merluza sobre la crema de calabaza."
+        ]}}}
     },
     nuria:{
       comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
@@ -1195,7 +1295,7 @@ function iconoIngrediente(nombre){
 
 function fridgeItems(day){
   const map = new Map(); // nombre normalizado -> {cantidades:Set, who:Set}
-  Object.keys(PERSONAS).filter(id=>day[id]).forEach(who=>{
+  Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id)).forEach(who=>{
     const person = day[who];
     ["comida","cena"].forEach(meal=>{
       person[meal].ing.forEach(item=>{
@@ -1307,6 +1407,9 @@ function renderPersonPicker(){
       if(personasVisibles.has(id)) personasVisibles.delete(id); else personasVisibles.add(id);
       btn.classList.toggle('on');
       renderMenu();
+      renderNevera();
+      renderCompra();
+      renderPeso();
     });
   });
 }
@@ -1415,12 +1518,33 @@ function fmtKg(n){
 
 let pesoPersonaSeleccionada = Object.keys(PERSONAS)[0];
 
+function pesoChartSvg(id, registrosAsc){
+  const w = 320, h = 120, padX = 8, padY = 16;
+  const kgs = registrosAsc.map(r=>r.kg);
+  const min = Math.min(...kgs), max = Math.max(...kgs);
+  const rango = (max - min) || 1;
+  const n = registrosAsc.length;
+  const x = i => padX + (i/(n-1)) * (w - padX*2);
+  const y = kg => padY + (1 - (kg - min)/rango) * (h - padY*2);
+  const points = registrosAsc.map((r,i)=>`${x(i)},${y(r.kg)}`).join(' ');
+  const dots = registrosAsc.map((r,i)=>`<circle cx="${x(i)}" cy="${y(r.kg)}" r="3" class="peso-chart-dot"></circle>`).join('');
+  const labelFirst = `<text x="${x(0)}" y="${h-2}" class="peso-chart-label" text-anchor="start">${fmtDate(registrosAsc[0].fecha)}</text>`;
+  const labelLast = `<text x="${x(n-1)}" y="${h-2}" class="peso-chart-label" text-anchor="end">${fmtDate(registrosAsc[n-1].fecha)}</text>`;
+  return `<svg class="peso-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="--chart-color:var(--${id})">
+    <polyline points="${points}" class="peso-chart-line"></polyline>
+    ${dots}
+    ${labelFirst}${labelLast}
+  </svg>`;
+}
+
 function renderPeso(){
   const el = document.getElementById('viewPeso');
   const personaOpts = Object.keys(PERSONAS).map(id=>`<option value="${id}" ${id===pesoPersonaSeleccionada?'selected':''}>${PERSONAS[id].nombre}</option>`).join('');
   const bloque = (id) => {
     const registros = (peso[id]||[]).slice().sort((a,b)=>b.fecha.localeCompare(a.fecha));
     if(!registros.length) return '';
+    const registrosAsc = registros.slice().reverse();
+    const chart = registrosAsc.length >= 2 ? pesoChartSvg(id, registrosAsc) : '';
     const filas = registros.map((r,i)=>{
       const anterior = registros[i+1];
       let diff = '';
@@ -1435,11 +1559,14 @@ function renderPeso(){
         <span class="peso-fecha">${fmtDate(r.fecha)}</span>
       </div>`;
     }).join('');
-    return `<div class="card"><div class="person"><span class="dot ${id}"></span>${PERSONAS[id].nombre}</div>${filas}</div>`;
+    return `<div class="card"><div class="person"><span class="dot ${id}"></span>${PERSONAS[id].nombre}</div>${chart}${filas}</div>`;
   };
-  const bloques = Object.keys(PERSONAS).map(bloque).join('');
+  const bloques = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id)).map(bloque).join('');
+  const vacio = personasVisibles.size===0
+    ? `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`
+    : `<div class="empty">Todavía no hay registros de peso para quien tienes seleccionado</div>`;
   el.innerHTML = `<div class="section-title">Progresión de peso</div>` +
-    (bloques || `<div class="empty">Todavía no hay registros de peso</div>`) +
+    (bloques || vacio) +
     `<div class="section-title">Añadir registro</div>` +
     `<div class="card">
       <form id="pesoForm" class="peso-form">
