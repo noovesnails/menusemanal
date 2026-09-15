@@ -86,6 +86,14 @@
   .suelto-form{display:flex;gap:8px;padding:4px 4px 12px;border-bottom:1px solid var(--line);margin-bottom:4px;}
   .suelto-form input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.88rem;background:var(--bg);color:var(--ink);}
   .suelto-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;}
+  .peso-diff{font-size:.75rem;color:var(--muted);}
+  .peso-diff.up{color:var(--accent);}
+  .peso-diff.down{color:var(--ok);}
+  .peso-fecha{font-size:.72rem;color:var(--muted);flex:0 0 auto;}
+  .peso-form{display:flex;gap:8px;flex-wrap:wrap;}
+  .peso-form select,.peso-form input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.85rem;background:var(--bg);color:var(--ink);}
+  .peso-form input[type=number]{width:80px;}
+  .peso-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;}
   .ing-src{font-size:.65rem;padding:2px 6px;border-radius:6px;flex:0 0 auto;}
   .ing-src.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .ing-src.nuria{background:var(--nuria-soft);color:var(--nuria);}
@@ -135,6 +143,7 @@
 <main id="viewMenu"></main>
 <main id="viewNevera" style="display:none"></main>
 <main id="viewCompra" style="display:none"></main>
+<main id="viewPeso" style="display:none"></main>
 
 <div class="reminders reminders-footer" id="reminders"></div>
 
@@ -142,6 +151,7 @@
   <button class="tab active" data-tab="menu"><span class="ic">🍽️</span>Menú</button>
   <button class="tab" data-tab="nevera"><span class="ic">🧊</span>Nevera</button>
   <button class="tab" data-tab="compra"><span class="ic">🛒</span>Compra</button>
+  <button class="tab" data-tab="peso"><span class="ic">⚖️</span>Peso</button>
 </nav>
 
 <script>
@@ -876,6 +886,7 @@ const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
 let remoteRecord = {};   // contenido completo del bin (no tocar claves ajenas)
 let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
 let itemsSueltos = [];   // [{id, nombre, comprado}] artículos de compra que no vienen del menú
+let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por persona
 let saveTimer = null;
 
 function setSync(state, text){
@@ -893,11 +904,13 @@ async function loadRemote(){
     remoteRecord = data.record || {};
     checks = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checks) || {};
     itemsSueltos = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos) || [];
+    peso = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.peso) || {};
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
     try{ checks = JSON.parse(localStorage.getItem('menuSemanalChecks')||'{}'); }catch(_){ checks = {}; }
     try{ itemsSueltos = JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'[]'); }catch(_){ itemsSueltos = []; }
+    try{ peso = JSON.parse(localStorage.getItem('menuSemanalPeso')||'{}'); }catch(_){ peso = {}; }
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
@@ -906,6 +919,7 @@ async function loadRemote(){
 function scheduleSave(){
   localStorage.setItem('menuSemanalChecks', JSON.stringify(checks));
   localStorage.setItem('menuSemanalItemsSueltos', JSON.stringify(itemsSueltos));
+  localStorage.setItem('menuSemanalPeso', JSON.stringify(peso));
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
   saveTimer = setTimeout(saveRemote, 700);
@@ -916,6 +930,7 @@ async function saveRemote(){
     remoteRecord.menuSemanal = remoteRecord.menuSemanal || {};
     remoteRecord.menuSemanal.checks = checks;
     remoteRecord.menuSemanal.itemsSueltos = itemsSueltos;
+    remoteRecord.menuSemanal.peso = peso;
     remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
     const res = await fetch(JSONBIN_BASE, {
       method: "PUT",
@@ -1207,6 +1222,62 @@ function renderCompra(){
   });
 }
 
+function fmtKg(n){
+  return n.toLocaleString('es-ES', {minimumFractionDigits:1, maximumFractionDigits:1});
+}
+
+let pesoPersonaSeleccionada = Object.keys(PERSONAS)[0];
+
+function renderPeso(){
+  const el = document.getElementById('viewPeso');
+  const personaOpts = Object.keys(PERSONAS).map(id=>`<option value="${id}" ${id===pesoPersonaSeleccionada?'selected':''}>${PERSONAS[id].nombre}</option>`).join('');
+  const bloque = (id) => {
+    const registros = (peso[id]||[]).slice().sort((a,b)=>b.fecha.localeCompare(a.fecha));
+    if(!registros.length) return '';
+    const filas = registros.map((r,i)=>{
+      const anterior = registros[i+1];
+      let diff = '';
+      if(anterior){
+        const d = r.kg - anterior.kg;
+        const signo = d > 0 ? '+' : '';
+        diff = ` <span class="peso-diff ${d>0?'up':d<0?'down':''}">(${signo}${fmtKg(d)} kg desde el ${fmtDate(anterior.fecha)})</span>`;
+      }
+      return `<div class="ing-row">
+        <span class="dot ${id}"></span>
+        <label>${fmtKg(r.kg)} kg${diff}</label>
+        <span class="peso-fecha">${fmtDate(r.fecha)}</span>
+      </div>`;
+    }).join('');
+    return `<div class="card"><div class="person"><span class="dot ${id}"></span>${PERSONAS[id].nombre}</div>${filas}</div>`;
+  };
+  const bloques = Object.keys(PERSONAS).map(bloque).join('');
+  el.innerHTML = `<div class="section-title">Progresión de peso</div>` +
+    (bloques || `<div class="empty">Todavía no hay registros de peso</div>`) +
+    `<div class="section-title">Añadir registro</div>` +
+    `<div class="card">
+      <form id="pesoForm" class="peso-form">
+        <select id="pesoPersona">${personaOpts}</select>
+        <input type="date" id="pesoFecha" value="${new Date().toISOString().slice(0,10)}">
+        <input type="number" id="pesoKg" step="0.1" min="0" placeholder="kg">
+        <button type="submit">Añadir</button>
+      </form>
+    </div>`;
+
+  document.getElementById('pesoForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const id = document.getElementById('pesoPersona').value;
+    const fecha = document.getElementById('pesoFecha').value;
+    const kg = parseFloat(document.getElementById('pesoKg').value);
+    if(!fecha || isNaN(kg)) return;
+    pesoPersonaSeleccionada = id;
+    peso[id] = peso[id] || [];
+    peso[id] = peso[id].filter(r=>r.fecha!==fecha);
+    peso[id].push({fecha, kg});
+    scheduleSave();
+    renderPeso();
+  });
+}
+
 function renderReminders(){
   const el = document.getElementById('reminders');
   const fmtVisita = iso => {
@@ -1232,6 +1303,7 @@ function render(){
   renderMenu();
   renderNevera();
   renderCompra();
+  renderPeso();
 }
 
 document.getElementById('refreshBtn').addEventListener('click', ()=>{
@@ -1248,6 +1320,7 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
     document.getElementById('viewMenu').style.display = currentTab==='menu' ? '' : 'none';
     document.getElementById('viewNevera').style.display = currentTab==='nevera' ? '' : 'none';
     document.getElementById('viewCompra').style.display = currentTab==='compra' ? '' : 'none';
+    document.getElementById('viewPeso').style.display = currentTab==='peso' ? '' : 'none';
   });
 });
 
