@@ -1,91 +1,104 @@
 ---
 name: nuevo-menu
-description: Sustituye el plan nutricional de Pedro o de Nuria (independientes entre sí) a partir de un PDF/.md nuevo de la nutricionista. Pregunta las fechas de la nueva cita, inicio y fin de dieta; pide el fichero; extrae texto e imágenes; reconstruye los platos de esa persona en index.html (con receta Thermomix/manual para los elaborados y foto si hay alguna real); actualiza el recordatorio en la app; y despliega. Usar cuando el usuario dice "nuevo menú", "nueva dieta", "actualizar el plan de Pedro/Nuria", o /nuevo-menu.
+description: Procesa un PDF de plan nutricional nuevo (o actualizado) de una persona de menusemanal y lo integra en index.html — WEEK, OPCIONES, NUTRI, peso. Sustituye o añade el ciclo de dieta de esa persona, independiente del de las demás. Usar cuando el usuario dice "nuevo menú", "nueva dieta", "actualizar el plan de X", o /nuevo-menu.
 ---
 
-# Nuevo menú — sustituir el plan de una persona
+# Nuevo menú — De PDF de la nutricionista a la app
 
-Esta skill es específica de `menusemanal`. Sustituye el ciclo de dieta de **una persona** (Pedro o
-Nuria — nunca las dos a la vez, sus ciclos son independientes) a partir del PDF/.md que la
-nutricionista entrega en cada visita.
+Convierte el plan en PDF de una visita a la nutricionista en las estructuras de datos de
+`index.html`, y opcionalmente registra el peso de esa visita. Cada persona (`PERSONAS`) tiene un
+ciclo de dieta independiente — nunca asumas que dos personas comparten fechas de inicio/fin salvo
+que el usuario lo diga.
 
-## 1. Preguntas obligatorias (antes de pedir el fichero)
+Esto requiere una sesión de Claude Code con acceso al repo — no es una subida automática desde la
+propia app (ver decisión documentada en issue #6: la extracción de PDF a estructura fiable necesita
+lectura de fichero, Python y verificación humana en el medio, no una única llamada a un LLM).
 
-Pregunta, en este orden, con `AskUserQuestion` donde aplique:
+## §1 — Preguntas obligatorias, por cada PDF que se vaya a procesar
 
-1. **¿Para quién es este plan?** Pedro / Nuria (nunca ambos en una misma ejecución).
-2. **Fecha de la próxima visita a la nutricionista** (la que viene después de esta entrega).
-3. **Fecha aproximada de inicio de esta nueva dieta** (normalmente el lunes siguiente a la
-   entrega del plan).
-4. **Fecha aproximada de fin de esta dieta** (normalmente el lunes anterior a la próxima visita,
-   o lo que el usuario indique — la duración real la marca la nutricionista, no una regla fija).
+Antes de tocar código, para cada persona/PDF:
 
-No sigas sin las 4 respuestas.
+1. **Persona**: ¿ya existe en `PERSONAS` (`index.html`) o es nueva? Si es nueva, crea su entrada en
+   `PERSONAS`/`NUTRI` con un color propio: añade `--id`/`--id-soft` en las 3 variantes de tema
+   (`:root`, `@media prefers-color-scheme:dark`, `:root[data-theme="dark"]`) y las reglas
+   `.dot.id`/`.ing-src.id`/`.reminder.id`/`.personchip.on.id`.
+2. **Próxima visita**: fecha (y hora si la da) de la siguiente cita con la nutricionista.
+3. **Vigencia de este plan**: fecha de inicio (normalmente la fecha del PDF o el lunes siguiente) y
+   fecha mínima hasta la que es válido. No asumas que coincide con la próxima visita — puede seguir
+   vigente más allá, o el nuevo plan puede no empezar hasta bastante después de la visita (ver
+   ejemplo real: alguien vuelve el 6/10 pero el menú no cambia hasta después del 12/10).
+4. **Peso actual**: ¿cuánto pesa en esta visita? (issue #12, pestaña "Peso" de la app). Si no se
+   da, no se registra — no inventar un valor.
 
-## 2. Pide el fichero
+Confirma estas 4 preguntas con quien te pase el PDF; no las infieras del nombre del fichero o su
+fecha de modificación.
 
-Pide la ruta del PDF (preferido, trae fotos) o `.md` (si no hay fotos) del nuevo plan. Cópialo a
-`planes/` con el mismo criterio de nombre que los existentes (`<Nombre> <Apellidos> <fecha
-entrega>.md`/`.pdf`).
+## §2 — Extracción del PDF
 
-## 3. Extracción (reproducible, ver sesión de referencia en `update.md`)
+Extrae el texto con PyMuPDF (`import fitz`, `pip install pymupdf` si no está). Los planes de esta
+nutricionista suelen venir en tablas "Día 1..Día 7" que la extracción de texto linealiza por filas
+(Desayuno, Tentempié/Almuerzo, Comida, Tentempié/Merienda, Cena) en vez de por columnas — hay que
+recomponer manualmente qué fragmento de texto corresponde a qué día y a qué comida. Cuando una
+comida no tenga contenido extraíble (encabezados sueltos sin cuerpo, tablas perdidas en la
+conversión), no se inventa: se documenta como ausente.
 
-- **Texto**: si es PDF, léelo con el `Read` tool; si el texto no sale limpio, conviértelo aparte.
-- **Imágenes**: si es PDF, extrae con PyMuPDF (`python -m pip install --quiet pymupdf` si no está
-  instalado):
-  ```python
-  import fitz
-  doc = fitz.open(ruta_pdf)
-  for i in range(len(doc)):
-      for j, img in enumerate(doc[i].get_images(full=True)):
-          base = doc.extract_image(img[0])
-          if base["width"] < 80 or base["height"] < 80: continue  # descarta iconos/logos
-          # guarda base["image"] con extensión base["ext"]
-  ```
-  **No asumas que las fotos están una por plato**: en los dos PDFs ya vistos son ilustraciones
-  sueltas de ejemplo (desayuno, comida, cena genéricos), no fotos del plato exacto de cada día.
-  Antes de usar una, mírala (`Read` sobre el fichero de imagen) y comprueba a ojo que el plato
-  coincide de verdad con el ingrediente principal — si no hay coincidencia razonable, no la uses
-  para ningún plato. Las que sirvan van a `img/<persona>-<slug-plato>.jpg`.
+Si el PDF trae fotos reales de los platos (no siempre pasa — a veces son solo ilustraciones
+genéricas de ejemplo), extráelas con `doc.extract_image()` y compruébalas a ojo antes de usarlas:
+solo si el plato de la foto coincide de verdad con el ingrediente principal del día. Las que sirvan
+van a `img/<persona>-<slug-plato>.jpg`. Issue #13 (fotos con IA) es la alternativa cuando no hay
+foto real que encaje — no la hagas por defecto en esta skill salvo que se pida explícitamente.
 
-## 4. Reconstruir los platos de esa persona en `index.html`
+Distingue:
+- **Comida/Cena**: un plato fijo por día de la semana → entra en `WEEK[fecha][persona].comida/cena`.
+- **Desayuno/Almuerzo/Merienda con "ELIGE UNA OPCIÓN"**: no varían por día, van en
+  `OPCIONES[persona].desayuno/almuerzo/merienda` como tarjetas seleccionables (issue #8) — solo las
+  categorías con contenido real, no inventar las que faltan.
 
-- Sustituye únicamente las entradas `pedro:{...}` o `nuria:{...}` (la que toque) de cada día del
-  array `WEEK` — la otra persona no se toca.
-- Si la nueva dieta dura más o menos días que la semana actual del array, ajusta el array `WEEK`
-  completo (añade/quita objetos de día) para cubrir el rango real inicio→fin de esta persona;
-  coordina las fechas con la otra persona si sus rangos no coinciden (puede que un día tenga a
-  Pedro en dieta nueva y a Nuria todavía en la vieja — el array ya soporta eso, cada `WEEK[i]`
-  tiene `pedro` y `nuria` por separado).
-- Para cada plato, igual que en el issue #2 de este proyecto:
-  - `ing`: ingredientes con cantidades tal como los da el documento (no inventes cantidades que no
-    estén — si faltan, dilo explícitamente en el array, ej. `"sin cantidad especificada"`).
-  - Si el plato es **elaborado** (guiso, arroz meloso, cocido, crema con técnica, algo que se
-    forma/cocina en varios pasos — no un simple "proteína a la plancha/horno/vapor + verdura
-    simple"), añade `recipe:{servings, mode:"thermomix"|"manual", steps:[...]}`. Usa Thermomix
-    TM7 cuando la técnica lo permita razonablemente (guisos con función presión, arroces melosos,
-    cremas), Manual si no (pasta, revueltos de huevo, cocciones muy largas). Verifica que las
-    cantidades de los pasos coinciden con las de `ing` — el review de #2 encontró justo ese fallo.
-  - Si hay foto real para el plato (ver §3), añade `img:"img/..."`.
+## §3 — Mapeo a fechas de calendario
 
-## 5. Recordatorio en la app (crear la primera vez, actualizar las siguientes)
+El plan de "Día 1..Día 7" es una plantilla semanal que se repite mientras dure la vigencia acordada
+en §1.3. Genera o actualiza una entrada de `WEEK` por cada fecha real del rango (inicio → fin),
+repitiendo el ciclo de 7 días tantas veces como haga falta. Si varias personas comparten fecha, sus
+entradas van en el mismo objeto `{ name, date, persona1:{...}, persona2:{...} }` de `WEEK` — no
+dupliques fechas ni crees un segundo objeto para la misma fecha.
 
-Si `index.html` todavía no tiene un banner de recordatorio, créalo: un aviso visible en la vista
-Menú con, por persona, la próxima visita y la fecha de fin aproximada de su dieta actual (usa las
-mismas variables de color `--pedro`/`--nuria` que ya identifican a cada persona en el resto de la
-app). Guarda las fechas como constantes JS junto a `WEEK_START`, con nombres
-`PEDRO_PROXIMA_VISITA`, `PEDRO_FIN_DIETA`, `NURIA_PROXIMA_VISITA`, `NURIA_FIN_DIETA` (o los que ya
-existan de una ejecución anterior de esta skill — actualiza solo los de la persona de este plan).
+Si la persona ya tenía un plan activo con fechas que se solapan con las nuevas, edita esas entradas
+de `WEEK` en vez de añadir duplicados; las demás personas en esas mismas fechas no se tocan.
 
-## 6. Cierre
+## §4 — Ingredientes
 
-- Actualiza `update.md` con la entrega: persona, fecha del documento, fechas de inicio/fin/próxima
-  visita.
-- Sigue el flujo normal del proyecto (`.agents/rules/global.md`): esto es contenido de producto,
-  no arquitectura, así que un `/spec` + `/implement` con un único issue por entrega es proporcionado
-  — no hace falta partirlo en varios. Si el usuario pide ir directo (como ya ha hecho otras veces
-  en sesiones con pocos tokens), commit + push a `main` y decirlo explícitamente, sin fingir que
-  pasó por review.
-- Despliega (GitHub Pages es automático al llegar a `main`) y haz un smoke check: abre la app,
-  comprueba que el banner y los platos nuevos de esa persona se ven bien, y que la otra persona no
-  ha cambiado.
+Cada plato necesita un `ing: [...]` con cantidad conocida cuando el PDF la da (p. ej. `"120 g
+pollo"`), sin inventar cantidades que no aparecen. Alimenta la nevera/lista de la compra
+(`fridgeItems()` en `index.html`), que ya deduplica por nombre normalizado — no hace falta
+preocuparse por duplicados entre personas, solo por no inventar cantidades.
+
+Si el plato es **elaborado** (guiso, arroz meloso, cocido, crema con técnica — no un simple
+"proteína a la plancha/horno/vapor + verdura simple"), añade
+`recipe:{servings, thermomix:{steps:[...]}, manual:{steps:[...]}}` (solo las versiones que
+realmente apliquen — no hace falta inventar la otra). Verifica que las cantidades de los pasos
+coinciden con las de `ing`.
+
+## §5 — NUTRI y peso
+
+Actualiza `NUTRI[persona]` con `proximaVisita`, `inicioNuevoPlan`, `finPlanActual` según lo
+confirmado en §1, y limpia `notaPendiente` si el plan pendiente que describía ya llegó.
+
+Si en §1.4 se dio un peso, añade un registro a `peso[persona]` (pestaña Peso de la app):
+`{fecha, kg}` con la fecha de la visita, no la fecha del PDF si son distintas. No sobrescribas
+registros anteriores de esa persona; si ya existe uno para esa misma fecha, reemplázalo (evita
+duplicar la misma visita).
+
+## §6 — Verificación y cierre
+
+1. Sirve `index.html` en local (`.claude/launch.json`, servidor `menusemanal`) y verifica en el
+   navegador: el día de hoy muestra menú para cada persona tocada, las tarjetas de `OPCIONES`
+   aparecen si las hay, la nevera/compra deduplican bien, y si se registró peso aparece en la
+   pestaña Peso con su diferencia calculada.
+2. Sin overflow en 375px real (`resize_window` mobile + `navigate` fresco) y sin errores de consola.
+3. Esto es contenido de datos, no código nuevo: commit directo a `main` (sin PR y diciéndolo
+   explícitamente), salvo que el propio PDF motive también un cambio de código (p. ej. una
+   estructura de datos que todavía no existe) — en ese caso ese cambio de código sí sigue el flujo
+   spec→implement→review→qa→deploy completo del proyecto, y el contenido se añade en un commit
+   aparte una vez el código esté desplegado.
+4. Verifica en producción tras el deploy (GitHub Pages es automático al llegar a `main`) antes de
+   dar el trabajo por terminado.
