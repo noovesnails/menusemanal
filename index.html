@@ -1565,6 +1565,7 @@ function renderPeso(){
         <span class="dot ${id}"></span>
         <label>${fmtKg(r.kg)} kg${diff}</label>
         <span class="peso-fecha">${fmtDate(r.fecha)}</span>
+        <span class="suelto-del peso-del" data-id="${id}" data-fecha="${r.fecha}">✕</span>
       </div>`;
     }).join('');
     return `<div class="card"><div class="person"><span class="dot ${id}"></span>${PERSONAS[id].nombre}</div>${chart}${filas}</div>`;
@@ -1597,6 +1598,16 @@ function renderPeso(){
     peso[id].push({fecha, kg});
     scheduleSave();
     renderPeso();
+  });
+
+  el.querySelectorAll('.peso-del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.id;
+      peso[id] = (peso[id]||[]).filter(r=>r.fecha!==btn.dataset.fecha);
+      if(peso[id].length===0) delete peso[id];
+      scheduleSave();
+      renderPeso();
+    });
   });
 }
 
