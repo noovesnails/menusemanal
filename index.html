@@ -122,8 +122,7 @@
   .syncdot.ok{background:var(--ok);}
   .syncdot.err{background:var(--accent);}
   .refresh-btn{margin-left:auto;background:none;border:none;color:var(--muted);font-size:.72rem;padding:2px 4px;cursor:pointer;display:flex;align-items:center;gap:3px;}
-  .reminders{padding:0 16px 10px;display:flex;flex-direction:column;gap:6px;}
-  .reminders-footer{padding-top:14px;margin-top:6px;border-top:1px solid var(--line);}
+  .reminders{padding:0 0 10px;display:flex;flex-direction:column;gap:6px;}
   .reminder{border-radius:12px;padding:8px 12px;font-size:.78rem;display:flex;align-items:center;gap:8px;}
   .reminder.pedro{background:var(--pedro-soft);color:var(--pedro);}
   .reminder.nuria{background:var(--nuria-soft);color:var(--nuria);}
@@ -133,7 +132,24 @@
   .reminder.eva{background:var(--eva-soft);color:var(--eva);}
   .reminder.marta{background:var(--marta-soft);color:var(--marta);}
   .reminder b{font-weight:700;}
-  .personpicker{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;}
+  .mi-usuario{padding:0 16px 6px;font-size:.78rem;color:var(--muted);}
+  .mi-usuario b{color:var(--ink);}
+  .nutri-edit{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .nutri-edit label{font-size:.68rem;color:var(--muted);display:flex;flex-direction:column;gap:2px;}
+  .nutri-edit input{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:.82rem;background:var(--bg);color:var(--ink);}
+  .nutri-edit button{border:none;border-radius:8px;padding:8px 12px;font-size:.8rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;align-self:flex-end;}
+  .notas-nutri{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:10px;font-size:.8rem;line-height:1.4;color:var(--ink);white-space:pre-wrap;}
+  .onboarding{position:fixed;inset:0;background:var(--bg);z-index:100;padding:24px 20px;overflow-y:auto;}
+  .onboarding h2{font-size:1.05rem;margin:0 0 6px;}
+  .onboarding p{font-size:.85rem;color:var(--muted);margin:0 0 18px;}
+  .onboarding-grid{display:flex;flex-direction:column;gap:8px;}
+  .onboarding-opt{border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.9rem;font-weight:600;background:var(--card);color:var(--ink);cursor:pointer;text-align:left;}
+  .onboarding-opt.on{border-color:var(--accent);background:var(--accent-soft);}
+  .onboarding-actions{margin-top:20px;display:flex;gap:10px;}
+  .onboarding-actions button{flex:1;border:none;border-radius:10px;padding:12px;font-size:.88rem;font-weight:700;cursor:pointer;}
+  .onboarding-actions .primary{background:var(--accent);color:#fff;}
+  .onboarding-actions .secondary{background:var(--line);color:var(--ink);}
+  .personpicker{display:flex;gap:6px;flex-wrap:wrap;padding:0 0 10px;}
   .personchip{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.75rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);}
   .personchip.on.pedro{background:var(--pedro);border-color:var(--pedro);color:#fff;}
   .personchip.on.nuria{background:var(--nuria);border-color:var(--nuria);color:#fff;}
@@ -146,9 +162,8 @@
 
 <h1>Menú semanal</h1>
 <div class="sub" id="weekSub"></div>
+<div class="mi-usuario" id="miUsuarioLabel"></div>
 <div class="syncbar"><span class="syncdot" id="syncDot"></span><span id="syncText">Cargando…</span><button class="refresh-btn" id="refreshBtn">🔄 Actualizar</button></div>
-
-<div class="personpicker" id="personPicker"></div>
 
 <div class="daypicker" id="dayPicker"></div>
 
@@ -156,15 +171,17 @@
 <main id="viewNevera" style="display:none"></main>
 <main id="viewCompra" style="display:none"></main>
 <main id="viewPeso" style="display:none"></main>
-
-<div class="reminders reminders-footer" id="reminders"></div>
+<main id="viewYo" style="display:none"></main>
 
 <nav>
   <button class="tab active" data-tab="menu"><span class="ic">🍽️</span>Menú</button>
   <button class="tab" data-tab="nevera"><span class="ic">🧊</span>Nevera</button>
   <button class="tab" data-tab="compra"><span class="ic">🛒</span>Compra</button>
   <button class="tab" data-tab="peso"><span class="ic">⚖️</span>Peso</button>
+  <button class="tab" data-tab="yo"><span class="ic">🙋</span>Yo</button>
 </nav>
+
+<div id="onboarding" class="onboarding" style="display:none"></div>
 
 <script>
 /* ---------- DATOS DE LA SEMANA ----------
@@ -194,7 +211,7 @@ const NUTRI = {
   paqui:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
   sole:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
   eva:{ proximaVisita:"2026-10-05", inicioNuevoPlan:"2026-09-28", finPlanActual:null, notaPendiente:null },
-  marta:{ proximaVisita:"2026-10-02", inicioNuevoPlan:"2026-09-21", finPlanActual:null, notaPendiente:null }
+  marta:{ proximaVisita:"2026-10-02", inicioNuevoPlan:"2026-09-21", finPlanActual:null, notaPendiente:null, notasNutri:"Evitar pomelo por posibles interacciones con el tratamiento." }
 };
 
 /* Opciones de desayuno/almuerzo/merienda por persona: no varían por día, la persona elige cada
@@ -1416,6 +1433,7 @@ let remoteRecord = {};   // contenido completo del bin (no tocar claves ajenas)
 let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
 let itemsSueltos = {};   // { "2026-09-07": [{id, nombre, comprado}] } artículos sueltos por día de compra
 let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por persona
+let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
 let saveTimer = null;
 
 function setSync(state, text){
@@ -1446,12 +1464,14 @@ async function loadRemote(){
     checks = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checks) || {};
     itemsSueltos = migrarItemsSueltos(remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos);
     peso = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.peso) || {};
+    nutriEdits = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.nutriEdits) || {};
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
     try{ checks = JSON.parse(localStorage.getItem('menuSemanalChecks')||'{}'); }catch(_){ checks = {}; }
     try{ itemsSueltos = migrarItemsSueltos(JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'{}')); }catch(_){ itemsSueltos = {}; }
     try{ peso = JSON.parse(localStorage.getItem('menuSemanalPeso')||'{}'); }catch(_){ peso = {}; }
+    try{ nutriEdits = JSON.parse(localStorage.getItem('menuSemanalNutriEdits')||'{}'); }catch(_){ nutriEdits = {}; }
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
@@ -1461,6 +1481,7 @@ function scheduleSave(){
   localStorage.setItem('menuSemanalChecks', JSON.stringify(checks));
   localStorage.setItem('menuSemanalItemsSueltos', JSON.stringify(itemsSueltos));
   localStorage.setItem('menuSemanalPeso', JSON.stringify(peso));
+  localStorage.setItem('menuSemanalNutriEdits', JSON.stringify(nutriEdits));
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
   saveTimer = setTimeout(saveRemote, 700);
@@ -1472,6 +1493,7 @@ async function saveRemote(){
     remoteRecord.menuSemanal.checks = checks;
     remoteRecord.menuSemanal.itemsSueltos = itemsSueltos;
     remoteRecord.menuSemanal.peso = peso;
+    remoteRecord.menuSemanal.nutriEdits = nutriEdits;
     remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
     const res = await fetch(JSONBIN_BASE, {
       method: "PUT",
@@ -1512,6 +1534,10 @@ function resolverReceta(recipe, modo){
   return null;
 }
 
+/* Identidad del dispositivo: quién eres tú (elegido en el onboarding). Sin esto, se muestra el
+   onboarding antes que cualquier otra pantalla. */
+let miUsuario = localStorage.getItem('miUsuario') || null;
+
 /* personas visibles en la vista Menú, por defecto todas las que tengan al menos un plato en WEEK */
 let personasVisibles;
 try{
@@ -1522,6 +1548,65 @@ if(!personasVisibles || !personasVisibles.size){
   personasVisibles = new Set(
     Object.keys(PERSONAS).filter(id => WEEK.some(day => day[id]))
   );
+}
+
+function guardarPersonasVisibles(){
+  localStorage.setItem('personasVisibles', JSON.stringify(Array.from(personasVisibles)));
+}
+
+/* Fusiona NUTRI (datos de partida, del PDF) con las ediciones a mano guardadas en nutriEdits
+   (sincronizadas vía JSONBin) — así cualquiera puede corregir una fecha sin tocar el código. */
+function efectivoNutri(id){
+  return Object.assign({}, NUTRI[id], nutriEdits[id]);
+}
+
+function mostrarOnboarding(){
+  const el = document.getElementById('onboarding');
+  el.style.display = 'block';
+  let yo = null;
+
+  const pasoUno = () => {
+    el.innerHTML = `
+      <h2>¿Quién eres tú?</h2>
+      <p>Elige tu usuario para personalizar la app en este móvil.</p>
+      <div class="onboarding-grid">
+        ${Object.keys(PERSONAS).map(id=>`<button type="button" class="onboarding-opt" data-id="${id}">${PERSONAS[id].nombre}</button>`).join('')}
+      </div>`;
+    el.querySelectorAll('.onboarding-opt').forEach(btn=>{
+      btn.addEventListener('click', ()=>{ yo = btn.dataset.id; pasoDos(); });
+    });
+  };
+
+  const pasoDos = () => {
+    const otros = Object.keys(PERSONAS).filter(id=>id!==yo);
+    const elegidos = new Set();
+    el.innerHTML = `
+      <h2>¿Ves el menú de alguien más?</h2>
+      <p>Además del tuyo, elige a quién más quieres ver en este móvil (opcional).</p>
+      <div class="onboarding-grid">
+        ${otros.map(id=>`<button type="button" class="onboarding-opt" data-id="${id}">${PERSONAS[id].nombre}</button>`).join('')}
+      </div>
+      <div class="onboarding-actions">
+        <button type="button" class="primary" id="onboardingFinish">Continuar</button>
+      </div>`;
+    el.querySelectorAll('.onboarding-opt').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.dataset.id;
+        if(elegidos.has(id)){ elegidos.delete(id); btn.classList.remove('on'); }
+        else{ elegidos.add(id); btn.classList.add('on'); }
+      });
+    });
+    document.getElementById('onboardingFinish').addEventListener('click', ()=>{
+      miUsuario = yo;
+      localStorage.setItem('miUsuario', miUsuario);
+      personasVisibles = new Set([yo, ...elegidos]);
+      guardarPersonasVisibles();
+      el.style.display = 'none';
+      loadRemote();
+    });
+  };
+
+  pasoUno();
 }
 
 function fmtDate(iso){
@@ -1683,12 +1768,8 @@ function renderPersonPicker(){
     btn.addEventListener('click', ()=>{
       const id = btn.dataset.id;
       if(personasVisibles.has(id)) personasVisibles.delete(id); else personasVisibles.add(id);
-      localStorage.setItem('personasVisibles', JSON.stringify(Array.from(personasVisibles)));
-      btn.classList.toggle('on');
-      renderMenu();
-      renderNevera();
-      renderCompra();
-      renderPeso();
+      guardarPersonasVisibles();
+      render();
     });
   });
 }
@@ -1886,32 +1967,68 @@ function renderPeso(){
   });
 }
 
-function renderReminders(){
-  const el = document.getElementById('reminders');
+function renderYo(){
+  const el = document.getElementById('viewYo');
   const fmtVisita = iso => {
     const [fecha, hora] = iso.split("T");
     return hora ? `${fmtDate(fecha)} a las ${hora}` : fmtDate(fecha);
   };
-  const line = (who,n) => {
+  const personaCard = (id) => {
+    const n = efectivoNutri(id);
     const partes = [];
     if(n.proximaVisita) partes.push(`cita con la nutri el ${fmtVisita(n.proximaVisita)}`);
     if(n.inicioNuevoPlan) partes.push(`nuevo plan desde el ${fmtDate(n.inicioNuevoPlan)}`);
     if(n.finPlanActual) partes.push(`plan actual hasta el ${fmtDate(n.finPlanActual)}`);
-    if(!partes.length && !n.notaPendiente) return '';
     const nota = n.notaPendiente ? (partes.length ? ` — ${n.notaPendiente}` : n.notaPendiente) : '';
-    return `<div class="reminder ${who}">🗓️ <span><b>${PERSONAS[who].nombre}:</b> ${partes.join(' · ')}${nota}</span></div>`;
+    const resumen = (partes.length || nota) ? `${partes.join(' · ')}${nota}` : 'sin fechas registradas';
+    const notas = n.notasNutri ? `<div class="notas-nutri">${escapeHtml(n.notasNutri)}</div>` : '';
+    return `<div class="card">
+      <div class="reminder ${id}">🗓️ <span><b>${PERSONAS[id].nombre}:</b> ${resumen}</span></div>
+      ${notas}
+      <form class="nutri-edit" data-id="${id}">
+        <label>Próxima visita<input type="date" name="proximaVisita"></label>
+        <label>Inicio del plan<input type="date" name="inicioNuevoPlan"></label>
+        <button type="submit">Guardar</button>
+      </form>
+    </div>`;
   };
-  el.innerHTML = Object.keys(PERSONAS).filter(id=>NUTRI[id]).map(id=>line(id,NUTRI[id])).join('');
+  const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
+  el.innerHTML = `<div class="section-title">Quién ves</div>` +
+    `<div class="personpicker" id="personPicker"></div>` +
+    `<div class="section-title">Fechas de la nutricionista</div>` +
+    (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`);
+
+  renderPersonPicker();
+
+  el.querySelectorAll('.nutri-edit').forEach(form=>{
+    const n = efectivoNutri(form.dataset.id);
+    form.proximaVisita.value = (n.proximaVisita||'').slice(0,10);
+    form.inicioNuevoPlan.value = n.inicioNuevoPlan || '';
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const id = form.dataset.id;
+      const proximaVisita = form.proximaVisita.value || null;
+      const inicioNuevoPlan = form.inicioNuevoPlan.value || null;
+      const edit = {};
+      if(proximaVisita) edit.proximaVisita = proximaVisita;
+      if(inicioNuevoPlan) edit.inicioNuevoPlan = inicioNuevoPlan;
+      if(Object.keys(edit).length) nutriEdits[id] = edit; else delete nutriEdits[id];
+      scheduleSave();
+      renderYo();
+    });
+  });
 }
 
 function render(){
   renderDayPicker();
-  renderReminders();
-  renderPersonPicker();
   renderMenu();
   renderNevera();
   renderCompra();
   renderPeso();
+  renderYo();
+  if(miUsuario && PERSONAS[miUsuario]){
+    document.getElementById('miUsuarioLabel').innerHTML = `Hola, <b>${PERSONAS[miUsuario].nombre}</b>`;
+  }
 }
 
 document.getElementById('refreshBtn').addEventListener('click', ()=>{
@@ -1929,8 +2046,9 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
     document.getElementById('viewNevera').style.display = currentTab==='nevera' ? '' : 'none';
     document.getElementById('viewCompra').style.display = currentTab==='compra' ? '' : 'none';
     document.getElementById('viewPeso').style.display = currentTab==='peso' ? '' : 'none';
+    document.getElementById('viewYo').style.display = currentTab==='yo' ? '' : 'none';
   });
 });
 
-loadRemote();
+if(!miUsuario){ mostrarOnboarding(); } else { loadRemote(); }
 </script>
