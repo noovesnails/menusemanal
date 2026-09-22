@@ -98,6 +98,18 @@ que exista. Verifica que las cantidades de los pasos de cada versión coinciden 
 Actualiza `NUTRI[persona]` con `proximaVisita`, `inicioNuevoPlan`, `finPlanActual` según lo
 confirmado en §1, y limpia `notaPendiente` si el plan pendiente que describía ya llegó.
 
+Si el PDF trae una sección de observaciones/notas generales con algo verdaderamente específico de
+esa persona (ej. una advertencia de interacción con un alimento, no el boilerplate genérico que se
+repite en todos los planes — beber 2L de agua, cocinar a la plancha/horno, etc.), añade un campo
+`notasNutri` en `NUTRI[persona]` (pestaña "Yo" de la app, issue #24) con ese texto. No copies el
+boilerplate genérico como si fuera una nota personal.
+
+Nota: `proximaVisita`/`inicioNuevoPlan` pueden haber sido corregidos a mano desde la pestaña "Yo"
+de la app (guardados en `nutriEdits`, vía JSONBin, no en el código). Al procesar un PDF nuevo,
+actualiza igualmente `NUTRI[persona]` en el código — el override en `nutriEdits` para esa persona
+queda obsoleto y se puede ignorar (la próxima vez que alguien lo edite a mano sobrescribirá el
+valor de código de todas formas).
+
 Si en §1.4 se dio un peso, añade un registro a `peso[persona]` (pestaña Peso de la app):
 `{fecha, kg}` con la fecha de la visita, no la fecha del PDF si son distintas. No sobrescribas
 registros anteriores de esa persona; si ya existe uno para esa misma fecha, reemplázalo (evita
