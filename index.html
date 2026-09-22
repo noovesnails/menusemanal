@@ -8,6 +8,7 @@
     --pedro:#6d8a6b; --pedro-soft:#e7efe6; --nuria:#c07a3f; --nuria-soft:#f6e6d5;
     --rocio:#5b7ea6; --rocio-soft:#e4ecf5;
     --paqui:#9c6bb0; --paqui-soft:#ede3f2; --sole:#b0506b; --sole-soft:#f4e0e5;
+    --eva:#3f8f8a; --eva-soft:#dfeeed;
     --ok:#5a8c5a;
   }
   @media (prefers-color-scheme: dark){
@@ -17,6 +18,7 @@
       --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
       --rocio:#8ba9cf; --rocio-soft:#232a33;
       --paqui:#c49bd8; --paqui-soft:#332a38; --sole:#dc8a9d; --sole-soft:#38262a;
+      --eva:#6fc4be; --eva-soft:#213533;
       --ok:#7cb87c;
     }
   }
@@ -26,6 +28,7 @@
     --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
     --rocio:#8ba9cf; --rocio-soft:#232a33;
     --paqui:#c49bd8; --paqui-soft:#332a38; --sole:#dc8a9d; --sole-soft:#38262a;
+    --eva:#6fc4be; --eva-soft:#213533;
     --ok:#7cb87c;
   }
   *{box-sizing:border-box;}
@@ -45,7 +48,7 @@
   .person{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:8px;font-size:.95rem;}
   .dot{width:10px;height:10px;border-radius:50%;}
   .dot.pedro{background:var(--pedro);} .dot.nuria{background:var(--nuria);} .dot.rocio{background:var(--rocio);}
-  .dot.paqui{background:var(--paqui);} .dot.sole{background:var(--sole);}
+  .dot.paqui{background:var(--paqui);} .dot.sole{background:var(--sole);} .dot.eva{background:var(--eva);}
   .meal{margin-bottom:10px;}
   .meal:last-child{margin-bottom:0;}
   .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
@@ -104,6 +107,7 @@
   .ing-src.rocio{background:var(--rocio-soft);color:var(--rocio);}
   .ing-src.paqui{background:var(--paqui-soft);color:var(--paqui);}
   .ing-src.sole{background:var(--sole-soft);color:var(--sole);}
+  .ing-src.eva{background:var(--eva-soft);color:var(--eva);}
   .ing-src.multi{background:var(--accent-soft);color:var(--accent);}
 
   .empty{color:var(--muted);font-size:.85rem;padding:20px 4px;text-align:center;}
@@ -126,6 +130,7 @@
   .reminder.rocio{background:var(--rocio-soft);color:var(--rocio);}
   .reminder.paqui{background:var(--paqui-soft);color:var(--paqui);}
   .reminder.sole{background:var(--sole-soft);color:var(--sole);}
+  .reminder.eva{background:var(--eva-soft);color:var(--eva);}
   .reminder b{font-weight:700;}
   .personpicker{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;}
   .personchip{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.75rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);}
@@ -134,6 +139,7 @@
   .personchip.on.rocio{background:var(--rocio);border-color:var(--rocio);color:#fff;}
   .personchip.on.paqui{background:var(--paqui);border-color:var(--paqui);color:#fff;}
   .personchip.on.sole{background:var(--sole);border-color:var(--sole);color:#fff;}
+  .personchip.on.eva{background:var(--eva);border-color:var(--eva);color:#fff;}
 </style>
 
 <h1>Menú semanal</h1>
@@ -172,7 +178,8 @@ const PERSONAS = {
   nuria:{ nombre:"Nuria" },
   rocio:{ nombre:"Rocío" },
   paqui:{ nombre:"Paqui" },
-  sole:{ nombre:"Sole" }
+  sole:{ nombre:"Sole" },
+  eva:{ nombre:"Eva" }
 };
 
 /* Ciclo de dieta por persona (independientes entre sí). Lo actualiza la skill /nuevo-menu en
@@ -182,7 +189,8 @@ const NUTRI = {
   nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:"repite el menú de la semana del 7/9 hasta que llegue el nuevo plan" },
   rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null },
   paqui:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
-  sole:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null }
+  sole:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
+  eva:{ proximaVisita:null, inicioNuevoPlan:null, finPlanActual:null, notaPendiente:"falta menú, pendiente de subir" }
 };
 
 /* Opciones de desayuno/almuerzo/merienda por persona: no varían por día, la persona elige cada
@@ -1638,7 +1646,7 @@ function renderReminders(){
     if(n.inicioNuevoPlan) partes.push(`nuevo plan desde el ${fmtDate(n.inicioNuevoPlan)}`);
     if(n.finPlanActual) partes.push(`plan actual hasta el ${fmtDate(n.finPlanActual)}`);
     if(!partes.length && !n.notaPendiente) return '';
-    const nota = n.notaPendiente ? ` — ${n.notaPendiente}` : '';
+    const nota = n.notaPendiente ? (partes.length ? ` — ${n.notaPendiente}` : n.notaPendiente) : '';
     return `<div class="reminder ${who}">🗓️ <span><b>${PERSONAS[who].nombre}:</b> ${partes.join(' · ')}${nota}</span></div>`;
   };
   el.innerHTML = Object.keys(PERSONAS).filter(id=>NUTRI[id]).map(id=>line(id,NUTRI[id])).join('');
