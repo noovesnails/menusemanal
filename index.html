@@ -9,6 +9,7 @@
     --rocio:#5b7ea6; --rocio-soft:#e4ecf5;
     --paqui:#9c6bb0; --paqui-soft:#ede3f2; --sole:#b0506b; --sole-soft:#f4e0e5;
     --eva:#3f8f8a; --eva-soft:#dfeeed;
+    --marta:#a67c3d; --marta-soft:#f2e6d3;
     --ok:#5a8c5a;
   }
   @media (prefers-color-scheme: dark){
@@ -19,6 +20,7 @@
       --rocio:#8ba9cf; --rocio-soft:#232a33;
       --paqui:#c49bd8; --paqui-soft:#332a38; --sole:#dc8a9d; --sole-soft:#38262a;
       --eva:#6fc4be; --eva-soft:#213533;
+      --marta:#d4a869; --marta-soft:#362c1e;
       --ok:#7cb87c;
     }
   }
@@ -29,6 +31,7 @@
     --rocio:#8ba9cf; --rocio-soft:#232a33;
     --paqui:#c49bd8; --paqui-soft:#332a38; --sole:#dc8a9d; --sole-soft:#38262a;
     --eva:#6fc4be; --eva-soft:#213533;
+    --marta:#d4a869; --marta-soft:#362c1e;
     --ok:#7cb87c;
   }
   *{box-sizing:border-box;}
@@ -48,7 +51,7 @@
   .person{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:8px;font-size:.95rem;}
   .dot{width:10px;height:10px;border-radius:50%;}
   .dot.pedro{background:var(--pedro);} .dot.nuria{background:var(--nuria);} .dot.rocio{background:var(--rocio);}
-  .dot.paqui{background:var(--paqui);} .dot.sole{background:var(--sole);} .dot.eva{background:var(--eva);}
+  .dot.paqui{background:var(--paqui);} .dot.sole{background:var(--sole);} .dot.eva{background:var(--eva);} .dot.marta{background:var(--marta);}
   .meal{margin-bottom:10px;}
   .meal:last-child{margin-bottom:0;}
   .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
@@ -104,6 +107,7 @@
   .ing-src.paqui{background:var(--paqui-soft);color:var(--paqui);}
   .ing-src.sole{background:var(--sole-soft);color:var(--sole);}
   .ing-src.eva{background:var(--eva-soft);color:var(--eva);}
+  .ing-src.marta{background:var(--marta-soft);color:var(--marta);}
   .ing-src.multi{background:var(--accent-soft);color:var(--accent);}
 
   .empty{color:var(--muted);font-size:.85rem;padding:20px 4px;text-align:center;}
@@ -127,6 +131,7 @@
   .reminder.paqui{background:var(--paqui-soft);color:var(--paqui);}
   .reminder.sole{background:var(--sole-soft);color:var(--sole);}
   .reminder.eva{background:var(--eva-soft);color:var(--eva);}
+  .reminder.marta{background:var(--marta-soft);color:var(--marta);}
   .reminder b{font-weight:700;}
   .personpicker{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;}
   .personchip{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.75rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);}
@@ -136,6 +141,7 @@
   .personchip.on.paqui{background:var(--paqui);border-color:var(--paqui);color:#fff;}
   .personchip.on.sole{background:var(--sole);border-color:var(--sole);color:#fff;}
   .personchip.on.eva{background:var(--eva);border-color:var(--eva);color:#fff;}
+  .personchip.on.marta{background:var(--marta);border-color:var(--marta);color:#fff;}
 </style>
 
 <h1>Menú semanal</h1>
@@ -175,18 +181,20 @@ const PERSONAS = {
   rocio:{ nombre:"Rocío" },
   paqui:{ nombre:"Paqui" },
   sole:{ nombre:"Sole" },
-  eva:{ nombre:"Eva" }
+  eva:{ nombre:"Eva" },
+  marta:{ nombre:"Marta" }
 };
 
 /* Ciclo de dieta por persona (independientes entre sí). Lo actualiza la skill /nuevo-menu en
    cada visita a la nutricionista. Cualquier campo a null no se muestra en el recordatorio. */
 const NUTRI = {
   pedro:{ proximaVisita:"2026-09-30T18:00", inicioNuevoPlan:"2026-09-14", finPlanActual:"2026-09-27", notaPendiente:null },
-  nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:"repite el menú de la semana del 7/9 hasta que llegue el nuevo plan" },
-  rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:null, finPlanActual:null, notaPendiente:null },
+  nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:"2026-09-21", finPlanActual:null, notaPendiente:null },
+  rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:"2026-09-21", finPlanActual:null, notaPendiente:"confirmar próxima visita: no se dio fecha nueva, se mantuvo la anterior" },
   paqui:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
   sole:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
-  eva:{ proximaVisita:null, inicioNuevoPlan:null, finPlanActual:null, notaPendiente:"falta menú, pendiente de subir" }
+  eva:{ proximaVisita:"2026-10-05", inicioNuevoPlan:"2026-09-28", finPlanActual:null, notaPendiente:null },
+  marta:{ proximaVisita:"2026-10-02", inicioNuevoPlan:"2026-09-21", finPlanActual:null, notaPendiente:null }
 };
 
 /* Opciones de desayuno/almuerzo/merienda por persona: no varían por día, la persona elige cada
@@ -212,12 +220,24 @@ const OPCIONES = {
   },
   nuria:{
     desayuno:[
-      "1 o 2 tostadas de pan de Fibra de Mercadona + algo verde (rúcula, canónigos, perejil...) o 1 tostada de pan de masa madre de calidad",
-      "Añadir: aguacate + 1 huevo / 50g queso fresco sin lactosa / 2 lonchas de jamón serrano (máx. 2 veces/semana) / aguacate + pechuga de pollo"
+      "Café con un poco de leche sin lactosa, sin azúcar ni edulcorantes + 1 o 2 tostadas de pan de Fibra de Mercadona + algo verde (rúcula, canónigos, perejil...) + (aguacate + 1 huevo, o 50g queso fresco sin lactosa, o 2 lonchas de jamón serrano de calidad máx. 2 veces/semana, o aguacate + pechuga de pollo) + yogur natural sin lactosa con canela y kiwi o arándanos",
+      "2 huevos revueltos o tortilla francesa + 1 tostada de masa madre + kiwi",
+      "1-2 tostadas de masa madre + salmón ahumado + 1/3 aguacate + tomate",
+      "Tostada de masa madre + queso fresco sin lactosa + pechuga de pavo o pollo de buena calidad + tomate",
+      "Avena trasnochada: 30-40g de avena remojada con 2 c/s de chía toda la noche + canela + arándanos/fresas/kiwi + yogur natural sin lactosa"
+    ],
+    almuerzo:[
+      "Café con leche sin lactosa + fruta natural + frutos secos",
+      "Café con leche sin lactosa + yogur sin lactosa + fruta natural y canela"
     ],
     merienda:[
-      "Fruta + frutos secos",
-      "Yogur sin lactosa + fruta natural y canela"
+      "Infusión o té (opcional) + fruta natural + 10 almendras/avellanas o 5 nueces/nueces de Brasil",
+      "Infusión o té (opcional) + yogur natural sin lactosa con canela/cacao puro y onza de chocolate troceado + opcional fruta natural"
+    ]
+  },
+  rocio:{
+    desayuno:[
+      "Batido de crema de cacahuete (3 c/s), leche o kéfir (200ml) y fruta + 3 c/s de avena + polen"
     ]
   },
   paqui:{
@@ -237,6 +257,29 @@ const OPCIONES = {
     ],
     merienda:[
       "Fruta natural + yogur sin lactosa + opcional 5 almendras, avellanas o nueces"
+    ]
+  },
+  marta:{
+    desayuno:[
+      "Café con leche sin lactosa + 2 tostadas de pan de calidad (70g aprox.) + aguacate + elige 2 proteínas: 60g queso fresco, 100g requesón/cottage/ricotta, 50g salmón marinado, caballa, huevo o 50g hummus",
+      "Café con leche sin lactosa + avena trasnochada (4 c/s de avena + 1 c/s de frutos secos/semillas o crema de almendra con leche/kéfir/yogur) + canela/cacao puro/jengibre + fruta natural a trocitos + 1 scoop de proteína whey",
+      "Café con leche sin lactosa + bowl con 200g de yogur natural (o proteico) con canela + 1 c/s de frutos secos/semillas o crema de almendra + fruta natural"
+    ],
+    almuerzo:[
+      "Frutos secos"
+    ],
+    merienda:[
+      "Fruta natural o yogur natural (o proteico) con canela, arándanos + almendras/avellanas/nueces",
+      "Una fruta"
+    ]
+  },
+  eva:{
+    desayuno:[
+      "Café con leche semi sin lactosa + opcional unas nueces"
+    ],
+    merienda:[
+      "1 envase de yogur natural sin lactosa o de coco/almendra + canela/cacao puro al gusto (mejor si no se hacen estas tomas, solo si hace falta)",
+      "Fruta natural (si no provoca molestias) + 1 puñado de nueces"
     ]
   }
 };
@@ -650,10 +693,22 @@ const WEEK = [
         ing:["2 huevos","calabacín","50 g queso fresco"]}
     },
     nuria:{
-      comida:{title:"Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
-        ing:["1 patata pequeña","tomate natural","atún al natural","1 huevo","aceitunas negras"]},
-      cena:{title:"Puré de calabaza + hamburguesa casera de pollo 100%",
-        ing:["calabaza","pechuga de pollo picada (100%)"]}
+      comida:{title:"Dorada (150g) al vapor o papillote con calabacín y zanahoria",
+        ing:["150 g dorada","calabacín","zanahoria","1 c/s aceite de oliva"]},
+      cena:{title:"Tortilla de calabacín (2 huevos) + canónigos con tomate natural",
+        ing:["2 huevos","calabacín","canónigos","tomate natural"]}
+    },
+    rocio:{
+      comida:{title:"Merluza (160g) gratinada con bechamel y taquitos de jamón serrano (40g) + boniato o patata al airfryer",
+        ing:["160 g merluza","bechamel","40 g jamón serrano","boniato o patata"]},
+      cena:{title:"Arroz (90g peso antes de cocer) a la cubana (2 huevos)",
+        ing:["90 g arroz","2 huevos","tomate frito"]}
+    },
+    marta:{
+      comida:{title:"Garbanzo (140g) salteado con espinacas, ajo y pimentón + 50g de feta",
+        ing:["140 g garbanzo cocido","espinacas","ajo","pimentón","50 g queso feta","1 c/s aceite de oliva"]},
+      cena:{title:"Escalivada (pimiento, berenjena, cebolla) + 1 lata de bonito o caballa + 1 huevo o 1 queso tipo Burgos",
+        ing:["pimiento","berenjena","cebolla","1 lata de bonito o caballa","1 huevo o queso tipo Burgos"]}
     },
     paqui:{
       comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
@@ -683,10 +738,22 @@ const WEEK = [
         ing:["150 g bacalao","calabacín","berenjena","tomate"]}
     },
     nuria:{
-      comida:{title:"Dorada con espinacas y calabacín a la plancha",
-        ing:["dorada","espinacas","calabacín"]},
-      cena:{title:"Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos",
-        ing:["140 g solomillos de pollo o pavo","tomate","canónigos","espárragos blancos o palmitos"]}
+      comida:{title:"Pollo al wok (140g) + calabacín, champiñones, zanahoria (salsa de soja)",
+        ing:["140 g pollo","calabacín","champiñones","zanahoria","salsa de soja"]},
+      cena:{title:"Gallineta (140g) con pisto suave (calabacín, berenjena y tomate bien cocinados)",
+        ing:["140 g gallineta","calabacín","berenjena","tomate","1 c/s aceite de oliva"]}
+    },
+    rocio:{
+      comida:{title:"Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín + un chorrito de aceite de oliva",
+        ing:["60 g arroz","150 g pollo","zanahoria","calabacín","aceite de oliva"]},
+      cena:{title:"Boquerones rebozados (180g) con pisto casero",
+        ing:["180 g boquerones","harina para rebozar","pisto casero"]}
+    },
+    marta:{
+      comida:{title:"Wok de tofu (180g) con brócoli, calabacín, tomatitos cherry",
+        ing:["180 g tofu","brócoli","calabacín","tomatitos cherry","1 c/s aceite de oliva"]},
+      cena:{title:"Tortilla (2 huevos, claras a demanda) de espinacas + tomate en rodajas",
+        ing:["2 huevos","espinacas","tomate"]}
     },
     paqui:{
       comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
@@ -722,11 +789,23 @@ const WEEK = [
         ]}}}
     },
     nuria:{
-      comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
-        img:"img/nuria-salteado-verduras.jpg",
-        ing:["brócoli","calabacín","champiñones","140 g pechuga de pollo"]},
-      cena:{title:"Puré de calabaza + gallineta (150g)",
-        ing:["calabaza","150 g gallineta"]}
+      comida:{title:"Garbanzo (120g) salteado con espinacas y pimentón + 1 huevo",
+        ing:["120 g garbanzo cocido","espinacas","pimentón","1 huevo","1 c/s aceite de oliva"]},
+      cena:{title:"Crema de calabacín + pollo (130g)",
+        ing:["calabacín (para crema)","130 g pollo","1 c/s aceite de oliva"]}
+    },
+    rocio:{
+      comida:{title:"Pasta (100g) con gambas (150g peso comestible) y mascarpone",
+        recipe:{servings:"2 raciones", nutri:{steps:["Saltea las gambas con la mantequilla y unas gotitas de aceite.","Añade la cáscara del limón, el mascarpone, sal, pimienta y medio vaso de agua. Cocina 5 minutos.","Cuece la pasta en abundante agua salada, escurre y mezcla con la salsa preparada.","Decora con perejil fresco y termina con un chorrito de aceite de oliva virgen. Sirve."], ing:["120 g gambas peladas","100 g pasta","80 g mascarpone","¼ limón (solo cáscara)","5 g mantequilla","aceite de oliva virgen","sal","pimienta","perejil fresco"]}},
+        ing:["100 g pasta","150 g gambas"]},
+      cena:{title:"Caldo casero + arroz (70g) y albóndigas",
+        ing:["caldo casero","70 g arroz","albóndigas"]}
+    },
+    marta:{
+      comida:{title:"Judías verdes hervidas (o de bote) + tomates cherry + 1 huevo + 1 lata de sardinillas o caballa, escurrida + 1 patata grande (mejor hervida el día anterior)",
+        ing:["judías verdes","tomates cherry","1 huevo","1 lata de sardinillas o caballa","1 patata grande"]},
+      cena:{title:"Crema de verduras (casera) + tofu a la plancha (200g)",
+        ing:["verduras variadas (para crema)","200 g tofu"]}
     },
     paqui:{
       comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
@@ -756,11 +835,22 @@ const WEEK = [
         ing:["2 huevos","100 g gambas","50-80 g espinacas"]}
     },
     nuria:{
-      comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
-        img:"img/nuria-salmon-boniato.jpg",
-        ing:["½ boniato","calabacín","zanahoria","130 g salmón"]},
-      cena:{title:"Tortilla de calabacín",
-        ing:["calabacín","1-2 huevos (claras a demanda)"]}
+      comida:{title:"Quinoa (1 vasito) con 1 lata de caballa, tomatitos cherry, pepino, canónigos",
+        ing:["1 vasito quinoa","1 lata de caballa","tomatitos cherry","pepino","canónigos"]},
+      cena:{title:"Revuelto de 2 huevos de espinacas",
+        ing:["2 huevos","espinacas"]}
+    },
+    rocio:{
+      comida:{title:"Berenjenas rellenas (150g de carne molida, tomate triturado) + bechamel + 60g de mozzarella rallada",
+        ing:["berenjenas","150 g carne molida","tomate triturado","bechamel","60 g mozzarella rallada"]},
+      cena:{title:"Tortilla (2 huevos) de queso García Baquero semi y patata",
+        ing:["2 huevos","queso García Baquero semi","patata"]}
+    },
+    marta:{
+      comida:{title:"1 vasito de quinoa + ½ aguacate, tomatitos cherry, 100g de hummus + 1 huevo duro",
+        ing:["1 vasito quinoa","½ aguacate","tomatitos cherry","100 g hummus","1 huevo"]},
+      cena:{title:"Lubina o dorada a la plancha + verduras al gusto (brócoli, pimientos, cherrys)",
+        ing:["150 g lubina o dorada","brócoli","pimientos","tomates cherry"]}
     },
     paqui:{
       comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
@@ -790,11 +880,23 @@ const WEEK = [
         ]}}}
     },
     nuria:{
-      comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
-        img:"img/nuria-quinoa-huevo.jpg",
-        ing:["1 vasito quinoa","calabaza","espinacas","1 huevo","1 c/s semillas de calabaza"]},
-      cena:{title:"Sepia a la plancha + calabacín, zanahoria y pimientos al horno",
-        ing:["sepia","calabacín","zanahoria","pimientos"]}
+      comida:{title:"Salmón (150g) al horno con boniato (½ pequeño) y calabacín + limón y hierbas aromáticas",
+        ing:["150 g salmón","½ boniato pequeño","calabacín","limón","hierbas aromáticas","1 c/s aceite de oliva"]},
+      cena:{title:"Hamburguesa casera de pollo/pavo (130g) + berenjena y tomate asados",
+        ing:["130 g pollo o pavo (picado)","berenjena","tomate"]}
+    },
+    rocio:{
+      comida:{title:"Dorada o lubina (150g) al horno con boniato (airfryer) + guacamole (rebosante)",
+        ing:["150 g dorada o lubina","boniato","aguacate (guacamole)"]},
+      cena:{title:"Crema de calabacín y patata + Hamburguesa casera de pollo/pavo (150g)",
+        ing:["calabacín","patata","150 g pollo o pavo (picado)"]}
+    },
+    marta:{
+      comida:{title:"Lentejas (150g, pueden ser de bote) guisadas con verduras (puerro, pimiento, tomate natural, zanahoria) + 1 huevo",
+        ing:["150 g lentejas","puerro","pimiento","tomate natural","zanahoria","1 huevo"]},
+      cena:{title:"Mini pizzas de berenjena + ensalada variada a demanda",
+        recipe:{servings:"2 raciones", nutri:{steps:["Corta la berenjena en rodajas de un centímetro. Colócalas en una bandeja de horno y sazona con pimienta.","Hornea a 180°C unos 20 minutos.","Mientras, pica el ajo y el tomate, sazona con orégano y pimienta.","Retira las berenjenas del horno y cúbrelas con la salsa de tomate, los champiñones, el atún vegetal y la mozzarella.","Vuelve a hornear 10-15 minutos más."]}},
+        ing:["berenjena","tomate (triturado o concentrado)","champiñones","70 g mozzarella","atún vegetal"]}
     },
     paqui:{
       comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
@@ -831,10 +933,24 @@ const WEEK = [
         ]}}}
     },
     nuria:{
-      comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
-        ing:["140 g pollo","pimiento","berenjena","cebolla (escalivada)"]},
-      cena:{title:"Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos",
-        ing:["mejillones o clochinas","tomate","canónigos","espárragos blancos o palmitos"]}
+      comida:{title:"Caballa o sardinas al horno con limón (150g) + calabacín, zanahoria y champiñones",
+        ing:["150 g caballa o sardinas","limón","calabacín","zanahoria","champiñones","1 c/s aceite de oliva"]},
+      cena:{title:"Ensalada de calabaza asada con queso fresco sin lactosa (70g), canónigos o rúcula + 1 c/s de pipas de calabaza",
+        ing:["calabaza","70 g queso fresco sin lactosa","canónigos o rúcula","1 c/s pipas de calabaza"]}
+    },
+    rocio:{
+      comida:{title:"Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","aceite de oliva"]},
+      cena:{title:"Ñoquis cremosos con salmón, tomate y mascarpone",
+        recipe:{servings:"1 ración", nutri:{steps:["Cocina los ñoquis según las indicaciones del paquete.","Mientras, saltea el tomate con el AOVE durante 2-3 minutos.","Añade el salmón cortado en dados y cocina brevemente.","Incorpora el mascarpone y 2-3 cucharadas del agua de cocción hasta conseguir una salsa cremosa.","Añade los ñoquis, mezcla bien y sirve."], ing:["150-180 g ñoquis","80-100 g salmón sin piel ni espinas","5-6 tomates cherry (o ½ tomate pequeño)","30-40 g mascarpone","1 cdta AOVE","sal","orégano o albahaca"]}},
+        ing:["150-180 g ñoquis","80-100 g salmón","tomates cherry"]}
+    },
+    marta:{
+      comida:{title:"Berenjena o calabacín ´relleno´ de soja texturizada",
+        recipe:{servings:"2 raciones", nutri:{steps:["Lava los calabacines o berenjenas y pártelos por la mitad. Cocínalos al vapor hasta que queden blanditos, o en el microondas tapados 5-10 minutos.","Pica la cebolla y la zanahoria en trozos pequeños y sofríelas 5 minutos en una sartén con el AOVE.","Añade el tomate triturado, la soja texturizada, el agua, sal, un poco de pimentón, pimienta y canela.","Cocina removiendo de vez en cuando hasta que se evapore el líquido y quede una pasta, unos 15-20 minutos.","Rellena los calabacines/berenjenas y gratina 5 minutos."]}},
+        ing:["½ zanahoria","¼ cebolla","60 g soja texturizada fina","1 calabacín o berenjena","200 g tomate triturado","10 ml AOVE"]},
+      cena:{title:"Crema de verduras (casera) + sepia o calamar (180g)",
+        ing:["verduras variadas (para crema)","180 g sepia o calamar"]}
     },
     paqui:{
       comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
@@ -857,11 +973,22 @@ const WEEK = [
         ing:["2 huevos","1 lata de atún al natural","tomate o calabacín"]}
     },
     nuria:{
-      comida:{title:"Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
-        img:"img/nuria-corvina-tomatitos.jpg",
-        ing:["140 g corvina","tomatitos","aceitunas","perejil","ajo","hojas verdes"]},
-      cena:{title:"Tortilla de espinacas",
-        ing:["espinacas","1-2 huevos (claras a demanda)"]}
+      comida:{title:"Solomillo de pavo (150g) con pimientos y berenjena asados",
+        ing:["150 g solomillo de pavo","pimientos","berenjena","1 c/s aceite de oliva"]},
+      cena:{title:"Crema de calabaza + mejillones o berberechos a demanda",
+        ing:["calabaza (para crema)","mejillones o berberechos","1 c/s aceite de oliva"]}
+    },
+    rocio:{
+      comida:{title:"Hamburguesa de ternera con patatas al airfryer + pimientos asados",
+        ing:["hamburguesa de ternera","patatas","pimientos"]},
+      cena:{title:"Bocadillo (125g) de tortilla de calabacín (2 huevos) + 50g queso García Baquero semi",
+        ing:["125 g pan","2 huevos","calabacín","50 g queso García Baquero semi"]}
+    },
+    marta:{
+      comida:{title:"Dorada o lubina (150g) al horno con boniato (airfryer) + guacamole (rebosante)",
+        ing:["150 g dorada o lubina","boniato","aguacate (guacamole)"]},
+      cena:{title:"Revuelto de setas (2 huevos, claras a demanda)",
+        ing:["2 huevos","setas"]}
     },
     paqui:{
       comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
@@ -878,10 +1005,28 @@ const WEEK = [
   },
   { name:"Lunes", date:"2026-09-28",
     nuria:{
-      comida:{title:"Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
-        ing:["1 patata pequeña","tomate natural","atún al natural","1 huevo","aceitunas negras"]},
-      cena:{title:"Puré de calabaza + hamburguesa casera de pollo 100%",
-        ing:["calabaza","pechuga de pollo picada (100%)"]}
+      comida:{title:"Dorada (150g) al vapor o papillote con calabacín y zanahoria",
+        ing:["150 g dorada","calabacín","zanahoria","1 c/s aceite de oliva"]},
+      cena:{title:"Tortilla de calabacín (2 huevos) + canónigos con tomate natural",
+        ing:["2 huevos","calabacín","canónigos","tomate natural"]}
+    },
+    rocio:{
+      comida:{title:"Merluza (160g) gratinada con bechamel y taquitos de jamón serrano (40g) + boniato o patata al airfryer",
+        ing:["160 g merluza","bechamel","40 g jamón serrano","boniato o patata"]},
+      cena:{title:"Arroz (90g peso antes de cocer) a la cubana (2 huevos)",
+        ing:["90 g arroz","2 huevos","tomate frito"]}
+    },
+    marta:{
+      comida:{title:"Garbanzo (140g) salteado con espinacas, ajo y pimentón + 50g de feta",
+        ing:["140 g garbanzo cocido","espinacas","ajo","pimentón","50 g queso feta","1 c/s aceite de oliva"]},
+      cena:{title:"Escalivada (pimiento, berenjena, cebolla) + 1 lata de bonito o caballa + 1 huevo o 1 queso tipo Burgos",
+        ing:["pimiento","berenjena","cebolla","1 lata de bonito o caballa","1 huevo o queso tipo Burgos"]}
+    },
+    eva:{
+      comida:{title:"Berenjena \"rellena\" (al horno con 140g de carne de pollo o pavo picada, salteada con zanahoria rallada, carne de berenjena y espinacas)",
+        ing:["berenjena","140 g pollo o pavo picado","zanahoria","espinacas"]},
+      cena:{title:"Revuelto de calabacín de 2 huevos (+ claras a demanda) con orégano",
+        ing:["2 huevos","calabacín","orégano"]}
     },
     paqui:{
       comida:{title:"Acelgas salteadas con ajo + gallineta a la plancha (120g)",
@@ -898,10 +1043,28 @@ const WEEK = [
   },
   { name:"Martes", date:"2026-09-29",
     nuria:{
-      comida:{title:"Dorada con espinacas y calabacín a la plancha",
-        ing:["dorada","espinacas","calabacín"]},
-      cena:{title:"Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos",
-        ing:["140 g solomillos de pollo o pavo","tomate","canónigos","espárragos blancos o palmitos"]}
+      comida:{title:"Pollo al wok (140g) + calabacín, champiñones, zanahoria (salsa de soja)",
+        ing:["140 g pollo","calabacín","champiñones","zanahoria","salsa de soja"]},
+      cena:{title:"Gallineta (140g) con pisto suave (calabacín, berenjena y tomate bien cocinados)",
+        ing:["140 g gallineta","calabacín","berenjena","tomate","1 c/s aceite de oliva"]}
+    },
+    rocio:{
+      comida:{title:"Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín + un chorrito de aceite de oliva",
+        ing:["60 g arroz","150 g pollo","zanahoria","calabacín","aceite de oliva"]},
+      cena:{title:"Boquerones rebozados (180g) con pisto casero",
+        ing:["180 g boquerones","harina para rebozar","pisto casero"]}
+    },
+    marta:{
+      comida:{title:"Wok de tofu (180g) con brócoli, calabacín, tomatitos cherry",
+        ing:["180 g tofu","brócoli","calabacín","tomatitos cherry","1 c/s aceite de oliva"]},
+      cena:{title:"Tortilla (2 huevos, claras a demanda) de espinacas + tomate en rodajas",
+        ing:["2 huevos","espinacas","tomate"]}
+    },
+    eva:{
+      comida:{title:"Arroz basmati (60g en crudo) mezclado con canónigos + pechuga de pavo o pollo (140g) salteada con calabacín y zanahoria",
+        ing:["60 g arroz basmati","canónigos","140 g pechuga de pavo o pollo","calabacín","zanahoria"]},
+      cena:{title:"Merluza (150g) al vapor o al lekue + verduras al vapor (calabacín, zanahoria, brócoli)",
+        ing:["150 g merluza","calabacín","zanahoria","brócoli"]}
     },
     paqui:{
       comida:{title:"Pollo (120g) guisado con puerro, calabacín y tomate triturado",
@@ -918,11 +1081,29 @@ const WEEK = [
   },
   { name:"Miércoles", date:"2026-09-30",
     nuria:{
-      comida:{title:"Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
-        img:"img/nuria-salteado-verduras.jpg",
-        ing:["brócoli","calabacín","champiñones","140 g pechuga de pollo"]},
-      cena:{title:"Puré de calabaza + gallineta (150g)",
-        ing:["calabaza","150 g gallineta"]}
+      comida:{title:"Garbanzo (120g) salteado con espinacas y pimentón + 1 huevo",
+        ing:["120 g garbanzo cocido","espinacas","pimentón","1 huevo","1 c/s aceite de oliva"]},
+      cena:{title:"Crema de calabacín + pollo (130g)",
+        ing:["calabacín (para crema)","130 g pollo","1 c/s aceite de oliva"]}
+    },
+    rocio:{
+      comida:{title:"Pasta (100g) con gambas (150g peso comestible) y mascarpone",
+        recipe:{servings:"2 raciones", nutri:{steps:["Saltea las gambas con la mantequilla y unas gotitas de aceite.","Añade la cáscara del limón, el mascarpone, sal, pimienta y medio vaso de agua. Cocina 5 minutos.","Cuece la pasta en abundante agua salada, escurre y mezcla con la salsa preparada.","Decora con perejil fresco y termina con un chorrito de aceite de oliva virgen. Sirve."], ing:["120 g gambas peladas","100 g pasta","80 g mascarpone","¼ limón (solo cáscara)","5 g mantequilla","aceite de oliva virgen","sal","pimienta","perejil fresco"]}},
+        ing:["100 g pasta","150 g gambas"]},
+      cena:{title:"Caldo casero + arroz (70g) y albóndigas",
+        ing:["caldo casero","70 g arroz","albóndigas"]}
+    },
+    marta:{
+      comida:{title:"Judías verdes hervidas (o de bote) + tomates cherry + 1 huevo + 1 lata de sardinillas o caballa, escurrida + 1 patata grande (mejor hervida el día anterior)",
+        ing:["judías verdes","tomates cherry","1 huevo","1 lata de sardinillas o caballa","1 patata grande"]},
+      cena:{title:"Crema de verduras (casera) + tofu a la plancha (200g)",
+        ing:["verduras variadas (para crema)","200 g tofu"]}
+    },
+    eva:{
+      comida:{title:"Arroz basmati (60g en crudo) + langostinos (160g) o calamares salteados con zanahoria, judías verdes",
+        ing:["60 g arroz basmati","160 g langostinos o calamares","zanahoria","judías verdes"]},
+      cena:{title:"Crema de verduras (sin quesitos, sin nata) + 2 huevos (a elección)",
+        ing:["verduras variadas (para crema)","2 huevos"]}
     },
     paqui:{
       comida:{title:"Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
@@ -939,11 +1120,28 @@ const WEEK = [
   },
   { name:"Jueves", date:"2026-10-01",
     nuria:{
-      comida:{title:"½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
-        img:"img/nuria-salmon-boniato.jpg",
-        ing:["½ boniato","calabacín","zanahoria","130 g salmón"]},
-      cena:{title:"Tortilla de calabacín",
-        ing:["calabacín","1-2 huevos (claras a demanda)"]}
+      comida:{title:"Quinoa (1 vasito) con 1 lata de caballa, tomatitos cherry, pepino, canónigos",
+        ing:["1 vasito quinoa","1 lata de caballa","tomatitos cherry","pepino","canónigos"]},
+      cena:{title:"Revuelto de 2 huevos de espinacas",
+        ing:["2 huevos","espinacas"]}
+    },
+    rocio:{
+      comida:{title:"Berenjenas rellenas (150g de carne molida, tomate triturado) + bechamel + 60g de mozzarella rallada",
+        ing:["berenjenas","150 g carne molida","tomate triturado","bechamel","60 g mozzarella rallada"]},
+      cena:{title:"Tortilla (2 huevos) de queso García Baquero semi y patata",
+        ing:["2 huevos","queso García Baquero semi","patata"]}
+    },
+    marta:{
+      comida:{title:"1 vasito de quinoa + ½ aguacate, tomatitos cherry, 100g de hummus + 1 huevo duro",
+        ing:["1 vasito quinoa","½ aguacate","tomatitos cherry","100 g hummus","1 huevo"]},
+      cena:{title:"Lubina o dorada a la plancha + verduras al gusto (brócoli, pimientos, cherrys)",
+        ing:["150 g lubina o dorada","brócoli","pimientos","tomates cherry"]}
+    },
+    eva:{
+      comida:{title:"Ensalada de patata roja (1 mediana, hervida el día anterior) + atún al natural o caballa (1 lata) + 1 huevo, puñado de rúcula + calabacín, zanahoria",
+        ing:["1 patata roja mediana","1 lata de atún o caballa","1 huevo","rúcula","calabacín","zanahoria"]},
+      cena:{title:"Hervido de espinacas o acelgas + albóndigas caseras de pavo o pollo (sin pan)",
+        ing:["espinacas o acelgas","carne picada de pavo o pollo","1 huevo (para las albóndigas)"]}
     },
     paqui:{
       comida:{title:"Pechuga de pollo (120g) + espárragos a la plancha",
@@ -960,11 +1158,30 @@ const WEEK = [
   },
   { name:"Viernes", date:"2026-10-02",
     nuria:{
-      comida:{title:"Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
-        img:"img/nuria-quinoa-huevo.jpg",
-        ing:["1 vasito quinoa","calabaza","espinacas","1 huevo","1 c/s semillas de calabaza"]},
-      cena:{title:"Sepia a la plancha + calabacín, zanahoria y pimientos al horno",
-        ing:["sepia","calabacín","zanahoria","pimientos"]}
+      comida:{title:"Salmón (150g) al horno con boniato (½ pequeño) y calabacín + limón y hierbas aromáticas",
+        ing:["150 g salmón","½ boniato pequeño","calabacín","limón","hierbas aromáticas","1 c/s aceite de oliva"]},
+      cena:{title:"Hamburguesa casera de pollo/pavo (130g) + berenjena y tomate asados",
+        ing:["130 g pollo o pavo (picado)","berenjena","tomate"]}
+    },
+    rocio:{
+      comida:{title:"Dorada o lubina (150g) al horno con boniato (airfryer) + guacamole (rebosante)",
+        ing:["150 g dorada o lubina","boniato","aguacate (guacamole)"]},
+      cena:{title:"Crema de calabacín y patata + Hamburguesa casera de pollo/pavo (150g)",
+        ing:["calabacín","patata","150 g pollo o pavo (picado)"]}
+    },
+    marta:{
+      comida:{title:"Lentejas (150g, pueden ser de bote) guisadas con verduras (puerro, pimiento, tomate natural, zanahoria) + 1 huevo",
+        ing:["150 g lentejas","puerro","pimiento","tomate natural","zanahoria","1 huevo"]},
+      cena:{title:"Mini pizzas de berenjena + ensalada variada a demanda",
+        recipe:{servings:"2 raciones", nutri:{steps:["Corta la berenjena en rodajas de un centímetro. Colócalas en una bandeja de horno y sazona con pimienta.","Hornea a 180°C unos 20 minutos.","Mientras, pica el ajo y el tomate, sazona con orégano y pimienta.","Retira las berenjenas del horno y cúbrelas con la salsa de tomate, los champiñones, el atún vegetal y la mozzarella.","Vuelve a hornear 10-15 minutos más."]}},
+        ing:["berenjena","tomate (triturado o concentrado)","champiñones","70 g mozzarella","atún vegetal"]}
+    },
+    eva:{
+      comida:{title:"Pavo estofado fácil",
+        recipe:{servings:"3-4 raciones", nutri:{steps:["Lava, pela y corta las verduras (calabacín, zanahorias, chirivía, puerro) e incorpóralas a la olla exprés. Añade sal y 1 c/s de aceite y pocha 15 minutos.","Mientras, trocea el filete de pavo. Pasados los 15 minutos, agrégalo a la olla.","Añade agua hasta cubrir las verduras y sal al gusto. Cierra la olla y sube el fuego al máximo hasta que salga vapor; reduce el fuego a la mitad y cocina 15 minutos.","Apaga el fuego, retira la presión y sirve."]}},
+        ing:["600 g filete de pavo","200 g calabacín","2 zanahorias","1 chirivía","½ puerro"]},
+      cena:{title:"Crema de verduras (sin quesitos, sin nata) + lubina a la plancha (160g)",
+        ing:["verduras variadas (para crema)","160 g lubina"]}
     },
     paqui:{
       comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
@@ -981,10 +1198,23 @@ const WEEK = [
   },
   { name:"Sábado", date:"2026-10-03",
     nuria:{
-      comida:{title:"Pollo a la plancha o asado (140g) + escalivada",
-        ing:["140 g pollo","pimiento","berenjena","cebolla (escalivada)"]},
-      cena:{title:"Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos",
-        ing:["mejillones o clochinas","tomate","canónigos","espárragos blancos o palmitos"]}
+      comida:{title:"Caballa o sardinas al horno con limón (150g) + calabacín, zanahoria y champiñones",
+        ing:["150 g caballa o sardinas","limón","calabacín","zanahoria","champiñones","1 c/s aceite de oliva"]},
+      cena:{title:"Ensalada de calabaza asada con queso fresco sin lactosa (70g), canónigos o rúcula + 1 c/s de pipas de calabaza",
+        ing:["calabaza","70 g queso fresco sin lactosa","canónigos o rúcula","1 c/s pipas de calabaza"]}
+    },
+    rocio:{
+      comida:{title:"Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        ing:["60 g arroz","80 g calamar","80 g gambas","mejillones o almejas","judía verde","aceite de oliva"]},
+      cena:{title:"Ñoquis cremosos con salmón, tomate y mascarpone",
+        recipe:{servings:"1 ración", nutri:{steps:["Cocina los ñoquis según las indicaciones del paquete.","Mientras, saltea el tomate con el AOVE durante 2-3 minutos.","Añade el salmón cortado en dados y cocina brevemente.","Incorpora el mascarpone y 2-3 cucharadas del agua de cocción hasta conseguir una salsa cremosa.","Añade los ñoquis, mezcla bien y sirve."], ing:["150-180 g ñoquis","80-100 g salmón sin piel ni espinas","5-6 tomates cherry (o ½ tomate pequeño)","30-40 g mascarpone","1 cdta AOVE","sal","orégano o albahaca"]}},
+        ing:["150-180 g ñoquis","80-100 g salmón","tomates cherry"]}
+    },
+    eva:{
+      comida:{title:"Hamburguesa de ternera 100% + ensalada a demanda (hojas verdes, pepino, zanahoria cruda, espárragos con precaución)",
+        ing:["hamburguesa de ternera 100%","hojas verdes","pepino","zanahoria","espárragos"]},
+      cena:{title:"Sepia o calamar a la plancha (150g) + calabacín y berenjena al horno",
+        ing:["150 g sepia o calamar","calabacín","berenjena"]}
     },
     paqui:{
       comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
@@ -1001,11 +1231,22 @@ const WEEK = [
   },
   { name:"Domingo", date:"2026-10-04",
     nuria:{
-      comida:{title:"Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
-        img:"img/nuria-corvina-tomatitos.jpg",
-        ing:["140 g corvina","tomatitos","aceitunas","perejil","ajo","hojas verdes"]},
-      cena:{title:"Tortilla de espinacas",
-        ing:["espinacas","1-2 huevos (claras a demanda)"]}
+      comida:{title:"Solomillo de pavo (150g) con pimientos y berenjena asados",
+        ing:["150 g solomillo de pavo","pimientos","berenjena","1 c/s aceite de oliva"]},
+      cena:{title:"Crema de calabaza + mejillones o berberechos a demanda",
+        ing:["calabaza (para crema)","mejillones o berberechos","1 c/s aceite de oliva"]}
+    },
+    rocio:{
+      comida:{title:"Hamburguesa de ternera con patatas al airfryer + pimientos asados",
+        ing:["hamburguesa de ternera","patatas","pimientos"]},
+      cena:{title:"Bocadillo (125g) de tortilla de calabacín (2 huevos) + 50g queso García Baquero semi",
+        ing:["125 g pan","2 huevos","calabacín","50 g queso García Baquero semi"]}
+    },
+    eva:{
+      comida:{title:"Dorada al horno (150g) + verduras al horno: 1 patata, berenjena, calabacín",
+        ing:["150 g dorada","1 patata","berenjena","calabacín"]},
+      cena:{title:"Judías verdes salteadas con jamón serrano + 1 huevo",
+        ing:["judías verdes","jamón serrano","1 huevo"]}
     },
     paqui:{
       comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
