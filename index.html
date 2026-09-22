@@ -1169,7 +1169,7 @@ const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
 
 let remoteRecord = {};   // contenido completo del bin (no tocar claves ajenas)
 let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
-let itemsSueltos = [];   // [{id, nombre, comprado}] artículos de compra que no vienen del menú
+let itemsSueltos = {};   // { "2026-09-07": [{id, nombre, comprado}] } artículos sueltos por día de compra
 let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por persona
 let saveTimer = null;
 
@@ -1177,6 +1177,18 @@ function setSync(state, text){
   const dot = document.getElementById('syncDot');
   dot.className = 'syncdot' + (state ? ' '+state : '');
   document.getElementById('syncText').textContent = text;
+}
+
+/* Migra el formato antiguo de itemsSueltos (lista única global, sin fecha) al nuevo formato por
+   día: los artículos ya guardados se asignan al día de hoy, la única fecha que tiene sentido
+   suponer sin inventar una. */
+function migrarItemsSueltos(raw){
+  if(Array.isArray(raw)) return raw.length ? { [todayISOReal()]: raw } : {};
+  return raw || {};
+}
+function todayISOReal(){
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
 }
 
 async function loadRemote(){
@@ -1187,13 +1199,13 @@ async function loadRemote(){
     const data = await res.json();
     remoteRecord = data.record || {};
     checks = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checks) || {};
-    itemsSueltos = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos) || [];
+    itemsSueltos = migrarItemsSueltos(remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos);
     peso = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.peso) || {};
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
     try{ checks = JSON.parse(localStorage.getItem('menuSemanalChecks')||'{}'); }catch(_){ checks = {}; }
-    try{ itemsSueltos = JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'[]'); }catch(_){ itemsSueltos = []; }
+    try{ itemsSueltos = migrarItemsSueltos(JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'{}')); }catch(_){ itemsSueltos = {}; }
     try{ peso = JSON.parse(localStorage.getItem('menuSemanalPeso')||'{}'); }catch(_){ peso = {}; }
     setSync('err', 'Sin conexión (guardado local)');
   }
@@ -1471,6 +1483,7 @@ function renderCompra(){
   const dayChecks = checks[day.date] || {};
   const toBuy = items.filter(({key})=>!dayChecks[key]);
   const el = document.getElementById('viewCompra');
+  const sueltosHoy = itemsSueltos[day.date] || [];
   el.innerHTML = `<div class="section-title">Por comprar hoy</div>` +
     (toBuy.length===0
       ? `<div class="empty">Todo lo de este día ya está en la nevera 🎉</div>`
@@ -1480,13 +1493,13 @@ function renderCompra(){
             <label>${item}</label>
             <span class="ing-src ${origen(who).cls}">${origen(who).label}</span>
           </div>`).join('')}</div>`) +
-    `<div class="section-title">Otros</div>` +
+    `<div class="section-title">Otros (de hoy)</div>` +
     `<div class="card">
       <form id="sueltoForm" class="suelto-form">
         <input type="text" id="sueltoInput" placeholder="Añadir artículo (papel higiénico...)" autocomplete="off">
         <button type="submit">Añadir</button>
       </form>
-      ${itemsSueltos.length ? itemsSueltos.map(it=>`
+      ${sueltosHoy.length ? sueltosHoy.map(it=>`
         <div class="ing-row suelto-row ${it.comprado?'checked':''}">
           <input type="checkbox" data-id="${it.id}" ${it.comprado?'checked':''}>
           <label>${escapeHtml(it.nombre)}</label>
@@ -1500,20 +1513,22 @@ function renderCompra(){
     const input = document.getElementById('sueltoInput');
     const nombre = input.value.trim();
     if(!nombre) return;
-    itemsSueltos.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), nombre, comprado:false });
+    itemsSueltos[day.date] = itemsSueltos[day.date] || [];
+    itemsSueltos[day.date].push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), nombre, comprado:false });
     scheduleSave();
     renderCompra();
   });
   el.querySelectorAll('.suelto-row input[type=checkbox]').forEach(cb=>{
     cb.addEventListener('change', ()=>{
-      const it = itemsSueltos.find(x=>x.id===cb.dataset.id);
+      const it = sueltosHoy.find(x=>x.id===cb.dataset.id);
       if(it){ it.comprado = cb.checked; scheduleSave(); }
       cb.closest('.ing-row').classList.toggle('checked', cb.checked);
     });
   });
   el.querySelectorAll('.suelto-del').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      itemsSueltos = itemsSueltos.filter(x=>x.id!==btn.dataset.id);
+      itemsSueltos[day.date] = (itemsSueltos[day.date]||[]).filter(x=>x.id!==btn.dataset.id);
+      if(itemsSueltos[day.date].length===0) delete itemsSueltos[day.date];
       scheduleSave();
       renderCompra();
     });
