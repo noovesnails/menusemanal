@@ -66,20 +66,16 @@
   .recipe-body{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);}
   .recipe-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
   .recipe-servings{font-size:.78rem;color:var(--muted);}
-  .recipe-mode{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px;}
-  .recipe-mode.thermomix{background:var(--line);color:var(--ink);}
-  .recipe-mode.manual{background:var(--line);color:var(--muted);}
+  .recipe-mode{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px;background:var(--line);color:var(--ink);}
   .recipe-subtitle{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 4px;}
   .recipe-ing,.recipe-steps{margin:0;padding-left:1.15rem;font-size:.85rem;line-height:1.5;}
   .recipe-ing li,.recipe-steps li{margin-bottom:3px;}
 
   .section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 4px 8px;}
-  .recipe-toggle{display:flex;align-items:center;gap:10px;margin:0 4px 14px;font-size:.85rem;color:var(--muted);}
-  .toggle-switch{position:relative;display:flex;width:180px;height:34px;border-radius:17px;background:var(--line);border:none;padding:2px;cursor:pointer;}
-  .toggle-opt{flex:1;z-index:1;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:600;color:var(--muted);}
-  .toggle-switch.manual .toggle-opt:last-child,.toggle-switch.thermomix .toggle-opt:first-child{color:var(--ink);}
-  .toggle-thumb{position:absolute;top:2px;left:2px;width:calc(50% - 2px);height:calc(100% - 4px);border-radius:15px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.15);transition:transform .2s ease;}
-  .toggle-switch.manual .toggle-thumb{transform:translateX(100%);}
+  .recipe-toggle{display:flex;align-items:center;gap:10px;margin:0 4px 14px;font-size:.85rem;color:var(--muted);flex-wrap:wrap;}
+  .receta-toggle{display:flex;border-radius:17px;background:var(--line);padding:2px;gap:2px;}
+  .receta-opt{flex:1;border:none;background:none;border-radius:15px;padding:8px 10px;font-size:.72rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;}
+  .receta-opt.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15);}
   .ing-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);}
   .ing-row:last-child{border-bottom:none;}
   .ing-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);flex:0 0 auto;}
@@ -331,7 +327,7 @@ const WEEK = [
         ]}}},
       cena:{title:"Revuelto cremoso con queso + crema de puerro y patata",
         ing:["3 huevos","30 g queso curado rallado","puerro","patata (para la crema)"],
-        recipe:{servings:"2 raciones", manual:{steps:[
+        recipe:{servings:"2 raciones", tradicional:{steps:[
           "Crema de puerro y patata: cuece el puerro y la patata troceados en agua con sal hasta que estén muy tiernos.",
           "Escurre (reservando un poco del caldo de cocción) y tritura con un chorrito de aceite de oliva hasta obtener una crema fina, aligerando con el caldo reservado si hace falta.",
           "Revuelto: bate ligeramente los huevos.",
@@ -352,7 +348,7 @@ const WEEK = [
     pedro:{
       comida:{title:"Pasta con almejas",
         ing:["160 g pasta","500 g almejas","½ puerro","2 c/s aceite de oliva","1 vaso caldo de pescado","perejil"],
-        recipe:{servings:"2 raciones", manual:{steps:[
+        recipe:{servings:"2 raciones", tradicional:{steps:[
           "Deja las almejas en agua con sal 1-2 horas para que suelten la arena.",
           "Sofríe el puerro picado lentamente en el aceite de oliva.",
           "Añade las almejas y el caldo de pescado, y tapa hasta que se abran.",
@@ -395,7 +391,7 @@ const WEEK = [
     pedro:{
       comida:{title:"Cocido nutritivo (morcillo, pollo, huesos, patas de pollo)",
         ing:["morcillo","pollo","huesos","patas de pollo","zanahoria","puerro"],
-        recipe:{servings:"sin ración especificada en el plan original", manual:{steps:[
+        recipe:{servings:"sin ración especificada en el plan original", tradicional:{steps:[
           "Cubre todos los ingredientes (morcillo, pollo, huesos, patas de pollo, zanahoria y puerro) con agua en una olla grande.",
           "Cocina a fuego lento durante 3-4 horas, espumando de vez en cuando.",
           "Cuela el caldo.",
@@ -475,7 +471,7 @@ const WEEK = [
     pedro:{
       comida:{title:"Pasta (60g) con gambas (150g peso comestible) + almejas y calabacín",
         ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"],
-        recipe:{servings:"1 ración (según las cantidades del plan)", manual:{steps:[
+        recipe:{servings:"1 ración (según las cantidades del plan)", tradicional:{steps:[
           "Sofríe el calabacín troceado en una sartén con un poco de aceite.",
           "Añade las almejas (previamente en remojo con sal 1-2 horas) y las gambas, y saltea unos minutos.",
           "Incorpora un chorrito de agua o caldo, tapa y cocina hasta que las almejas se abran.",
@@ -709,7 +705,7 @@ const WEEK = [
     pedro:{
       comida:{title:"Pasta (60g) con gambas (150g peso comestible) + almejas y calabacín",
         ing:["60 g pasta","150 g gambas","almejas","calabacín","1 c/s aceite de oliva"],
-        recipe:{servings:"1 ración (según las cantidades del plan)", manual:{steps:[
+        recipe:{servings:"1 ración (según las cantidades del plan)", tradicional:{steps:[
           "Sofríe el calabacín troceado en una sartén con un poco de aceite.",
           "Añade las almejas (previamente en remojo con sal 1-2 horas) y las gambas, y saltea unos minutos.",
           "Incorpora un chorrito de agua o caldo, tapa y cocina hasta que las almejas se abran.",
@@ -1261,7 +1257,19 @@ function todayIndex(){
 }
 let currentDay = todayIndex();
 let currentTab = 'menu';
-let modoReceta = localStorage.getItem('modoReceta') === 'manual' ? 'manual' : 'thermomix';
+const MODOS_RECETA = { thermomix:'Thermomix TM7', nutri:'Receta nutri', tradicional:'Tradicional' };
+let modoReceta = MODOS_RECETA[localStorage.getItem('modoReceta')] ? localStorage.getItem('modoReceta') : 'thermomix';
+
+/* Resuelve qué versión de `recipe` mostrar/usar: la elegida si existe, si no la primera
+   disponible en este orden. Un plato con una sola versión se ve igual sin importar el
+   interruptor — no hace falta lógica especial para ese caso. */
+function resolverReceta(recipe, modo){
+  const orden = [modo, 'thermomix', 'nutri', 'tradicional'];
+  for(const m of orden){
+    if(recipe[m]) return { mode:m, version:recipe[m] };
+  }
+  return null;
+}
 
 /* personas visibles en la vista Menú, por defecto todas las que tengan al menos un plato en WEEK */
 let personasVisibles;
@@ -1325,7 +1333,9 @@ function fridgeItems(day){
   Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id)).forEach(who=>{
     const person = day[who];
     ["comida","cena"].forEach(meal=>{
-      person[meal].ing.forEach(item=>{
+      const m = person[meal];
+      const ing = (m.recipe && resolverReceta(m.recipe, modoReceta).version.ing) || m.ing;
+      ing.forEach(item=>{
         const {nombre, cantidad} = normalizarIngrediente(item);
         if(!map.has(nombre)) map.set(nombre, {cantidades:new Set(), who:new Set()});
         const entry = map.get(nombre);
@@ -1376,20 +1386,20 @@ function renderMenu(){
         <div class="meal-title">${m.title}</div>
       </div>
       ${m.recipe ? (()=>{
-        const version = m.recipe[modoReceta] || m.recipe.thermomix || m.recipe.manual;
-        const mode = m.recipe[modoReceta] ? modoReceta : (m.recipe.thermomix ? 'thermomix' : 'manual');
+        const r = resolverReceta(m.recipe, modoReceta);
+        const ing = r.version.ing || m.ing;
         return `
       <details class="recipe">
         <summary class="recipe-btn">Receta</summary>
         <div class="recipe-body">
           <div class="recipe-meta">
             <span class="recipe-servings">${m.recipe.servings}</span>
-            <span class="recipe-mode ${mode}">${mode==='thermomix' ? 'Thermomix TM7' : 'Manual'}</span>
+            <span class="recipe-mode">${MODOS_RECETA[r.mode]}</span>
           </div>
           <div class="recipe-subtitle">Ingredientes</div>
-          <ul class="recipe-ing">${m.ing.map(i=>`<li>${i}</li>`).join('')}</ul>
+          <ul class="recipe-ing">${ing.map(i=>`<li>${i}</li>`).join('')}</ul>
           <div class="recipe-subtitle">Preparación</div>
-          <ol class="recipe-steps">${version.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+          <ol class="recipe-steps">${r.version.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
         </div>
       </details>`;
       })() : ''}
@@ -1450,11 +1460,9 @@ function renderNevera(){
   el.innerHTML = `<div class="section-title">Marca lo que ya tienes en la nevera</div>` +
     `<div class="recipe-toggle">
       <span>Recetas:</span>
-      <button class="toggle-switch ${modoReceta}" id="recetaSwitch" role="switch" aria-checked="${modoReceta==='manual'}">
-        <span class="toggle-opt">Thermomix</span>
-        <span class="toggle-opt">Manual</span>
-        <span class="toggle-thumb"></span>
-      </button>
+      <div class="receta-toggle" role="radiogroup">
+        ${Object.keys(MODOS_RECETA).map(m=>`<button type="button" class="receta-opt ${m===modoReceta?'on':''}" data-modo="${m}" role="radio" aria-checked="${m===modoReceta}">${MODOS_RECETA[m]}</button>`).join('')}
+      </div>
     </div>` +
     `<div class="card">` +
     items.map(({item,key,who})=>{
@@ -1477,11 +1485,14 @@ function renderNevera(){
     });
   });
 
-  document.getElementById('recetaSwitch').addEventListener('click', ()=>{
-    modoReceta = modoReceta === 'thermomix' ? 'manual' : 'thermomix';
-    localStorage.setItem('modoReceta', modoReceta);
-    renderNevera();
-    renderMenu();
+  el.querySelectorAll('.receta-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      modoReceta = btn.dataset.modo;
+      localStorage.setItem('modoReceta', modoReceta);
+      renderNevera();
+      renderMenu();
+      renderCompra();
+    });
   });
 }
 
