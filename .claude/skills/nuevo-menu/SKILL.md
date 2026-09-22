@@ -74,9 +74,24 @@ preocuparse por duplicados entre personas, solo por no inventar cantidades.
 
 Si el plato es **elaborado** (guiso, arroz meloso, cocido, crema con técnica — no un simple
 "proteína a la plancha/horno/vapor + verdura simple"), añade
-`recipe:{servings, thermomix:{steps:[...]}, manual:{steps:[...]}}` (solo las versiones que
-realmente apliquen — no hace falta inventar la otra). Verifica que las cantidades de los pasos
-coinciden con las de `ing`.
+`recipe:{servings, thermomix?:{steps,ing?}, nutri?:{steps,ing?}, tradicional?:{steps,ing?}}`
+(issue #23 — interruptor de 3 vías en Nevera):
+
+- **`nutri`**: si el propio PDF trae una receta completa para ese plato ("receta a continuación",
+  con sus ingredientes y pasos tal cual los escribió la nutricionista), transcríbela aquí sin
+  reformular. Si sus ingredientes difieren de la lista simplificada de `ing` del plato (p. ej. trae
+  mascarpone, mantequilla, limón que no estaban en `ing`), añade también `nutri.ing` con la lista
+  real de esa receta — si no difieren, no hace falta repetirla.
+- **`thermomix`**: receta con técnica y programación real de Thermomix TM7, cuando la preparación lo
+  permita razonablemente.
+- **`tradicional`**: una receta real buscada en internet para ese mismo plato (no inventada desde
+  cero) — la alternativa para quien no tiene Thermomix ni sigue la versión de la nutri. Solo hace
+  falta buscarla si el plato no tiene ya al menos una versión utilizable; no es obligatorio rellenar
+  las 3 para cada plato.
+
+No hace falta que un plato tenga las 3 versiones — el interruptor de la app hace fallback solo a la
+que exista. Verifica que las cantidades de los pasos de cada versión coinciden con las de su propio
+`ing` (o con el `ing` general del plato si esa versión no tiene uno propio).
 
 ## §5 — NUTRI y peso
 
