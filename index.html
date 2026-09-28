@@ -1798,6 +1798,46 @@ function efectivoNutri(id){
   return Object.assign({}, NUTRI[id], nutriEdits[id]);
 }
 
+const NOMBRES_DIA_SEMANA = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+/* El principio y fin de cada plan se definían antes cargando el PDF correspondiente; ahora se
+   editan desde "Yo" (finPlanActual). Si alguien amplía su fecha de fin más allá de su último día
+   de menú real, aquí se completa el hueco repitiendo en bucle su propia rotación de comidas ya
+   conocida — así ampliar la fecha amplía también el menú, sin depender de cargar un plan nuevo.
+   Idempotente: solo añade lo que falta, nunca pisa un día real ya existente. Se llama al principio
+   de render(), así se reaplica cada vez que cambian nutriEdits (carga de JSONBin, o al guardar). */
+function extenderMenusSegunPlan(){
+  let tocado = false;
+  Object.keys(PERSONAS).forEach(id=>{
+    const diasPersona = WEEK.filter(d=>d[id]).sort((a,b)=>a.date.localeCompare(b.date));
+    if(!diasPersona.length) return;
+    const finPlan = efectivoNutri(id).finPlanActual;
+    if(!finPlan) return;
+    const rotacion = diasPersona.map(d=>d[id]);
+    const inicio = new Date(diasPersona[0].date+"T00:00:00");
+    const ultimoReal = new Date(diasPersona[diasPersona.length-1].date+"T00:00:00");
+    const fin = new Date(finPlan.slice(0,10)+"T00:00:00");
+    if(fin <= ultimoReal) return;
+    for(const t = new Date(ultimoReal); t <= fin; t.setDate(t.getDate()+1)){
+      if(t.getTime() === ultimoReal.getTime()) continue;
+      const fechaISO = t.getFullYear() + "-" + String(t.getMonth()+1).padStart(2,'0') + "-" + String(t.getDate()).padStart(2,'0');
+      let diaWeek = WEEK.find(d=>d.date===fechaISO);
+      if(!diaWeek){
+        diaWeek = { name: NOMBRES_DIA_SEMANA[t.getDay()], date: fechaISO };
+        WEEK.push(diaWeek);
+        tocado = true;
+      }
+      if(!diaWeek[id]){
+        const diasDesdeInicio = Math.round((t - inicio) / 86400000);
+        const indice = ((diasDesdeInicio % rotacion.length) + rotacion.length) % rotacion.length;
+        diaWeek[id] = rotacion[indice];
+        tocado = true;
+      }
+    }
+  });
+  if(tocado) WEEK.sort((a,b)=>a.date.localeCompare(b.date));
+}
+
 function mostrarOnboarding(){
   const el = document.getElementById('onboarding');
   el.style.display = 'block';
@@ -2573,6 +2613,7 @@ function renderYo(){
 }
 
 function render(){
+  extenderMenusSegunPlan();
   renderDayPicker();
   renderMenu();
   renderNevera();
