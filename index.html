@@ -140,6 +140,8 @@
   .nutri-edit button{border:none;border-radius:8px;padding:8px 12px;font-size:.8rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;align-self:flex-end;}
   .notas-nutri{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:10px;font-size:.8rem;line-height:1.4;color:var(--ink);white-space:pre-wrap;}
   .app-version{text-align:center;font-size:.68rem;color:var(--muted);opacity:.6;padding:24px 0 8px;}
+  .changelog{display:flex;flex-direction:column;gap:6px;padding:0 16px 24px;font-size:.78rem;color:var(--muted);}
+  .changelog-item b{color:var(--ink);margin-right:4px;}
   .onboarding{position:fixed;inset:0;background:var(--bg);z-index:100;padding:24px 20px;overflow-y:auto;}
   .onboarding h2{font-size:1.05rem;margin:0 0 6px;}
   .onboarding p{font-size:.85rem;color:var(--muted);margin:0 0 18px;}
@@ -192,7 +194,30 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v1.0.0";
+const APP_VERSION = "v1.1.0";
+
+/* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
+   aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
+   de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
+const CHANGELOG = [
+  { fecha:"2026-09-28", texto:"Este historial de mejoras, al final de la pestaña Yo." },
+  { fecha:"2026-09-28", texto:"Número de versión de la app visible al final de la pantalla." },
+  { fecha:"2026-09-28", texto:"Se puede marcar como comprado cada ingrediente del menú directamente desde la pestaña Compra." },
+  { fecha:"2026-09-28", texto:"Reordenada la sección \"Otros\" de la Compra: la lista va encima del formulario para añadir." },
+  { fecha:"2026-09-28", texto:"La fecha de fin de plan de cada persona se puede editar desde la pestaña Yo." },
+  { fecha:"2026-09-22", texto:"Onboarding al entrar por primera vez y pestaña \"Yo\" con gestión de personas, fechas de la nutricionista y notas." },
+  { fecha:"2026-09-22", texto:"Selector de receta de 3 vías (Thermomix / receta de la nutri / tradicional), cada una con sus propios ingredientes." },
+  { fecha:"2026-09-22", texto:"Los artículos sueltos de la compra son por día, ya no se mezclan entre días distintos." },
+  { fecha:"2026-09-22", texto:"Se pueden borrar registros de peso ya guardados." },
+  { fecha:"2026-09-15", texto:"Seguimiento de la progresión de peso por persona, con gráfica." },
+  { fecha:"2026-09-15", texto:"Se pueden añadir artículos sueltos a la lista de la compra." },
+  { fecha:"2026-09-15", texto:"Interruptor global Thermomix/Manual en la pantalla Nevera." },
+  { fecha:"2026-09-15", texto:"Tarjetas de desayuno, almuerzo y merienda con varias opciones a elegir." },
+  { fecha:"2026-09-15", texto:"Selector de qué personas mostrar en el Menú." },
+  { fecha:"2026-09-15", texto:"Los ingredientes duplicados de la lista de la compra se fusionan en uno solo." },
+  { fecha:"2026-09-15", texto:"El menú se generalizó a varias personas, incorporando a Rocío." },
+  { fecha:"2026-09-06", texto:"Botón de receta (Thermomix TM7 o manual) en los platos elaborados." },
+];
 
 /* Nombre legible y color de cada persona. Añadir aquí una entrada al incorporar a alguien nuevo
    (y su par --id/--id-soft en las variables CSS de :root). */
@@ -2026,7 +2051,9 @@ function renderYo(){
     `<div class="personpicker" id="personPicker"></div>` +
     `<div class="section-title">Fechas de la nutricionista</div>` +
     (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
-    `<div class="app-version">Menú semanal · ${APP_VERSION}</div>`;
+    `<div class="app-version">Menú semanal · ${APP_VERSION}</div>` +
+    `<div class="section-title">Qué ha cambiado</div>` +
+    `<div class="changelog">${CHANGELOG.map(c=>`<div class="changelog-item"><b>${fmtDate(c.fecha)}</b> ${escapeHtml(c.texto)}</div>`).join('')}</div>`;
 
   renderPersonPicker();
 
