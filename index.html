@@ -121,7 +121,9 @@
   .syncdot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
   .syncdot.ok{background:var(--ok);}
   .syncdot.err{background:var(--accent);}
-  .refresh-btn{margin-left:auto;background:none;border:none;color:var(--muted);font-size:.72rem;padding:2px 4px;cursor:pointer;display:flex;align-items:center;gap:3px;}
+  .refresh-btn{margin-left:auto;background:none;border:none;color:var(--muted);font-size:.72rem;padding:2px 8px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:3px;transition:background-color .2s,color .2s;}
+  .refresh-btn.pending{background:var(--accent);color:#fff;}
+  .refresh-btn.done{background:var(--ok);color:#fff;}
   .reminders{padding:0 0 10px;display:flex;flex-direction:column;gap:6px;}
   .reminder{border-radius:12px;padding:8px 12px;font-size:.78rem;display:flex;align-items:center;gap:8px;}
   .reminder.pedro{background:var(--pedro-soft);color:var(--pedro);}
@@ -1451,11 +1453,16 @@ let itemsSueltos = {};   // { "2026-09-07": [{id, nombre, comprado}] } artículo
 let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por persona
 let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
 let saveTimer = null;
+let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
 
 function setSync(state, text){
   const dot = document.getElementById('syncDot');
   dot.className = 'syncdot' + (state ? ' '+state : '');
   document.getElementById('syncText').textContent = text;
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.toggle('pending', syncPending);
+  btn.classList.toggle('done', !syncPending);
+  btn.textContent = syncPending ? '🔄 Actualizar' : '✓ Actualizado';
 }
 
 /* Migra el formato antiguo de itemsSueltos (lista única global, sin fecha) al nuevo formato por
@@ -1498,12 +1505,14 @@ function scheduleSave(){
   localStorage.setItem('menuSemanalItemsSueltos', JSON.stringify(itemsSueltos));
   localStorage.setItem('menuSemanalPeso', JSON.stringify(peso));
   localStorage.setItem('menuSemanalNutriEdits', JSON.stringify(nutriEdits));
+  syncPending = true;
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
   saveTimer = setTimeout(saveRemote, 700);
 }
 
 async function saveRemote(){
+  clearTimeout(saveTimer);
   try{
     remoteRecord.menuSemanal = remoteRecord.menuSemanal || {};
     remoteRecord.menuSemanal.checks = checks;
@@ -1517,11 +1526,29 @@ async function saveRemote(){
       body: JSON.stringify(remoteRecord)
     });
     if(!res.ok) throw new Error("HTTP "+res.status);
+    syncPending = false;
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo guardar en JSONBin", e);
+    // syncPending sigue en true: hay cambios locales sin confirmar en el servidor (sin conexión,
+    // o error puntual) y el botón de Actualizar se queda en rojo para poder reintentar a mano.
     setSync('err', 'Guardado solo en local');
   }
+}
+
+/* Fuerza el guardado inmediato saltándose el debounce de 700ms: se usa al ocultar la app (para no
+   perder un cambio hecho justo antes de cambiar de pestaña) y al pulsar "Actualizar" a mano. */
+function flushPendingSave(){
+  if(!syncPending) return Promise.resolve();
+  clearTimeout(saveTimer);
+  return saveRemote();
+}
+
+/* Repasa JSONBin por si el otro móvil ha cambiado algo, sin que nadie tenga que pulsar nada.
+   Se salta si hay cambios locales sin confirmar todavía, para no perderlos por una recarga. */
+function autoPullIfIdle(){
+  if(syncPending) return;
+  loadRemote();
 }
 
 /* ---------- ESTADO UI ---------- */
@@ -2064,12 +2091,23 @@ function render(){
   }
 }
 
-document.getElementById('refreshBtn').addEventListener('click', ()=>{
+document.getElementById('refreshBtn').addEventListener('click', async ()=>{
+  await flushPendingSave();
   // el acceso directo de iPhone (Añadir a pantalla de inicio) cachea la página de forma muy
   // agresiva y no comprueba si hay una versión nueva; cambiar la URL con un parámetro nuevo
   // obliga al navegador a pedirla de la red en vez de servir la copia cacheada.
   location.href = location.pathname + '?v=' + Date.now();
 });
+
+/* Si el móvil se queda sin conexión justo tras un cambio, o se cambia de pestaña antes de que
+   pasen los 700ms del debounce, esto evita perder ese cambio; y al volver a la app se repasa
+   JSONBin por si el otro móvil ha actualizado algo mientras tanto. */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden) flushPendingSave();
+  else autoPullIfIdle();
+});
+window.addEventListener('pagehide', flushPendingSave);
+setInterval(()=>{ if(document.visibilityState === 'visible') autoPullIfIdle(); }, 30000);
 
 document.querySelectorAll('nav .tab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
