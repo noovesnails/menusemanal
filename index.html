@@ -2094,7 +2094,15 @@ function renderYo(){
     form.addEventListener('submit', (e)=>{
       e.preventDefault();
       const id = form.dataset.id;
-      const proximaVisita = form.proximaVisita.value || null;
+      // El input es <input type="date">: solo puede mostrar/editar la fecha, nunca la hora. Si la
+      // fecha no ha cambiado respecto a la ya guardada, se conserva el valor completo original
+      // (con hora, si la tenía) en vez del truncado del formulario — si no, cada envío del
+      // formulario (aunque solo se tocara otro campo) borraba silenciosamente la hora de la cita.
+      const fechaOriginal = (efectivoNutri(id).proximaVisita || '').slice(0,10);
+      const fechaForm = form.proximaVisita.value || null;
+      const proximaVisita = fechaForm
+        ? (fechaForm === fechaOriginal ? efectivoNutri(id).proximaVisita : fechaForm)
+        : null;
       const inicioNuevoPlan = form.inicioNuevoPlan.value || null;
       const finPlanActual = form.finPlanActual.value || null;
       const edit = {};
