@@ -1841,10 +1841,19 @@ function extenderMenusSegunPlan(){
   Object.keys(PERSONAS).forEach(id=>{
     const diasPersona = WEEK.filter(d=>d[id]).sort((a,b)=>a.date.localeCompare(b.date));
     if(!diasPersona.length) return;
-    const finPlan = efectivoNutri(id).finPlanActual;
+    const nutri = efectivoNutri(id);
+    const finPlan = nutri.finPlanActual;
     if(!finPlan) return;
-    const rotacion = diasPersona.map(d=>d[id]);
-    const inicio = new Date(diasPersona[0].date+"T00:00:00");
+    // Solo se repite el plan VIGENTE: si `inicioNuevoPlan` es posterior al primer día real, los
+    // días de antes pertenecen a un plan ya superado y no deben entrar en lo que se repite (bug
+    // reportado: se estaba repitiendo un plan antiguo en vez del vigente).
+    const primerDiaReal = diasPersona[0].date;
+    const inicioRotacionFecha = (nutri.inicioNuevoPlan && nutri.inicioNuevoPlan.slice(0,10) > primerDiaReal)
+      ? nutri.inicioNuevoPlan.slice(0,10)
+      : primerDiaReal;
+    const diasRotacion = diasPersona.filter(d=>d.date >= inicioRotacionFecha);
+    const rotacion = diasRotacion.map(d=>d[id]);
+    const inicio = new Date(inicioRotacionFecha+"T00:00:00");
     const ultimoReal = new Date(diasPersona[diasPersona.length-1].date+"T00:00:00");
     const fin = new Date(finPlan.slice(0,10)+"T00:00:00");
     if(fin <= ultimoReal) return;
