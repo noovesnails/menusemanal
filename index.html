@@ -71,10 +71,9 @@
   .opcion-card{position:relative;flex:1 1 140px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.82rem;line-height:1.3;cursor:pointer;background:var(--bg);}
   .opcion-card:not(.con-media){padding-right:72px;}
   .opcion-card.elegida{border-color:var(--accent);background:var(--accent-soft);}
-  .opcion-card.con-media{aspect-ratio:4/5;background-size:cover;background-position:center;color:#fff;padding:0;overflow:hidden;}
-  .opcion-card.con-media::before{content:'';position:absolute;inset:0;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.85) 100%);}
-  .opcion-card.con-media.elegida::before{outline:2px solid var(--accent);outline-offset:-2px;border-radius:10px;}
-  .opcion-texto{position:absolute;left:0;right:0;bottom:0;padding:10px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.5);}
+  .opcion-card.con-media{display:flex;flex-direction:column;padding:0;overflow:hidden;}
+  .opcion-media-img{position:relative;width:100%;aspect-ratio:4/5;background-size:cover;background-position:center;background-color:var(--line);flex:0 0 auto;}
+  .opcion-texto{padding:8px 10px;font-weight:600;}
   .opcion-media-add{position:absolute;top:6px;right:6px;display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:none;background:rgba(0,0,0,.08);color:var(--muted);font-size:.7rem;font-weight:600;cursor:pointer;white-space:nowrap;}
   .opcion-card .media-edit-btn,.opcion-card .media-del-btn{top:6px;width:22px;height:22px;font-size:.7rem;}
   .opcion-card .media-edit-btn{right:6px;}
@@ -2199,9 +2198,11 @@ function renderMenu(){
     const claseElegida = elegida ? ' elegida' : '';
     if(media){
       return `<div class="opcion-card con-media${claseElegida}" data-who="${who}" data-cat="${cat}" data-i="${i}" data-clave="${claveAttr}">
-        ${media.tipo==='video' ? `<button type="button" class="video-badge">▶</button>` : ''}
-        <button type="button" class="media-edit-btn" data-clave="${claveAttr}" title="Cambiar foto/vídeo">✏️</button>
-        <button type="button" class="media-del-btn" data-clave="${claveAttr}" title="Quitar foto/vídeo">🗑</button>
+        <div class="opcion-media-img">
+          ${media.tipo==='video' ? `<button type="button" class="video-badge">▶</button>` : ''}
+          <button type="button" class="media-edit-btn" data-clave="${claveAttr}" title="Cambiar foto/vídeo">✏️</button>
+          <button type="button" class="media-del-btn" data-clave="${claveAttr}" title="Quitar foto/vídeo">🗑</button>
+        </div>
         <div class="opcion-texto">${opcion.texto}</div>
       </div>`;
     }
@@ -2255,7 +2256,8 @@ function renderMenu(){
   el.querySelectorAll('.opcion-card.con-media[data-clave]').forEach(card=>{
     const media = mediaPorPlato[decodeURIComponent(card.dataset.clave)];
     if(!media) return;
-    card.style.backgroundImage = `url(${JSON.stringify(media.tipo==='video' ? media.thumbUrl : media.url)})`;
+    const imgDiv = card.querySelector('.opcion-media-img');
+    imgDiv.style.backgroundImage = `url(${JSON.stringify(media.tipo==='video' ? media.thumbUrl : media.url)})`;
   });
 }
 
