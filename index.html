@@ -2000,6 +2000,7 @@ function renderYo(){
       <form class="nutri-edit" data-id="${id}">
         <label>Próxima visita<input type="date" name="proximaVisita"></label>
         <label>Inicio del plan<input type="date" name="inicioNuevoPlan"></label>
+        <label>Fin del plan<input type="date" name="finPlanActual"></label>
         <button type="submit">Guardar</button>
       </form>
     </div>`;
@@ -2016,14 +2017,17 @@ function renderYo(){
     const n = efectivoNutri(form.dataset.id);
     form.proximaVisita.value = (n.proximaVisita||'').slice(0,10);
     form.inicioNuevoPlan.value = n.inicioNuevoPlan || '';
+    form.finPlanActual.value = n.finPlanActual || '';
     form.addEventListener('submit', (e)=>{
       e.preventDefault();
       const id = form.dataset.id;
       const proximaVisita = form.proximaVisita.value || null;
       const inicioNuevoPlan = form.inicioNuevoPlan.value || null;
+      const finPlanActual = form.finPlanActual.value || null;
       const edit = {};
       if(proximaVisita) edit.proximaVisita = proximaVisita;
       if(inicioNuevoPlan) edit.inicioNuevoPlan = inicioNuevoPlan;
+      if(finPlanActual) edit.finPlanActual = finPlanActual;
       if(Object.keys(edit).length) nutriEdits[id] = edit; else delete nutriEdits[id];
       scheduleSave();
       renderYo();
