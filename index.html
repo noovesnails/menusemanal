@@ -230,12 +230,13 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.1.0";
+const APP_VERSION = "v2.2.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
    de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
 const CHANGELOG = [
+  { fecha:"2026-09-28", texto:"Corregido: las recetas nuevas ahora tienen versión Thermomix real (vaso/velocidad) además de la tradicional." },
   { fecha:"2026-09-28", texto:"Los 58 platos elaborados que no tenían receta (cremas, guisos, tortillas...) ahora tienen una versión Thermomix." },
   { fecha:"2026-09-28", texto:"Corregido: al ampliar el fin de plan se repetía un plan ya superado en vez del vigente." },
   { fecha:"2026-09-28", texto:"Corregido: la foto de las opciones ahora va arriba y la descripción completa debajo, sin cortar texto." },
