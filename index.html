@@ -105,6 +105,11 @@
   .compra-semana-info{font-size:.75rem;color:var(--muted);margin-top:10px;}
   .compra-semana-resumen{display:flex;flex-wrap:wrap;gap:6px;margin:0 4px 10px;}
   .compra-semana-chip{font-size:.72rem;background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:20px;font-weight:600;}
+  .compra-semana-rango{display:flex;gap:14px;flex-wrap:wrap;}
+  .compra-semana-rango label{display:flex;flex-direction:column;gap:4px;font-size:.75rem;color:var(--muted);flex:1 1 140px;}
+  .compra-semana-rango input{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:.85rem;background:var(--bg);color:var(--ink);}
+  .compra-semana-editar{margin:0 4px 14px;}
+  .compra-semana-editar button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:6px 14px;font-size:.78rem;cursor:pointer;}
   .ing-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);}
   .ing-row:last-child{border-bottom:none;}
   .ing-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);flex:0 0 auto;}
@@ -1582,6 +1587,7 @@ async function subirMedia(file, clave){
 
 let remoteRecord = {};   // contenido completo del bin (no tocar claves ajenas)
 let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
+let checksSemanal = {};  // { "morcillo": true, ... } — igual que checks pero sin fecha, para la compra semanal (#58): un agregado de varios días no tiene un único día al que apuntar
 let itemsSueltos = {};   // { "2026-09-07": [{id, nombre, comprado}] } artículos sueltos por día de compra
 let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por persona
 let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
@@ -1628,6 +1634,7 @@ async function loadRemote(){
     const data = await res.json();
     remoteRecord = data.record || {};
     checks = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checks) || {};
+    checksSemanal = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checksSemanal) || {};
     itemsSueltos = migrarItemsSueltos(remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos);
     peso = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.peso) || {};
     nutriEdits = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.nutriEdits) || {};
@@ -1637,6 +1644,7 @@ async function loadRemote(){
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
     try{ checks = JSON.parse(localStorage.getItem('menuSemanalChecks')||'{}'); }catch(_){ checks = {}; }
+    try{ checksSemanal = JSON.parse(localStorage.getItem('menuSemanalChecksSemanal')||'{}'); }catch(_){ checksSemanal = {}; }
     try{ itemsSueltos = migrarItemsSueltos(JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'{}')); }catch(_){ itemsSueltos = {}; }
     try{ peso = JSON.parse(localStorage.getItem('menuSemanalPeso')||'{}'); }catch(_){ peso = {}; }
     try{ nutriEdits = JSON.parse(localStorage.getItem('menuSemanalNutriEdits')||'{}'); }catch(_){ nutriEdits = {}; }
@@ -1649,6 +1657,7 @@ async function loadRemote(){
 
 function scheduleSave(){
   localStorage.setItem('menuSemanalChecks', JSON.stringify(checks));
+  localStorage.setItem('menuSemanalChecksSemanal', JSON.stringify(checksSemanal));
   localStorage.setItem('menuSemanalItemsSueltos', JSON.stringify(itemsSueltos));
   localStorage.setItem('menuSemanalPeso', JSON.stringify(peso));
   localStorage.setItem('menuSemanalNutriEdits', JSON.stringify(nutriEdits));
@@ -1665,6 +1674,7 @@ async function saveRemote(){
   try{
     remoteRecord.menuSemanal = remoteRecord.menuSemanal || {};
     remoteRecord.menuSemanal.checks = checks;
+    remoteRecord.menuSemanal.checksSemanal = checksSemanal;
     remoteRecord.menuSemanal.itemsSueltos = itemsSueltos;
     remoteRecord.menuSemanal.peso = peso;
     remoteRecord.menuSemanal.nutriEdits = nutriEdits;
@@ -1750,15 +1760,31 @@ function guardarComprasSemanaDias(){
 
 let compraVista = localStorage.getItem('compraVista') === 'semanal' ? 'semanal' : 'hoy';
 
-/* Tachado de la compra semanal: ayuda para ir marcando en el súper, no toca `checks` ni sincroniza
-   (la compra semanal es una vista agrupada de varios días, no tiene un único día al que apuntar). */
-let compraSemanalTachados;
-try{
-  const tachadosGuardados = JSON.parse(localStorage.getItem('compraSemanalTachados'));
-  compraSemanalTachados = new Set(Array.isArray(tachadosGuardados) ? tachadosGuardados : []);
-}catch(_){ compraSemanalTachados = new Set(); }
-function guardarCompraSemanalTachados(){
-  localStorage.setItem('compraSemanalTachados', JSON.stringify(Array.from(compraSemanalTachados)));
+/* Cómo se eligen los días de la compra semanal: los checkboxes de la semana visible, o un rango
+   personalizado (inicio/fin) que puede cruzar de una semana a otra. Solo local (como
+   comprasSemanaDias), es una preferencia de cómo elegir, no el resultado en sí. */
+let modoSeleccionDias = localStorage.getItem('modoSeleccionDias') === 'personalizado' ? 'personalizado' : 'semana';
+function guardarModoSeleccionDias(){ localStorage.setItem('modoSeleccionDias', modoSeleccionDias); }
+
+let rangoPersonalizado = {
+  inicio: localStorage.getItem('rangoPersonalizadoInicio') || '',
+  fin: localStorage.getItem('rangoPersonalizadoFin') || ''
+};
+function guardarRangoPersonalizado(){
+  localStorage.setItem('rangoPersonalizadoInicio', rangoPersonalizado.inicio);
+  localStorage.setItem('rangoPersonalizadoFin', rangoPersonalizado.fin);
+}
+/* Recalcula comprasSemanaDias a partir del rango inicio/fin elegido (inclusive por ambos lados). */
+function aplicarRangoPersonalizado(){
+  comprasSemanaDias = new Set();
+  if(rangoPersonalizado.inicio && rangoPersonalizado.fin){
+    const ini = new Date(rangoPersonalizado.inicio+"T00:00:00");
+    const fin = new Date(rangoPersonalizado.fin+"T00:00:00");
+    for(const t=new Date(ini); t<=fin; t.setDate(t.getDate()+1)){
+      comprasSemanaDias.add(t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,'0')+"-"+String(t.getDate()).padStart(2,'0'));
+    }
+  }
+  guardarComprasSemanaDias();
 }
 
 /* Resuelve qué versión de `recipe` mostrar/usar: la elegida si existe, si no la primera
@@ -2258,14 +2284,138 @@ function renderPersonPicker(){
   });
 }
 
-function renderNevera(){
-  const day = WEEK[currentDay];
-  const items = fridgeItems(day);
-  const el = document.getElementById('viewNevera');
-  const dayChecks = checks[day.date] || {};
+/* Selector Hoy/Semanal, compartido entre Nevera y Compra (una sola vista para las dos pestañas). */
+function vistaToggleHtml(){
+  return `<div class="receta-toggle compra-vista-toggle" role="radiogroup">
+    <button type="button" class="receta-opt ${compraVista==='hoy'?'on':''}" data-vista="hoy" role="radio" aria-checked="${compraVista==='hoy'}">Hoy</button>
+    <button type="button" class="receta-opt ${compraVista==='semanal'?'on':''}" data-vista="semanal" role="radio" aria-checked="${compraVista==='semanal'}">Semanal</button>
+  </div>`;
+}
+function wireVistaToggle(el){
+  el.querySelectorAll('.compra-vista-toggle .receta-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      compraVista = btn.dataset.vista;
+      localStorage.setItem('compraVista', compraVista);
+      renderNevera();
+      renderCompra();
+    });
+  });
+}
+
+/* Panel para elegir qué días entran en la compra semanal: los checkboxes de la semana visible, o
+   un rango personalizado. Vive solo en Nevera → Semanal (issue #58); Compra → Semanal solo lee el
+   resultado (comprasSemanaDias) y enlaza aquí para editarlo. */
+function selectorDiasHtml(){
   const weekBlockStart = Math.floor(currentDay/7)*7;
   const semanaDias = WEEK.slice(weekBlockStart, weekBlockStart+7);
-  el.innerHTML = `<div class="section-title">Marca lo que ya tienes en la nevera</div>` +
+  return `<div class="section-title">Días para la compra semanal</div>` +
+    `<div class="receta-toggle dias-modo-toggle" role="radiogroup">
+      <button type="button" class="receta-opt ${modoSeleccionDias==='semana'?'on':''}" data-modo-dias="semana" role="radio" aria-checked="${modoSeleccionDias==='semana'}">Esta semana</button>
+      <button type="button" class="receta-opt ${modoSeleccionDias==='personalizado'?'on':''}" data-modo-dias="personalizado" role="radio" aria-checked="${modoSeleccionDias==='personalizado'}">Personalizado</button>
+    </div>` +
+    (modoSeleccionDias === 'personalizado'
+      ? `<div class="card compra-semana-rango">
+          <label>Desde<input type="date" id="rangoInicio" value="${rangoPersonalizado.inicio}"></label>
+          <label>Hasta<input type="date" id="rangoFin" value="${rangoPersonalizado.fin}"></label>
+        </div>`
+      : `<div class="card compra-semana-dias">
+          <div class="compra-semana-grid">
+            ${semanaDias.map(d=>`<label class="compra-semana-dia">
+              <input type="checkbox" data-fecha="${d.date}" ${comprasSemanaDias.has(d.date)?'checked':''}>
+              <span>${d.name.slice(0,3)} ${fmtDate(d.date)}</span>
+            </label>`).join('')}
+          </div>
+        </div>`) +
+    `<div class="compra-semana-info">${comprasSemanaDias.size
+      ? `${comprasSemanaDias.size} día${comprasSemanaDias.size===1?'':'s'} elegido${comprasSemanaDias.size===1?'':'s'}`
+      : 'Elige los días que quieras agrupar.'}</div>`;
+}
+function wireSelectorDias(el){
+  el.querySelectorAll('.dias-modo-toggle [data-modo-dias]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      modoSeleccionDias = btn.dataset.modoDias;
+      guardarModoSeleccionDias();
+      renderNevera();
+      renderCompra();
+    });
+  });
+  el.querySelectorAll('.compra-semana-dia input').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const fecha = cb.dataset.fecha;
+      if(cb.checked) comprasSemanaDias.add(fecha); else comprasSemanaDias.delete(fecha);
+      guardarComprasSemanaDias();
+      renderNevera();
+      renderCompra();
+    });
+  });
+  const inicioInput = el.querySelector('#rangoInicio');
+  const finInput = el.querySelector('#rangoFin');
+  if(inicioInput) inicioInput.addEventListener('change', ()=>{
+    rangoPersonalizado.inicio = inicioInput.value;
+    guardarRangoPersonalizado();
+    aplicarRangoPersonalizado();
+    renderNevera();
+    renderCompra();
+  });
+  if(finInput) finInput.addEventListener('change', ()=>{
+    rangoPersonalizado.fin = finInput.value;
+    guardarRangoPersonalizado();
+    aplicarRangoPersonalizado();
+    renderNevera();
+    renderCompra();
+  });
+}
+
+/* Lista agrupada de la compra semanal con sus checkboxes — se usa tanto en Nevera → Semanal como
+   en Compra → Semanal, con el mismo estado compartido `checksSemanal` (marcar en una se refleja en
+   la otra, igual que ya pasa entre Nevera y Compra del día). */
+function checklistSemanalHtml(){
+  const dates = Array.from(comprasSemanaDias).sort();
+  if(!dates.length) return `<div class="empty">Elige los días para ver aquí la compra agrupada.</div>`;
+  const diasInfo = dates.map(f=>WEEK.find(d=>d.date===f)).filter(Boolean);
+  const items = agruparIngredientesSemana(dates);
+  return `<div class="compra-semana-resumen">${diasInfo.map(d=>`<span class="compra-semana-chip">${d.name.slice(0,3)} ${fmtDate(d.date)}</span>`).join('')}</div>` +
+    `<div class="section-title">Compra agrupada</div>` +
+    (items.length===0
+      ? `<div class="empty">No hay ingredientes en los días elegidos</div>`
+      : `<div class="card">${items.map(({item,key,icono})=>{
+          const tachado = !!checksSemanal[key];
+          return `<div class="ing-row ${tachado?'checked':''}">
+            <input type="checkbox" class="checksemanal-check" data-key="${encodeURIComponent(key)}" ${tachado?'checked':''}>
+            <span style="width:20px;text-align:center">${icono}</span>
+            <label>${item}</label>
+          </div>`;
+        }).join('')}</div>`);
+}
+function wireChecklistSemanal(el, otraVista){
+  el.querySelectorAll('.checksemanal-check').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const key = decodeURIComponent(cb.dataset.key);
+      checksSemanal[key] = cb.checked;
+      scheduleSave();
+      cb.closest('.ing-row').classList.toggle('checked', cb.checked);
+      otraVista();
+    });
+  });
+}
+
+function renderNevera(){
+  const el = document.getElementById('viewNevera');
+  const toggleHtml = vistaToggleHtml();
+
+  if(compraVista === 'semanal'){
+    el.innerHTML = toggleHtml + selectorDiasHtml() + checklistSemanalHtml();
+    wireVistaToggle(el);
+    wireSelectorDias(el);
+    wireChecklistSemanal(el, renderCompra);
+    return;
+  }
+
+  const day = WEEK[currentDay];
+  const items = fridgeItems(day);
+  const dayChecks = checks[day.date] || {};
+  el.innerHTML = toggleHtml +
+    `<div class="section-title">Marca lo que ya tienes en la nevera</div>` +
     `<div class="recipe-toggle">
       <span>Recetas:</span>
       <div class="receta-toggle" role="radiogroup">
@@ -2281,19 +2431,9 @@ function renderNevera(){
         <label>${item}</label>
         <span class="ing-src ${o.cls}">${o.label}</span>
       </div>`;
-    }).join('') + `</div>` +
-    `<div class="section-title">Días para la compra semanal</div>` +
-    `<div class="card compra-semana-dias">
-      <div class="compra-semana-grid">
-        ${semanaDias.map(d=>`<label class="compra-semana-dia">
-          <input type="checkbox" data-fecha="${d.date}" ${comprasSemanaDias.has(d.date)?'checked':''}>
-          <span>${d.name.slice(0,3)} ${fmtDate(d.date)}</span>
-        </label>`).join('')}
-      </div>
-      <div class="compra-semana-info">${comprasSemanaDias.size
-        ? `${comprasSemanaDias.size} día${comprasSemanaDias.size===1?'':'s'} elegido${comprasSemanaDias.size===1?'':'s'} · míralo en Compra → Semanal`
-        : 'Elige los días que quieras agrupar en Compra → Semanal.'}</div>
-    </div>`;
+    }).join('') + `</div>`;
+
+  wireVistaToggle(el);
 
   el.querySelectorAll('input[data-key]').forEach(cb=>{
     cb.addEventListener('change', ()=>{
@@ -2314,27 +2454,20 @@ function renderNevera(){
       renderCompra();
     });
   });
-
-  el.querySelectorAll('.compra-semana-dia input').forEach(cb=>{
-    cb.addEventListener('change', ()=>{
-      const fecha = cb.dataset.fecha;
-      if(cb.checked) comprasSemanaDias.add(fecha); else comprasSemanaDias.delete(fecha);
-      guardarComprasSemanaDias();
-      renderNevera();
-      renderCompra();
-    });
-  });
 }
 
 function renderCompra(){
   const el = document.getElementById('viewCompra');
-  const toggleHtml = `<div class="receta-toggle compra-vista-toggle" role="radiogroup">
-    <button type="button" class="receta-opt ${compraVista==='hoy'?'on':''}" data-vista="hoy" role="radio" aria-checked="${compraVista==='hoy'}">Hoy</button>
-    <button type="button" class="receta-opt ${compraVista==='semanal'?'on':''}" data-vista="semanal" role="radio" aria-checked="${compraVista==='semanal'}">Semanal</button>
-  </div>`;
+  const toggleHtml = vistaToggleHtml();
 
   if(compraVista === 'semanal'){
-    renderCompraSemanal(el, toggleHtml);
+    el.innerHTML = toggleHtml +
+      `<div class="compra-semana-editar"><button type="button" id="irANeveraDias">✏️ Editar días en Nevera</button></div>` +
+      checklistSemanalHtml();
+    wireVistaToggle(el);
+    wireChecklistSemanal(el, renderNevera);
+    const btnIr = document.getElementById('irANeveraDias');
+    if(btnIr) btnIr.addEventListener('click', ()=> document.querySelector('nav .tab[data-tab="nevera"]').click());
     return;
   }
 
@@ -2369,7 +2502,7 @@ function renderCompra(){
       </form>
     </div>`;
 
-  wireCompraVistaToggle(el);
+  wireVistaToggle(el);
 
   el.querySelectorAll('.compra-check').forEach(cb=>{
     cb.addEventListener('change', ()=>{
@@ -2406,50 +2539,6 @@ function renderCompra(){
       if(itemsSueltos[day.date].length===0) delete itemsSueltos[day.date];
       scheduleSave();
       renderCompra();
-    });
-  });
-}
-
-function wireCompraVistaToggle(el){
-  el.querySelectorAll('.compra-vista-toggle .receta-opt').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      compraVista = btn.dataset.vista;
-      localStorage.setItem('compraVista', compraVista);
-      renderCompra();
-    });
-  });
-}
-
-function renderCompraSemanal(el, toggleHtml){
-  const dates = Array.from(comprasSemanaDias).sort();
-  if(!dates.length){
-    el.innerHTML = toggleHtml + `<div class="empty">Elige los días en la pestaña Nevera para ver aquí la compra agrupada.</div>`;
-    wireCompraVistaToggle(el);
-    return;
-  }
-  const diasInfo = dates.map(f=>WEEK.find(d=>d.date===f)).filter(Boolean);
-  const items = agruparIngredientesSemana(dates);
-  el.innerHTML = toggleHtml +
-    `<div class="compra-semana-resumen">${diasInfo.map(d=>`<span class="compra-semana-chip">${d.name.slice(0,3)} ${fmtDate(d.date)}</span>`).join('')}</div>` +
-    `<div class="section-title">Compra agrupada</div>` +
-    (items.length===0
-      ? `<div class="empty">No hay ingredientes en los días elegidos</div>`
-      : `<div class="card">${items.map(({item,key,icono})=>{
-          const tachado = compraSemanalTachados.has(key);
-          return `<div class="ing-row ${tachado?'checked':''}">
-            <input type="checkbox" class="compra-semanal-check" data-key="${encodeURIComponent(key)}" ${tachado?'checked':''}>
-            <span style="width:20px;text-align:center">${icono}</span>
-            <label>${item}</label>
-          </div>`;
-        }).join('')}</div>`);
-
-  wireCompraVistaToggle(el);
-  el.querySelectorAll('.compra-semanal-check').forEach(cb=>{
-    cb.addEventListener('change', ()=>{
-      const key = decodeURIComponent(cb.dataset.key);
-      if(cb.checked) compraSemanalTachados.add(key); else compraSemanalTachados.delete(key);
-      guardarCompraSemanalTachados();
-      cb.closest('.ing-row').classList.toggle('checked', cb.checked);
     });
   });
 }
