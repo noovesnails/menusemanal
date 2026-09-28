@@ -1480,15 +1480,23 @@ let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por
 let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
+let appVersionPending = false;  // el código servido en producción es distinto al que tenemos cargado
 
 function setSync(state, text){
   const dot = document.getElementById('syncDot');
   dot.className = 'syncdot' + (state ? ' '+state : '');
   document.getElementById('syncText').textContent = text;
+  refreshBtnState();
+}
+
+/* El botón refleja dos cosas distintas: cambios locales sin guardar (syncPending, #39) y una
+   versión de la app desactualizada respecto a la publicada (appVersionPending, #46). */
+function refreshBtnState(){
   const btn = document.getElementById('refreshBtn');
-  btn.classList.toggle('pending', syncPending);
-  btn.classList.toggle('done', !syncPending);
-  btn.textContent = syncPending ? '🔄 Actualizar' : '✓ Actualizado';
+  const pending = syncPending || appVersionPending;
+  btn.classList.toggle('pending', pending);
+  btn.classList.toggle('done', !pending);
+  btn.textContent = pending ? '🔄 Actualizar' : '✓ Actualizado';
 }
 
 /* Migra el formato antiguo de itemsSueltos (lista única global, sin fecha) al nuevo formato por
@@ -1575,6 +1583,26 @@ function flushPendingSave(){
 function autoPullIfIdle(){
   if(syncPending) return;
   loadRemote();
+}
+
+/* Comprueba si el código publicado en GitHub Pages es distinto al que tenemos cargado (el acceso
+   directo de iPhone cachea muy agresivo y si no, nadie se entera de que hay una versión nueva).
+   Si detecta un cambio, guarda cualquier pendiente y recarga sola — no hace falta tocar nada. */
+async function checkAppVersion(){
+  try{
+    const res = await fetch(location.pathname + '?_v=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) return;
+    const html = await res.text();
+    const m = html.match(/const APP_VERSION\s*=\s*"([^"]+)"/);
+    if(m && m[1] !== APP_VERSION){
+      appVersionPending = true;
+      refreshBtnState();
+      await flushPendingSave();
+      location.href = location.pathname + '?v=' + Date.now();
+    }
+  }catch(e){
+    // sin conexión: no se puede comprobar ahora, se reintenta en el próximo chequeo periódico
+  }
 }
 
 /* ---------- ESTADO UI ---------- */
@@ -2132,11 +2160,17 @@ document.getElementById('refreshBtn').addEventListener('click', async ()=>{
    pasen los 700ms del debounce, esto evita perder ese cambio; y al volver a la app se repasa
    JSONBin por si el otro móvil ha actualizado algo mientras tanto. */
 document.addEventListener('visibilitychange', ()=>{
-  if(document.hidden) flushPendingSave();
-  else autoPullIfIdle();
+  if(document.hidden){ flushPendingSave(); return; }
+  checkAppVersion();
+  autoPullIfIdle();
 });
 window.addEventListener('pagehide', flushPendingSave);
-setInterval(()=>{ if(document.visibilityState === 'visible') autoPullIfIdle(); }, 30000);
+setInterval(()=>{
+  if(document.visibilityState !== 'visible') return;
+  checkAppVersion();
+  autoPullIfIdle();
+}, 30000);
+setTimeout(checkAppVersion, 3000);
 
 document.querySelectorAll('nav .tab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
