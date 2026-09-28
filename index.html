@@ -99,6 +99,12 @@
   .receta-toggle{display:flex;border-radius:17px;background:var(--line);padding:2px;gap:2px;}
   .receta-opt{flex:1;border:none;background:none;border-radius:15px;padding:8px 10px;font-size:.72rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;}
   .receta-opt.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15);}
+  .compra-semana-grid{display:flex;flex-wrap:wrap;gap:8px;}
+  .compra-semana-dia{display:flex;align-items:center;gap:6px;font-size:.78rem;padding:6px 10px;border:1px solid var(--line);border-radius:20px;cursor:pointer;}
+  .compra-semana-dia input{width:16px;height:16px;accent-color:var(--accent);}
+  .compra-semana-info{font-size:.75rem;color:var(--muted);margin-top:10px;}
+  .compra-semana-resumen{display:flex;flex-wrap:wrap;gap:6px;margin:0 4px 10px;}
+  .compra-semana-chip{font-size:.72rem;background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:20px;font-weight:600;}
   .ing-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);}
   .ing-row:last-child{border-bottom:none;}
   .ing-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);flex:0 0 auto;}
@@ -1730,6 +1736,30 @@ let currentTab = 'menu';
 const MODOS_RECETA = { thermomix:'Thermomix TM7', nutri:'Receta nutri', tradicional:'Tradicional' };
 let modoReceta = MODOS_RECETA[localStorage.getItem('modoReceta')] ? localStorage.getItem('modoReceta') : 'thermomix';
 
+/* Días elegidos para la compra semanal (issue #54): solo local, no se sincroniza por JSONBin —
+   cada móvil hace su propia compra. */
+let comprasSemanaDias;
+try{
+  const diasGuardados = JSON.parse(localStorage.getItem('comprasSemanaDias'));
+  comprasSemanaDias = new Set(Array.isArray(diasGuardados) ? diasGuardados : []);
+}catch(_){ comprasSemanaDias = new Set(); }
+function guardarComprasSemanaDias(){
+  localStorage.setItem('comprasSemanaDias', JSON.stringify(Array.from(comprasSemanaDias)));
+}
+
+let compraVista = localStorage.getItem('compraVista') === 'semanal' ? 'semanal' : 'hoy';
+
+/* Tachado de la compra semanal: ayuda para ir marcando en el súper, no toca `checks` ni sincroniza
+   (la compra semanal es una vista agrupada de varios días, no tiene un único día al que apuntar). */
+let compraSemanalTachados;
+try{
+  const tachadosGuardados = JSON.parse(localStorage.getItem('compraSemanalTachados'));
+  compraSemanalTachados = new Set(Array.isArray(tachadosGuardados) ? tachadosGuardados : []);
+}catch(_){ compraSemanalTachados = new Set(); }
+function guardarCompraSemanalTachados(){
+  localStorage.setItem('compraSemanalTachados', JSON.stringify(Array.from(compraSemanalTachados)));
+}
+
 /* Resuelve qué versión de `recipe` mostrar/usar: la elegida si existe, si no la primera
    disponible en este orden. Un plato con una sola versión se ve igual sin importar el
    interruptor — no hace falta lógica especial para ese caso. */
@@ -1840,7 +1870,7 @@ function fmtMesAnio(iso){
    "pollo" (sin cantidad reconocida) -> {nombre:"pollo", cantidad:null}. El nombre es la clave de
    fusión: dos apariciones con el mismo nombre son el mismo ingrediente aunque una lleve cantidad. */
 function normalizarIngrediente(item){
-  const m = item.match(/^((?:\d+(?:[.,]\d+)?(?:-\d+(?:[.,]\d+)?)?|½|¼|⅓|⅔|¾)(?:\s*(?:g|kg|ml|l|c\/s|c\/c|ud\.?|unidades?)\b)?)\s*(?:de\s+)?(.+)$/i);
+  const m = item.match(/^((?:\d+\/\d+|\d+(?:[.,]\d+)?(?:-\d+(?:[.,]\d+)?)?|½|¼|⅓|⅔|¾)(?:\s*(?:g|kg|ml|l|c\/s|c\/c|ud\.?|unidades?)\b)?)\s*(?:de\s+)?(.+)$/i);
   if(!m) return {nombre:item.trim(), cantidad:null};
   return {nombre:m[2].trim(), cantidad:m[1].trim()};
 }
@@ -1877,15 +1907,10 @@ function elegirOpcion(date, who, cat, i){
   scheduleSave();
 }
 
-function fridgeItems(day){
-  const map = new Map(); // nombre normalizado -> {cantidades:Set, who:Set}
-  const add = (item, who) => {
-    const {nombre, cantidad} = normalizarIngrediente(item);
-    if(!map.has(nombre)) map.set(nombre, {cantidades:new Set(), who:new Set()});
-    const entry = map.get(nombre);
-    if(cantidad) entry.cantidades.add(cantidad);
-    entry.who.add(who);
-  };
+/* Recorre los ingredientes de comida/cena y de las opciones elegidas (issue #51) de un día, para
+   las personas visibles, y llama a `add(item, who)` por cada uno. Común a la vista de un solo día
+   (fridgeItems) y al agrupado semanal (agruparIngredientesSemana). */
+function recolectarIngredientesDia(day, add){
   Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id)).forEach(who=>{
     const person = day[who];
     ["comida","cena"].forEach(meal=>{
@@ -1902,11 +1927,93 @@ function fridgeItems(day){
       });
     }
   });
+}
+
+function fridgeItems(day){
+  const map = new Map(); // nombre normalizado -> {cantidades:Set, who:Set}
+  recolectarIngredientesDia(day, (item, who) => {
+    const {nombre, cantidad} = normalizarIngrediente(item);
+    if(!map.has(nombre)) map.set(nombre, {cantidades:new Set(), who:new Set()});
+    const entry = map.get(nombre);
+    if(cantidad) entry.cantidades.add(cantidad);
+    entry.who.add(who);
+  });
   return Array.from(map.entries())
     .map(([nombre, {cantidades, who}])=>{
       const cant = cantidades.size ? ` (${Array.from(cantidades).join(" + ")})` : "";
       const label = nombre.charAt(0).toUpperCase() + nombre.slice(1);
       return { item: label + cant, key: nombre, icono: iconoIngrediente(nombre), who: Array.from(who) };
+    })
+    .sort((a,b)=>a.item.localeCompare(b.item, "es"));
+}
+
+/* Interpreta la `cantidad` ya extraída por normalizarIngrediente (ej. "300 g", "2", "½", "1/3 c/s")
+   para poder sumarla de verdad: peso a gramos, volumen a mililitros, cucharadas por su tipo, y
+   cantidades sueltas (número o fracción sin unidad, o "ud"/"unidades") como unidades contables. Los
+   rangos ("300-400") no se pueden sumar de forma fiable y se devuelven como null (se muestran
+   aparte en vez de forzar una suma incorrecta). */
+const FRACCIONES_TEXTO = { '½':0.5, '¼':0.25, '⅓':1/3, '⅔':2/3, '¾':0.75 };
+function parseCantidad(cantidad){
+  if(!cantidad || cantidad.includes('-')) return null;
+  const m = cantidad.match(/^(\d+\/\d+|\d+(?:[.,]\d+)?|½|¼|⅓|⅔|¾)\s*(g|kg|ml|l|c\/s|c\/c|ud\.?|unidades?)?$/i);
+  if(!m) return null;
+  let valor;
+  if(FRACCIONES_TEXTO[m[1]] !== undefined) valor = FRACCIONES_TEXTO[m[1]];
+  else if(m[1].includes('/')){ const [n,d] = m[1].split('/').map(Number); valor = n/d; }
+  else valor = parseFloat(m[1].replace(',','.'));
+  const unidad = (m[2]||'').toLowerCase().replace(/\.$/,'');
+  if(unidad === 'kg') return { tipo:'peso', valor: valor*1000 };
+  if(unidad === 'g') return { tipo:'peso', valor };
+  if(unidad === 'l') return { tipo:'volumen', valor: valor*1000 };
+  if(unidad === 'ml') return { tipo:'volumen', valor };
+  if(unidad === 'c/s') return { tipo:'cs', valor };
+  if(unidad === 'c/c') return { tipo:'cc', valor };
+  return { tipo:'unidad', valor };
+}
+
+/* Redondea a 2 decimales y usa coma decimal; si es entero, sin decimales. */
+function formatNumero(n){
+  const r = Math.round(n*100)/100;
+  return Number.isInteger(r) ? String(r) : String(r).replace('.', ',');
+}
+function formatPeso(g){ return g >= 1000 ? formatNumero(g/1000)+' kg' : formatNumero(g)+' g'; }
+function formatVolumen(ml){ return ml >= 1000 ? formatNumero(ml/1000)+' l' : formatNumero(ml)+' ml'; }
+
+/* Agrupa de verdad (sumando, no solo listando) los ingredientes de varios días — para la compra
+   semanal (issue #54). A diferencia de fridgeItems, que solo deduplica un único día, aquí un mismo
+   ingrediente en varios días se convierte en una sola cantidad total. */
+function agruparIngredientesSemana(dates){
+  const map = new Map(); // nombre -> {peso,volumen,cs,cc,unidad, ocurrencias, extras:Set, who:Set}
+  const vacio = () => ({ peso:0, volumen:0, cs:0, cc:0, unidad:0, ocurrencias:0, extras:new Set(), who:new Set() });
+  const add = (item, who) => {
+    const {nombre, cantidad} = normalizarIngrediente(item);
+    if(!map.has(nombre)) map.set(nombre, vacio());
+    const entry = map.get(nombre);
+    entry.who.add(who);
+    entry.ocurrencias++;
+    if(!cantidad) return;
+    const parsed = parseCantidad(cantidad);
+    if(!parsed){ entry.extras.add(cantidad); return; }
+    entry[parsed.tipo] += parsed.valor;
+  };
+  dates.forEach(date=>{
+    const day = WEEK.find(d=>d.date===date);
+    if(day) recolectarIngredientesDia(day, add);
+  });
+  return Array.from(map.entries())
+    .map(([nombre, e])=>{
+      const partes = [];
+      if(e.peso) partes.push(formatPeso(e.peso));
+      if(e.volumen) partes.push(formatVolumen(e.volumen));
+      if(e.unidad) partes.push(formatNumero(e.unidad));
+      if(e.cs) partes.push(formatNumero(e.cs)+' c/s');
+      if(e.cc) partes.push(formatNumero(e.cc)+' c/c');
+      e.extras.forEach(x=>partes.push(x));
+      const label = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+      const texto = partes.length
+        ? `${label} (${partes.join(' + ')})`
+        : (e.ocurrencias > 1 ? `${label} × ${e.ocurrencias}` : label);
+      return { item: texto, key: nombre, icono: iconoIngrediente(nombre), who: Array.from(e.who) };
     })
     .sort((a,b)=>a.item.localeCompare(b.item, "es"));
 }
@@ -2115,6 +2222,8 @@ function renderNevera(){
   const items = fridgeItems(day);
   const el = document.getElementById('viewNevera');
   const dayChecks = checks[day.date] || {};
+  const weekBlockStart = Math.floor(currentDay/7)*7;
+  const semanaDias = WEEK.slice(weekBlockStart, weekBlockStart+7);
   el.innerHTML = `<div class="section-title">Marca lo que ya tienes en la nevera</div>` +
     `<div class="recipe-toggle">
       <span>Recetas:</span>
@@ -2131,9 +2240,21 @@ function renderNevera(){
         <label>${item}</label>
         <span class="ing-src ${o.cls}">${o.label}</span>
       </div>`;
-    }).join('') + `</div>`;
+    }).join('') + `</div>` +
+    `<div class="section-title">Días para la compra semanal</div>` +
+    `<div class="card compra-semana-dias">
+      <div class="compra-semana-grid">
+        ${semanaDias.map(d=>`<label class="compra-semana-dia">
+          <input type="checkbox" data-fecha="${d.date}" ${comprasSemanaDias.has(d.date)?'checked':''}>
+          <span>${d.name.slice(0,3)} ${fmtDate(d.date)}</span>
+        </label>`).join('')}
+      </div>
+      <div class="compra-semana-info">${comprasSemanaDias.size
+        ? `${comprasSemanaDias.size} día${comprasSemanaDias.size===1?'':'s'} elegido${comprasSemanaDias.size===1?'':'s'} · míralo en Compra → Semanal`
+        : 'Elige los días que quieras agrupar en Compra → Semanal.'}</div>
+    </div>`;
 
-  el.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+  el.querySelectorAll('input[data-key]').forEach(cb=>{
     cb.addEventListener('change', ()=>{
       const key = decodeURIComponent(cb.dataset.key);
       checks[day.date] = checks[day.date] || {};
@@ -2152,15 +2273,36 @@ function renderNevera(){
       renderCompra();
     });
   });
+
+  el.querySelectorAll('.compra-semana-dia input').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const fecha = cb.dataset.fecha;
+      if(cb.checked) comprasSemanaDias.add(fecha); else comprasSemanaDias.delete(fecha);
+      guardarComprasSemanaDias();
+      renderNevera();
+      renderCompra();
+    });
+  });
 }
 
 function renderCompra(){
+  const el = document.getElementById('viewCompra');
+  const toggleHtml = `<div class="receta-toggle compra-vista-toggle" role="radiogroup">
+    <button type="button" class="receta-opt ${compraVista==='hoy'?'on':''}" data-vista="hoy" role="radio" aria-checked="${compraVista==='hoy'}">Hoy</button>
+    <button type="button" class="receta-opt ${compraVista==='semanal'?'on':''}" data-vista="semanal" role="radio" aria-checked="${compraVista==='semanal'}">Semanal</button>
+  </div>`;
+
+  if(compraVista === 'semanal'){
+    renderCompraSemanal(el, toggleHtml);
+    return;
+  }
+
   const day = WEEK[currentDay];
   const items = fridgeItems(day);
   const dayChecks = checks[day.date] || {};
-  const el = document.getElementById('viewCompra');
   const sueltosHoy = itemsSueltos[day.date] || [];
-  el.innerHTML = `<div class="section-title">Por comprar hoy</div>` +
+  el.innerHTML = toggleHtml +
+    `<div class="section-title">Por comprar hoy</div>` +
     (items.length===0
       ? `<div class="empty">No hay ingredientes en el menú de hoy</div>`
       : `<div class="card">${items.map(({item,key,icono,who})=>{
@@ -2185,6 +2327,8 @@ function renderCompra(){
         <button type="submit">Añadir</button>
       </form>
     </div>`;
+
+  wireCompraVistaToggle(el);
 
   el.querySelectorAll('.compra-check').forEach(cb=>{
     cb.addEventListener('change', ()=>{
@@ -2221,6 +2365,50 @@ function renderCompra(){
       if(itemsSueltos[day.date].length===0) delete itemsSueltos[day.date];
       scheduleSave();
       renderCompra();
+    });
+  });
+}
+
+function wireCompraVistaToggle(el){
+  el.querySelectorAll('.compra-vista-toggle .receta-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      compraVista = btn.dataset.vista;
+      localStorage.setItem('compraVista', compraVista);
+      renderCompra();
+    });
+  });
+}
+
+function renderCompraSemanal(el, toggleHtml){
+  const dates = Array.from(comprasSemanaDias).sort();
+  if(!dates.length){
+    el.innerHTML = toggleHtml + `<div class="empty">Elige los días en la pestaña Nevera para ver aquí la compra agrupada.</div>`;
+    wireCompraVistaToggle(el);
+    return;
+  }
+  const diasInfo = dates.map(f=>WEEK.find(d=>d.date===f)).filter(Boolean);
+  const items = agruparIngredientesSemana(dates);
+  el.innerHTML = toggleHtml +
+    `<div class="compra-semana-resumen">${diasInfo.map(d=>`<span class="compra-semana-chip">${d.name.slice(0,3)} ${fmtDate(d.date)}</span>`).join('')}</div>` +
+    `<div class="section-title">Compra agrupada</div>` +
+    (items.length===0
+      ? `<div class="empty">No hay ingredientes en los días elegidos</div>`
+      : `<div class="card">${items.map(({item,key,icono})=>{
+          const tachado = compraSemanalTachados.has(key);
+          return `<div class="ing-row ${tachado?'checked':''}">
+            <input type="checkbox" class="compra-semanal-check" data-key="${encodeURIComponent(key)}" ${tachado?'checked':''}>
+            <span style="width:20px;text-align:center">${icono}</span>
+            <label>${item}</label>
+          </div>`;
+        }).join('')}</div>`);
+
+  wireCompraVistaToggle(el);
+  el.querySelectorAll('.compra-semanal-check').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const key = decodeURIComponent(cb.dataset.key);
+      if(cb.checked) compraSemanalTachados.add(key); else compraSemanalTachados.delete(key);
+      guardarCompraSemanalTachados();
+      cb.closest('.ing-row').classList.toggle('checked', cb.checked);
     });
   });
 }
