@@ -85,7 +85,7 @@
   .ing-row label{font-size:.9rem;flex:1;}
   .ing-row.checked label{color:var(--muted);text-decoration:line-through;}
   .suelto-del{font-size:.8rem;color:var(--muted);cursor:pointer;flex:0 0 auto;padding:2px 4px;}
-  .suelto-form{display:flex;gap:8px;padding:4px 4px 12px;border-bottom:1px solid var(--line);margin-bottom:4px;}
+  .suelto-form{display:flex;gap:8px;padding:12px 4px 4px;border-top:1px solid var(--line);margin-top:4px;}
   .suelto-form input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.88rem;background:var(--bg);color:var(--ink);}
   .suelto-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;}
   .peso-diff{font-size:.75rem;color:var(--muted);}
@@ -1848,16 +1848,16 @@ function renderCompra(){
           </div>`).join('')}</div>`) +
     `<div class="section-title">Otros (de hoy)</div>` +
     `<div class="card">
-      <form id="sueltoForm" class="suelto-form">
-        <input type="text" id="sueltoInput" placeholder="Añadir artículo (papel higiénico...)" autocomplete="off">
-        <button type="submit">Añadir</button>
-      </form>
       ${sueltosHoy.length ? sueltosHoy.map(it=>`
         <div class="ing-row suelto-row ${it.comprado?'checked':''}">
           <input type="checkbox" data-id="${it.id}" ${it.comprado?'checked':''}>
           <label>${escapeHtml(it.nombre)}</label>
           <span class="suelto-del" data-id="${it.id}">✕</span>
         </div>`).join('') : ''}
+      <form id="sueltoForm" class="suelto-form">
+        <input type="text" id="sueltoInput" placeholder="Añadir artículo (papel higiénico...)" autocomplete="off">
+        <button type="submit">Añadir</button>
+      </form>
     </div>`;
 
   const sueltoForm = document.getElementById('sueltoForm');
