@@ -58,10 +58,30 @@
   .meal-body{display:flex;align-items:center;gap:10px;}
   .meal-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
   .meal-title{font-size:.92rem;line-height:1.35;}
+  .meal-media{position:relative;width:52px;height:52px;border-radius:10px;overflow:hidden;flex:0 0 auto;}
+  .meal-media img{width:100%;height:100%;object-fit:cover;display:block;}
+  .media-add-btn{width:52px;height:52px;border-radius:10px;border:1.5px dashed var(--line);background:var(--bg);color:var(--muted);font-size:1.1rem;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+  .media-add-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .media-edit-btn,.media-del-btn{position:absolute;width:18px;height:18px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:.6rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .media-edit-btn{top:2px;right:2px;}
+  .media-del-btn{bottom:2px;right:2px;}
+  .video-badge{position:absolute;left:2px;bottom:2px;width:18px;height:18px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:.55rem;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 0 0 2px;}
   .opciones-block{margin-top:14px;}
   .opciones-cards{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
-  .opcion-card{flex:1 1 140px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.82rem;line-height:1.3;cursor:pointer;background:var(--bg);}
+  .opcion-card{position:relative;flex:1 1 140px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.82rem;line-height:1.3;cursor:pointer;background:var(--bg);}
   .opcion-card.elegida{border-color:var(--accent);background:var(--accent-soft);}
+  .opcion-card.con-media{min-height:110px;background-size:cover;background-position:center;color:#fff;display:flex;align-items:flex-end;padding:0;}
+  .opcion-card.con-media::before{content:'';position:absolute;inset:0;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.72) 100%);}
+  .opcion-card.con-media.elegida::before{outline:2px solid var(--accent);outline-offset:-2px;border-radius:10px;}
+  .opcion-texto{position:relative;padding:8px 10px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.5);}
+  .opcion-media-add{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.08);color:var(--muted);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .opcion-card .media-edit-btn,.opcion-card .media-del-btn{top:6px;width:22px;height:22px;font-size:.7rem;}
+  .opcion-card .media-edit-btn{right:6px;}
+  .opcion-card .media-del-btn{right:32px;}
+  .opcion-card .video-badge{left:6px;bottom:6px;width:22px;height:22px;font-size:.65rem;}
+  .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;}
+  .video-modal video{max-width:92vw;max-height:80vh;border-radius:10px;}
+  .video-modal-close{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer;}
   .recipe{margin-top:6px;}
   .recipe-btn{font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;display:inline-block;padding:3px 0;}
   .recipe-btn::-webkit-details-marker{display:none;}
@@ -183,6 +203,9 @@
 </nav>
 
 <div id="onboarding" class="onboarding" style="display:none"></div>
+
+<input type="file" id="mediaInput" accept="image/*,video/*" style="display:none">
+<div id="videoModal" class="video-modal" style="display:none"></div>
 
 <script>
 /* ---------- DATOS DE LA SEMANA ----------
@@ -1445,11 +1468,44 @@ const JSONBIN_ID = "6a301b19f5f4af5e29f5ec66";
 const JSONBIN_KEY = "$2a$10$vFbnhWMCDqkb4eHXuuPjyOmhB88kcnaQjTnU/zfXL53RdRIcQpx56";
 const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
 
+/* Subida de fotos/vídeos vía Cloudinary (unsigned upload preset — pensado para subir desde el
+   cliente sin exponer una clave secreta; el preset solo permite subir, no gestionar la cuenta). */
+const CLOUDINARY_CLOUD = "dtjgzeezk";
+const CLOUDINARY_PRESET = "menusemanal";
+
+function normalizarClave(texto){
+  return texto.trim().toLowerCase();
+}
+
+async function subirMedia(file, clave){
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+  try{
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`, { method:'POST', body: formData });
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+    const tipo = data.resource_type === 'video' ? 'video' : 'image';
+    const entry = { tipo, url: data.secure_url };
+    if(tipo === 'video'){
+      entry.thumbUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/video/upload/so_0/${data.public_id}.jpg`;
+    }
+    mediaPorPlato[clave] = entry;
+    scheduleSave();
+    return true;
+  }catch(e){
+    console.warn("No se pudo subir a Cloudinary", e);
+    alert('No se pudo subir la foto/vídeo. Comprueba tu conexión e inténtalo de nuevo.');
+    return false;
+  }
+}
+
 let remoteRecord = {};   // contenido completo del bin (no tocar claves ajenas)
 let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
 let itemsSueltos = {};   // { "2026-09-07": [{id, nombre, comprado}] } artículos sueltos por día de compra
 let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por persona
 let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
+let mediaPorPlato = {};  // { claveNormalizada: {tipo:'image'|'video', url, thumbUrl?} } fotos/vídeos por plato u opción
 let saveTimer = null;
 
 function setSync(state, text){
@@ -1481,6 +1537,7 @@ async function loadRemote(){
     itemsSueltos = migrarItemsSueltos(remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos);
     peso = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.peso) || {};
     nutriEdits = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.nutriEdits) || {};
+    mediaPorPlato = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.mediaPorPlato) || {};
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
@@ -1488,6 +1545,7 @@ async function loadRemote(){
     try{ itemsSueltos = migrarItemsSueltos(JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'{}')); }catch(_){ itemsSueltos = {}; }
     try{ peso = JSON.parse(localStorage.getItem('menuSemanalPeso')||'{}'); }catch(_){ peso = {}; }
     try{ nutriEdits = JSON.parse(localStorage.getItem('menuSemanalNutriEdits')||'{}'); }catch(_){ nutriEdits = {}; }
+    try{ mediaPorPlato = JSON.parse(localStorage.getItem('menuSemanalMedia')||'{}'); }catch(_){ mediaPorPlato = {}; }
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
@@ -1498,6 +1556,7 @@ function scheduleSave(){
   localStorage.setItem('menuSemanalItemsSueltos', JSON.stringify(itemsSueltos));
   localStorage.setItem('menuSemanalPeso', JSON.stringify(peso));
   localStorage.setItem('menuSemanalNutriEdits', JSON.stringify(nutriEdits));
+  localStorage.setItem('menuSemanalMedia', JSON.stringify(mediaPorPlato));
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
   saveTimer = setTimeout(saveRemote, 700);
@@ -1510,6 +1569,7 @@ async function saveRemote(){
     remoteRecord.menuSemanal.itemsSueltos = itemsSueltos;
     remoteRecord.menuSemanal.peso = peso;
     remoteRecord.menuSemanal.nutriEdits = nutriEdits;
+    remoteRecord.menuSemanal.mediaPorPlato = mediaPorPlato;
     remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
     const res = await fetch(JSONBIN_BASE, {
       method: "PUT",
@@ -1717,14 +1777,55 @@ function renderDayPicker(){
   document.getElementById('weekSub').textContent = WEEK[currentDay].name + " " + fmtDate(WEEK[currentDay].date) + " " + fmtMesAnio(WEEK[currentDay].date);
 }
 
+let claveMediaPendiente = null;
+function abrirSelectorMedia(clave){
+  claveMediaPendiente = clave;
+  document.getElementById('mediaInput').click();
+}
+document.getElementById('mediaInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  const clave = claveMediaPendiente;
+  e.target.value = '';
+  if(!file || !clave) return;
+  const btns = document.querySelectorAll(`[data-clave="${encodeURIComponent(clave)}"]`);
+  btns.forEach(b=>b.disabled = true);
+  await subirMedia(file, clave);
+  renderMenu();
+});
+
+function abrirVideoModal(url){
+  const modal = document.getElementById('videoModal');
+  modal.innerHTML = `<button type="button" class="video-modal-close" id="videoModalClose">✕</button><video controls autoplay playsinline></video>`;
+  modal.querySelector('video').src = url;
+  modal.style.display = 'flex';
+  document.getElementById('videoModalClose').addEventListener('click', ()=>{
+    modal.style.display = 'none';
+    modal.innerHTML = '';
+  });
+}
+
 function renderMenu(){
   const day = WEEK[currentDay];
   const el = document.getElementById('viewMenu');
-  const meal = (m,label) => `
+  const meal = (m,label) => {
+    const clave = normalizarClave(m.title);
+    const claveAttr = encodeURIComponent(clave);
+    const media = mediaPorPlato[clave];
+    const mediaHtml = media
+      ? `<div class="meal-media" data-clave="${claveAttr}">
+          <img alt="">
+          ${media.tipo==='video' ? `<button type="button" class="video-badge">▶</button>` : ''}
+          <button type="button" class="media-edit-btn" data-clave="${claveAttr}" title="Cambiar foto/vídeo">✏️</button>
+          <button type="button" class="media-del-btn" data-clave="${claveAttr}" title="Quitar foto/vídeo">🗑</button>
+        </div>`
+      : (m.img
+          ? `<img class="meal-thumb" src="${m.img}" alt="">`
+          : `<button type="button" class="media-add-btn" data-clave="${claveAttr}" title="Añadir foto o vídeo">📷</button>`);
+    return `
     <div class="meal">
       <div class="meal-label">${label}</div>
       <div class="meal-body">
-        ${m.img ? `<img class="meal-thumb" src="${m.img}" alt="">` : ''}
+        ${mediaHtml}
         <div class="meal-title">${m.title}</div>
       </div>
       ${m.recipe ? (()=>{
@@ -1746,15 +1847,33 @@ function renderMenu(){
       </details>`;
       })() : ''}
     </div>`;
+  };
   const CATS = {desayuno:'Desayuno', almuerzo:'Almuerzo', merienda:'Merienda'};
   const opciones = (who) => {
     const o = OPCIONES[who];
     if(!o) return '';
+    const opcionCard = (texto,cat,i) => {
+      const clave = normalizarClave(texto);
+      const claveAttr = encodeURIComponent(clave);
+      const media = mediaPorPlato[clave];
+      if(media){
+        return `<div class="opcion-card con-media" data-who="${who}" data-cat="${cat}" data-i="${i}" data-clave="${claveAttr}">
+          ${media.tipo==='video' ? `<button type="button" class="video-badge">▶</button>` : ''}
+          <button type="button" class="media-edit-btn" data-clave="${claveAttr}" title="Cambiar foto/vídeo">✏️</button>
+          <button type="button" class="media-del-btn" data-clave="${claveAttr}" title="Quitar foto/vídeo">🗑</button>
+          <div class="opcion-texto">${texto}</div>
+        </div>`;
+      }
+      return `<div class="opcion-card" data-who="${who}" data-cat="${cat}" data-i="${i}">
+        <button type="button" class="media-add-btn opcion-media-add" data-clave="${claveAttr}" title="Añadir foto o vídeo">📷</button>
+        ${texto}
+      </div>`;
+    };
     return Object.keys(CATS).filter(cat=>o[cat] && o[cat].length).map(cat => `
       <div class="opciones-block">
         <div class="meal-label">${CATS[cat]}</div>
         <div class="opciones-cards">
-          ${o[cat].map((texto,i)=>`<div class="opcion-card" data-who="${who}" data-cat="${cat}" data-i="${i}">${texto}</div>`).join('')}
+          ${o[cat].map((texto,i)=>opcionCard(texto,cat,i)).join('')}
         </div>
       </div>`).join('');
   };
@@ -1771,9 +1890,46 @@ function renderMenu(){
     : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`;
 
   el.querySelectorAll('.opcion-card').forEach(card=>{
-    card.addEventListener('click', ()=> card.classList.toggle('elegida'));
+    card.addEventListener('click', (e)=>{
+      if(e.target.closest('.media-add-btn,.media-edit-btn,.media-del-btn,.video-badge')) return;
+      card.classList.toggle('elegida');
+    });
+  });
+
+  el.querySelectorAll('.meal-media[data-clave]').forEach(div=>{
+    const media = mediaPorPlato[decodeURIComponent(div.dataset.clave)];
+    if(!media) return;
+    div.querySelector('img').src = media.tipo==='video' ? media.thumbUrl : media.url;
+  });
+  el.querySelectorAll('.opcion-card.con-media[data-clave]').forEach(card=>{
+    const media = mediaPorPlato[decodeURIComponent(card.dataset.clave)];
+    if(!media) return;
+    card.style.backgroundImage = `url(${JSON.stringify(media.tipo==='video' ? media.thumbUrl : media.url)})`;
   });
 }
+
+document.getElementById('viewMenu').addEventListener('click', (e)=>{
+  const addBtn = e.target.closest('.media-add-btn,.media-edit-btn');
+  if(addBtn){ e.stopPropagation(); abrirSelectorMedia(decodeURIComponent(addBtn.dataset.clave)); return; }
+  const delBtn = e.target.closest('.media-del-btn');
+  if(delBtn){
+    e.stopPropagation();
+    const clave = decodeURIComponent(delBtn.dataset.clave);
+    if(confirm('¿Quitar la foto/vídeo de este plato?')){
+      delete mediaPorPlato[clave];
+      scheduleSave();
+      renderMenu();
+    }
+    return;
+  }
+  const videoBtn = e.target.closest('.video-badge');
+  if(videoBtn){
+    e.stopPropagation();
+    const contenedor = videoBtn.closest('[data-clave]');
+    const media = contenedor && mediaPorPlato[decodeURIComponent(contenedor.dataset.clave)];
+    if(media) abrirVideoModal(media.url);
+  }
+});
 
 function renderPersonPicker(){
   const el = document.getElementById('personPicker');
