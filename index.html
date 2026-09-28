@@ -230,12 +230,14 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v1.6.0";
+const APP_VERSION = "v1.8.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
    de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
 const CHANGELOG = [
+  { fecha:"2026-09-28", texto:"La compra semanal ahora se elige y se marca desde Nevera, compartido con Compra, con opción de rango de fechas personalizado." },
+  { fecha:"2026-09-28", texto:"Ampliar la fecha de fin de plan de alguien amplía también su menú, repitiendo su rotación de comidas." },
   { fecha:"2026-09-28", texto:"Nueva compra semanal: elige días en Nevera y ve en Compra → Semanal los ingredientes agrupados y sumados." },
   { fecha:"2026-09-28", texto:"Se pueden subir fotos y vídeos a los platos y opciones del menú (vía Cloudinary)." },
   { fecha:"2026-09-28", texto:"Elegir un desayuno, almuerzo o merienda ahora hace que sus ingredientes aparezcan en Nevera y Compra." },
