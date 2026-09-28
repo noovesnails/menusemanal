@@ -196,12 +196,13 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v1.3.0";
+const APP_VERSION = "v1.4.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
    de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
 const CHANGELOG = [
+  { fecha:"2026-09-28", texto:"Elegir un desayuno, almuerzo o merienda ahora hace que sus ingredientes aparezcan en Nevera y Compra." },
   { fecha:"2026-09-28", texto:"Editar el fin de plan ya no borra la hora de la próxima cita si no se toca ese campo." },
   { fecha:"2026-09-28", texto:"La app se autoactualiza sola cuando detecta una versión nueva publicada, sin tener que borrar caché ni reinstalar el acceso directo." },
   { fecha:"2026-09-28", texto:"Marcar un ingrediente como comprado en la Compra ya no lo hace desaparecer de la lista, solo lo tacha." },
