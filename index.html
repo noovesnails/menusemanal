@@ -250,99 +250,140 @@ const NUTRI = {
 
 /* Opciones de desayuno/almuerzo/merienda por persona: no varían por día, la persona elige cada
    vez lo que le apetece. Solo se listan las categorías con contenido real en el plan de la
-   nutricionista — si a alguien le falta una categoría, no se inventa. */
+   nutricionista — si a alguien le falta una categoría, no se inventa.
+   Cada opción es {texto, ing?}: `texto` es la descripción tal cual la dio la nutricionista (se
+   muestra siempre); `ing` es la lista de ingredientes ya reescrita a mano para que la opción
+   elegida pueda aparecer en Nevera/Compra (issue #51) — si falta, es porque el texto original no
+   describe ingredientes propios (remite a otra opción, o a una receta externa que no tenemos) y
+   esa opción no aporta nada a Nevera, a petición expresa del usuario. */
 const OPCIONES = {
   pedro:{
     desayuno:[
-      "Café o té (sin azúcar ni edulcorantes) + leche sin lactosa + yogur griego sin lactosa (200g) + canela/cacao puro al gusto + pera madura o manzana asada + 15-20g whey",
-      "Café o té + leche sin lactosa + 2 tostadas de pan de calidad (60g) + tomate triturado + (60-80g queso fresco sin lactosa, o 2 lonchas de pechuga de pollo alto % carne, o huevo duro)",
-      "Café o té + leche sin lactosa + tortilla de 2 huevos (revuelto/tortilla/cocidos/plancha) + opcional jamón cocido alto % carne, lomitos de caballa o 1/3 aguacate"
+      { texto:"Café o té (sin azúcar ni edulcorantes) + leche sin lactosa + yogur griego sin lactosa (200g) + canela/cacao puro al gusto + pera madura o manzana asada + 15-20g whey",
+        ing:["café o té sin azúcar","leche sin lactosa","200 g yogur griego sin lactosa","canela o cacao puro","pera o manzana","15-20 g proteína whey"] },
+      { texto:"Café o té + leche sin lactosa + 2 tostadas de pan de calidad (60g) + tomate triturado + (60-80g queso fresco sin lactosa, o 2 lonchas de pechuga de pollo alto % carne, o huevo duro)",
+        ing:["café o té","leche sin lactosa","60 g pan de calidad","tomate triturado","60-80 g queso fresco sin lactosa, o pechuga de pollo, o huevo"] },
+      { texto:"Café o té + leche sin lactosa + tortilla de 2 huevos (revuelto/tortilla/cocidos/plancha) + opcional jamón cocido alto % carne, lomitos de caballa o 1/3 aguacate",
+        ing:["café o té","leche sin lactosa","2 huevos","opcional: jamón cocido, caballa o 1/3 aguacate"] }
     ],
     almuerzo:[
-      "Yogur natural o kéfir sin lactosa (150-200g) + 1 fruta",
-      "1 fruta + 15-20g nueces o almendras",
-      "Batido de 200ml leche sin lactosa + 20-25g whey + canela"
+      { texto:"Yogur natural o kéfir sin lactosa (150-200g) + 1 fruta",
+        ing:["150-200 g yogur natural o kéfir sin lactosa","1 fruta"] },
+      { texto:"1 fruta + 15-20g nueces o almendras",
+        ing:["1 fruta","15-20 g nueces o almendras"] },
+      { texto:"Batido de 200ml leche sin lactosa + 20-25g whey + canela",
+        ing:["200 ml leche sin lactosa","20-25 g proteína whey","canela"] }
     ],
     merienda:[
-      "Yogur natural o kéfir sin lactosa (150-200g) + 1 fruta",
-      "1 fruta + 15-20g nueces o almendras",
-      "Batido de 200ml leche sin lactosa + 20-25g whey + canela"
+      { texto:"Yogur natural o kéfir sin lactosa (150-200g) + 1 fruta",
+        ing:["150-200 g yogur natural o kéfir sin lactosa","1 fruta"] },
+      { texto:"1 fruta + 15-20g nueces o almendras",
+        ing:["1 fruta","15-20 g nueces o almendras"] },
+      { texto:"Batido de 200ml leche sin lactosa + 20-25g whey + canela",
+        ing:["200 ml leche sin lactosa","20-25 g proteína whey","canela"] }
     ]
   },
   nuria:{
     desayuno:[
-      "Café con un poco de leche sin lactosa, sin azúcar ni edulcorantes + 1 o 2 tostadas de pan de Fibra de Mercadona + algo verde (rúcula, canónigos, perejil...) + (aguacate + 1 huevo, o 50g queso fresco sin lactosa, o 2 lonchas de jamón serrano de calidad máx. 2 veces/semana, o aguacate + pechuga de pollo) + yogur natural sin lactosa con canela y kiwi o arándanos",
-      "2 huevos revueltos o tortilla francesa + 1 tostada de masa madre + kiwi",
-      "1-2 tostadas de masa madre + salmón ahumado + 1/3 aguacate + tomate",
-      "Tostada de masa madre + queso fresco sin lactosa + pechuga de pavo o pollo de buena calidad + tomate",
-      "Avena trasnochada: 30-40g de avena remojada con 2 c/s de chía toda la noche + canela + arándanos/fresas/kiwi + yogur natural sin lactosa"
+      { texto:"Café con un poco de leche sin lactosa, sin azúcar ni edulcorantes + 1 o 2 tostadas de pan de Fibra de Mercadona + algo verde (rúcula, canónigos, perejil...) + (aguacate + 1 huevo, o 50g queso fresco sin lactosa, o 2 lonchas de jamón serrano de calidad máx. 2 veces/semana, o aguacate + pechuga de pollo) + yogur natural sin lactosa con canela y kiwi o arándanos",
+        ing:["café con leche sin lactosa","2 tostadas de pan de fibra","rúcula, canónigos o perejil","aguacate y huevo, o 50 g queso fresco sin lactosa, o jamón serrano, o aguacate y pechuga de pollo","yogur natural sin lactosa","canela","kiwi o arándanos"] },
+      { texto:"2 huevos revueltos o tortilla francesa + 1 tostada de masa madre + kiwi",
+        ing:["2 huevos","1 tostada de pan de masa madre","kiwi"] },
+      { texto:"1-2 tostadas de masa madre + salmón ahumado + 1/3 aguacate + tomate",
+        ing:["1-2 tostadas de pan de masa madre","salmón ahumado","1/3 aguacate","tomate"] },
+      { texto:"Tostada de masa madre + queso fresco sin lactosa + pechuga de pavo o pollo de buena calidad + tomate",
+        ing:["1 tostada de pan de masa madre","queso fresco sin lactosa","pechuga de pavo o pollo","tomate"] },
+      { texto:"Avena trasnochada: 30-40g de avena remojada con 2 c/s de chía toda la noche + canela + arándanos/fresas/kiwi + yogur natural sin lactosa",
+        ing:["30-40 g avena","2 c/s chía","canela","arándanos, fresas o kiwi","yogur natural sin lactosa"] }
     ],
     almuerzo:[
-      "Café con leche sin lactosa + fruta natural + frutos secos",
-      "Café con leche sin lactosa + yogur sin lactosa + fruta natural y canela"
+      { texto:"Café con leche sin lactosa + fruta natural + frutos secos",
+        ing:["café con leche sin lactosa","1 fruta","frutos secos"] },
+      { texto:"Café con leche sin lactosa + yogur sin lactosa + fruta natural y canela",
+        ing:["café con leche sin lactosa","yogur sin lactosa","1 fruta","canela"] }
     ],
     merienda:[
-      "Infusión o té (opcional) + fruta natural + 10 almendras/avellanas o 5 nueces/nueces de Brasil",
-      "Infusión o té (opcional) + yogur natural sin lactosa con canela/cacao puro y onza de chocolate troceado + opcional fruta natural"
+      { texto:"Infusión o té (opcional) + fruta natural + 10 almendras/avellanas o 5 nueces/nueces de Brasil",
+        ing:["infusión o té","1 fruta","10 almendras o avellanas, o 5 nueces"] },
+      { texto:"Infusión o té (opcional) + yogur natural sin lactosa con canela/cacao puro y onza de chocolate troceado + opcional fruta natural",
+        ing:["infusión o té","yogur natural sin lactosa","canela o cacao puro","onza de chocolate","opcional: 1 fruta"] }
     ]
   },
   rocio:{
     desayuno:[
-      "Batido de crema de cacahuete (3 c/s), leche o kéfir (200ml) y fruta + 3 c/s de avena + polen"
+      { texto:"Batido de crema de cacahuete (3 c/s), leche o kéfir (200ml) y fruta + 3 c/s de avena + polen",
+        ing:["3 c/s crema de cacahuete","200 ml leche o kéfir","1 fruta","3 c/s avena","polen"] }
     ],
     almuerzo:[
-      "Bocadillo (pan normal de masa madre, 125g) + elige una opción: aguacate o guacamole (rebosante) y jamón serrano, o 3 cucharadas de hummus casero, o ½ aguacate + revuelto de 2 huevos, o 60g de queso a tu elección (o cualquier mezcla de las opciones)",
-      "Bowl de yogur griego + fruta natural a elección + crema de cacahuete o almendra molida + cacao puro o canela + 4 c/s de cereales extrusionados"
+      { texto:"Bocadillo (pan normal de masa madre, 125g) + elige una opción: aguacate o guacamole (rebosante) y jamón serrano, o 3 cucharadas de hummus casero, o ½ aguacate + revuelto de 2 huevos, o 60g de queso a tu elección (o cualquier mezcla de las opciones)",
+        ing:["125 g pan de masa madre","aguacate y jamón serrano, o hummus, o ½ aguacate y 2 huevos, o 60 g queso"] },
+      { texto:"Bowl de yogur griego + fruta natural a elección + crema de cacahuete o almendra molida + cacao puro o canela + 4 c/s de cereales extrusionados",
+        ing:["yogur griego","1 fruta","crema de cacahuete o almendra molida","cacao puro o canela","4 c/s cereales extrusionados"] }
     ],
     merienda:[
-      "Igual que a media mañana, o un batido como el del desayuno variando la fruta"
+      { texto:"Igual que a media mañana, o un batido como el del desayuno variando la fruta" }
     ]
   },
   paqui:{
     desayuno:[
-      "170g de yogur alto en proteína/skyr + kiwi + canela/cacao puro + 5-10g de nueces o semillas",
-      "1 tostada de pan de masa madre de centeno o espelta (máx. 40g) + fuente proteica (60-80g pavo, 80-100g cottage/requesón, o 1 huevo + 120g claras)"
+      { texto:"170g de yogur alto en proteína/skyr + kiwi + canela/cacao puro + 5-10g de nueces o semillas",
+        ing:["170 g yogur alto en proteína o skyr","kiwi","canela o cacao puro","5-10 g nueces o semillas"] },
+      { texto:"1 tostada de pan de masa madre de centeno o espelta (máx. 40g) + fuente proteica (60-80g pavo, 80-100g cottage/requesón, o 1 huevo + 120g claras)",
+        ing:["40 g pan de masa madre de centeno o espelta","60-80 g pavo, o 80-100 g cottage/requesón, o 1 huevo y 120 g claras"] }
     ],
     merienda:[
-      "Fruta natural"
+      { texto:"Fruta natural", ing:["1 fruta"] }
     ]
   },
   sole:{
     desayuno:[
-      "Yogur natural/proteico/kéfir natural + fruta natural + 1 c/s de frutos secos o semillas + canela/cacao puro",
-      "½ aguacate + 1 queso fresco sin lactosa o 1 huevo + fruta natural y unas nueces o almendras naturales",
-      "Copos de avena (2 c/s) con 2 c/s de chía (remojado toda la noche) + fruta natural y 1 yogur sin lactosa o kéfir sin lactosa"
+      { texto:"Yogur natural/proteico/kéfir natural + fruta natural + 1 c/s de frutos secos o semillas + canela/cacao puro",
+        ing:["yogur natural, proteico o kéfir","1 fruta","1 c/s frutos secos o semillas","canela o cacao puro"] },
+      { texto:"½ aguacate + 1 queso fresco sin lactosa o 1 huevo + fruta natural y unas nueces o almendras naturales",
+        ing:["½ aguacate","queso fresco sin lactosa o huevo","1 fruta","nueces o almendras"] },
+      { texto:"Copos de avena (2 c/s) con 2 c/s de chía (remojado toda la noche) + fruta natural y 1 yogur sin lactosa o kéfir sin lactosa",
+        ing:["2 c/s copos de avena","2 c/s chía","1 fruta","yogur sin lactosa o kéfir sin lactosa"] }
     ],
     merienda:[
-      "Fruta natural + yogur sin lactosa + opcional 5 almendras, avellanas o nueces"
+      { texto:"Fruta natural + yogur sin lactosa + opcional 5 almendras, avellanas o nueces",
+        ing:["1 fruta","yogur sin lactosa","opcional: 5 almendras, avellanas o nueces"] }
     ]
   },
   marta:{
     desayuno:[
-      "Café con leche sin lactosa + 2 tostadas de pan de calidad (70g aprox.) + aguacate + elige 2 proteínas: 60g queso fresco, 100g requesón/cottage/ricotta, 50g salmón marinado, caballa, huevo o 50g hummus",
-      "Café con leche sin lactosa + avena trasnochada (4 c/s de avena + 1 c/s de frutos secos/semillas o crema de almendra con leche/kéfir/yogur) + canela/cacao puro/jengibre + fruta natural a trocitos + 1 scoop de proteína whey",
-      "Café con leche sin lactosa + bowl con 200g de yogur natural (o proteico) con canela + 1 c/s de frutos secos/semillas o crema de almendra + fruta natural"
+      { texto:"Café con leche sin lactosa + 2 tostadas de pan de calidad (70g aprox.) + aguacate + elige 2 proteínas: 60g queso fresco, 100g requesón/cottage/ricotta, 50g salmón marinado, caballa, huevo o 50g hummus",
+        ing:["café con leche sin lactosa","70 g pan de calidad","aguacate","2 proteínas a elegir: queso fresco, requesón, salmón, caballa, huevo o hummus"] },
+      { texto:"Café con leche sin lactosa + avena trasnochada (4 c/s de avena + 1 c/s de frutos secos/semillas o crema de almendra con leche/kéfir/yogur) + canela/cacao puro/jengibre + fruta natural a trocitos + 1 scoop de proteína whey",
+        ing:["café con leche sin lactosa","4 c/s avena","1 c/s frutos secos o semillas, o crema de almendra","leche, kéfir o yogur","canela, cacao puro o jengibre","1 fruta","1 scoop proteína whey"] },
+      { texto:"Café con leche sin lactosa + bowl con 200g de yogur natural (o proteico) con canela + 1 c/s de frutos secos/semillas o crema de almendra + fruta natural",
+        ing:["café con leche sin lactosa","200 g yogur natural o proteico","canela","1 c/s frutos secos o semillas, o crema de almendra","1 fruta"] }
     ],
     almuerzo:[
-      "Frutos secos"
+      { texto:"Frutos secos", ing:["frutos secos"] }
     ],
     merienda:[
-      "Fruta natural o yogur natural (o proteico) con canela, arándanos + almendras/avellanas/nueces",
-      "Una fruta"
+      { texto:"Fruta natural o yogur natural (o proteico) con canela, arándanos + almendras/avellanas/nueces",
+        ing:["1 fruta, o yogur natural o proteico","canela","arándanos","almendras, avellanas o nueces"] },
+      { texto:"Una fruta", ing:["1 fruta"] }
     ]
   },
   eva:{
     desayuno:[
-      "Café con leche semi sin lactosa + opcional unas nueces"
+      { texto:"Café con leche semi sin lactosa + opcional unas nueces",
+        ing:["café con leche semi sin lactosa","opcional: nueces"] }
     ],
     almuerzo:[
-      "Yogur natural de coco sin azúcar o yogur natural sin lactosa + canela/cacao puro al gusto + 1-2 c/s de cereal inflado + 1 cucharadita de semillas de lino o chía molidas o de cáñamo + 1 pieza de fruta natural (si no hay molestias) — se puede mezclar con: queso curado de oveja + orégano, 60g queso fresco sin lactosa, 2 lonchas de jamón serrano, ½ aguacate (observar si no provoca molestias), huevo duro, salmón ahumado o atún",
-      "2 tostadas de pan de trigo sarraceno, o 2-3 tortitas de maíz o arroz",
-      "Mug cake o tortitas (recetas propias de la nutricionista)"
+      { texto:"Yogur natural de coco sin azúcar o yogur natural sin lactosa + canela/cacao puro al gusto + 1-2 c/s de cereal inflado + 1 cucharadita de semillas de lino o chía molidas o de cáñamo + 1 pieza de fruta natural (si no hay molestias) — se puede mezclar con: queso curado de oveja + orégano, 60g queso fresco sin lactosa, 2 lonchas de jamón serrano, ½ aguacate (observar si no provoca molestias), huevo duro, salmón ahumado o atún",
+        ing:["yogur natural de coco o sin lactosa","canela o cacao puro","1-2 c/s cereal inflado","semillas de lino, chía o cáñamo","opcional: 1 fruta","opcional: queso, jamón serrano, aguacate, huevo, salmón o atún"] },
+      { texto:"2 tostadas de pan de trigo sarraceno, o 2-3 tortitas de maíz o arroz",
+        ing:["2 tostadas de pan de trigo sarraceno, o tortitas de maíz o arroz"] },
+      { texto:"Mug cake o tortitas (recetas propias de la nutricionista)" }
     ],
     merienda:[
-      "1 envase de yogur natural sin lactosa o de coco/almendra + canela/cacao puro al gusto (mejor si no se hacen estas tomas, solo si hace falta)",
-      "Fruta natural (si no provoca molestias) + 1 puñado de nueces"
+      { texto:"1 envase de yogur natural sin lactosa o de coco/almendra + canela/cacao puro al gusto (mejor si no se hacen estas tomas, solo si hace falta)",
+        ing:["1 yogur natural sin lactosa, de coco o de almendra","canela o cacao puro"] },
+      { texto:"Fruta natural (si no provoca molestias) + 1 puñado de nueces",
+        ing:["1 fruta","nueces"] }
     ]
   }
 };
@@ -1480,6 +1521,7 @@ let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
 let itemsSueltos = {};   // { "2026-09-07": [{id, nombre, comprado}] } artículos sueltos por día de compra
 let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por persona
 let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
+let opcionElegida = {};  // { "2026-09-07": { pedro: { desayuno: 0, merienda: 2 } } } opción de desayuno/almuerzo/merienda elegida ese día por esa persona
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
 let appVersionPending = false;  // el código servido en producción es distinto al que tenemos cargado
@@ -1524,6 +1566,7 @@ async function loadRemote(){
     itemsSueltos = migrarItemsSueltos(remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos);
     peso = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.peso) || {};
     nutriEdits = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.nutriEdits) || {};
+    opcionElegida = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.opcionElegida) || {};
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
@@ -1531,6 +1574,7 @@ async function loadRemote(){
     try{ itemsSueltos = migrarItemsSueltos(JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'{}')); }catch(_){ itemsSueltos = {}; }
     try{ peso = JSON.parse(localStorage.getItem('menuSemanalPeso')||'{}'); }catch(_){ peso = {}; }
     try{ nutriEdits = JSON.parse(localStorage.getItem('menuSemanalNutriEdits')||'{}'); }catch(_){ nutriEdits = {}; }
+    try{ opcionElegida = JSON.parse(localStorage.getItem('menuSemanalOpcionElegida')||'{}'); }catch(_){ opcionElegida = {}; }
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
@@ -1541,6 +1585,7 @@ function scheduleSave(){
   localStorage.setItem('menuSemanalItemsSueltos', JSON.stringify(itemsSueltos));
   localStorage.setItem('menuSemanalPeso', JSON.stringify(peso));
   localStorage.setItem('menuSemanalNutriEdits', JSON.stringify(nutriEdits));
+  localStorage.setItem('menuSemanalOpcionElegida', JSON.stringify(opcionElegida));
   syncPending = true;
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
@@ -1555,6 +1600,7 @@ async function saveRemote(){
     remoteRecord.menuSemanal.itemsSueltos = itemsSueltos;
     remoteRecord.menuSemanal.peso = peso;
     remoteRecord.menuSemanal.nutriEdits = nutriEdits;
+    remoteRecord.menuSemanal.opcionElegida = opcionElegida;
     remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
     const res = await fetch(JSONBIN_BASE, {
       method: "PUT",
@@ -1753,21 +1799,46 @@ function iconoIngrediente(nombre){
   return hit ? hit[1] : "🛒";
 }
 
+/* Índice de la opción de desayuno/almuerzo/merienda elegida por `who` ese `date` para `cat`, o
+   undefined si no ha elegido ninguna. */
+function opcionElegidaIdx(date, who, cat){
+  return opcionElegida[date] && opcionElegida[date][who] ? opcionElegida[date][who][cat] : undefined;
+}
+
+/* Elegir una tarjeta la marca para ese día/persona/categoría; volver a pulsar la misma la
+   deselecciona (solo puede haber una elegida a la vez por categoría). */
+function elegirOpcion(date, who, cat, i){
+  opcionElegida[date] = opcionElegida[date] || {};
+  opcionElegida[date][who] = opcionElegida[date][who] || {};
+  if(opcionElegida[date][who][cat] === i) delete opcionElegida[date][who][cat];
+  else opcionElegida[date][who][cat] = i;
+  scheduleSave();
+}
+
 function fridgeItems(day){
   const map = new Map(); // nombre normalizado -> {cantidades:Set, who:Set}
+  const add = (item, who) => {
+    const {nombre, cantidad} = normalizarIngrediente(item);
+    if(!map.has(nombre)) map.set(nombre, {cantidades:new Set(), who:new Set()});
+    const entry = map.get(nombre);
+    if(cantidad) entry.cantidades.add(cantidad);
+    entry.who.add(who);
+  };
   Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id)).forEach(who=>{
     const person = day[who];
     ["comida","cena"].forEach(meal=>{
       const m = person[meal];
       const ing = (m.recipe && resolverReceta(m.recipe, modoReceta).version.ing) || m.ing;
-      ing.forEach(item=>{
-        const {nombre, cantidad} = normalizarIngrediente(item);
-        if(!map.has(nombre)) map.set(nombre, {cantidades:new Set(), who:new Set()});
-        const entry = map.get(nombre);
-        if(cantidad) entry.cantidades.add(cantidad);
-        entry.who.add(who);
-      });
+      ing.forEach(item=>add(item, who));
     });
+    const opcionesPersona = OPCIONES[who];
+    if(opcionesPersona){
+      Object.keys(opcionesPersona).forEach(cat=>{
+        const i = opcionElegidaIdx(day.date, who, cat);
+        const elegida = i!==undefined && opcionesPersona[cat][i];
+        if(elegida && elegida.ing) elegida.ing.forEach(item=>add(item, who));
+      });
+    }
   });
   return Array.from(map.entries())
     .map(([nombre, {cantidades, who}])=>{
@@ -1833,13 +1904,16 @@ function renderMenu(){
   const opciones = (who) => {
     const o = OPCIONES[who];
     if(!o) return '';
-    return Object.keys(CATS).filter(cat=>o[cat] && o[cat].length).map(cat => `
+    return Object.keys(CATS).filter(cat=>o[cat] && o[cat].length).map(cat => {
+      const elegidaIdx = opcionElegidaIdx(day.date, who, cat);
+      return `
       <div class="opciones-block">
         <div class="meal-label">${CATS[cat]}</div>
         <div class="opciones-cards">
-          ${o[cat].map((texto,i)=>`<div class="opcion-card" data-who="${who}" data-cat="${cat}" data-i="${i}">${texto}</div>`).join('')}
+          ${o[cat].map((opcion,i)=>`<div class="opcion-card ${i===elegidaIdx?'elegida':''}" data-who="${who}" data-cat="${cat}" data-i="${i}">${opcion.texto}</div>`).join('')}
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   };
   const block = (who) => `
     <div class="card">
@@ -1854,7 +1928,13 @@ function renderMenu(){
     : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`;
 
   el.querySelectorAll('.opcion-card').forEach(card=>{
-    card.addEventListener('click', ()=> card.classList.toggle('elegida'));
+    card.addEventListener('click', ()=>{
+      const {who, cat, i} = card.dataset;
+      elegirOpcion(day.date, who, cat, Number(i));
+      renderMenu();
+      renderNevera();
+      renderCompra();
+    });
   });
 }
 
