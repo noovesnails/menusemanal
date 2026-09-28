@@ -1890,19 +1890,20 @@ function renderCompra(){
   const day = WEEK[currentDay];
   const items = fridgeItems(day);
   const dayChecks = checks[day.date] || {};
-  const toBuy = items.filter(({key})=>!dayChecks[key]);
   const el = document.getElementById('viewCompra');
   const sueltosHoy = itemsSueltos[day.date] || [];
   el.innerHTML = `<div class="section-title">Por comprar hoy</div>` +
-    (toBuy.length===0
-      ? `<div class="empty">Todo lo de este día ya está en la nevera 🎉</div>`
-      : `<div class="card">${toBuy.map(({item,key,icono,who})=>`
-          <div class="ing-row">
-            <input type="checkbox" class="compra-check" data-key="${encodeURIComponent(key)}">
+    (items.length===0
+      ? `<div class="empty">No hay ingredientes en el menú de hoy</div>`
+      : `<div class="card">${items.map(({item,key,icono,who})=>{
+          const isChecked = !!dayChecks[key];
+          return `<div class="ing-row ${isChecked?'checked':''}">
+            <input type="checkbox" class="compra-check" data-key="${encodeURIComponent(key)}" ${isChecked?'checked':''}>
             <span style="width:20px;text-align:center">${icono}</span>
             <label>${item}</label>
             <span class="ing-src ${origen(who).cls}">${origen(who).label}</span>
-          </div>`).join('')}</div>`) +
+          </div>`;
+        }).join('')}</div>`) +
     `<div class="section-title">Otros (de hoy)</div>` +
     `<div class="card">
       ${sueltosHoy.length ? sueltosHoy.map(it=>`
