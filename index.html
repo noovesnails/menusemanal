@@ -139,6 +139,7 @@
   .nutri-edit input{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:.82rem;background:var(--bg);color:var(--ink);}
   .nutri-edit button{border:none;border-radius:8px;padding:8px 12px;font-size:.8rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;align-self:flex-end;}
   .notas-nutri{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:10px;font-size:.8rem;line-height:1.4;color:var(--ink);white-space:pre-wrap;}
+  .app-version{text-align:center;font-size:.68rem;color:var(--muted);opacity:.6;padding:24px 0 8px;}
   .onboarding{position:fixed;inset:0;background:var(--bg);z-index:100;padding:24px 20px;overflow-y:auto;}
   .onboarding h2{font-size:1.05rem;margin:0 0 6px;}
   .onboarding p{font-size:.85rem;color:var(--muted);margin:0 0 18px;}
@@ -189,6 +190,9 @@
    Fuente: PDFs de la nutricionista (Pedro 24-07-2026, Nuria 15-06-2026).
    Para cargar una nueva semana: sustituir este array WEEK por la siguiente semana. */
 const WEEK_START = "2026-09-07"; // lunes
+
+/* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
+const APP_VERSION = "v1.0.0";
 
 /* Nombre legible y color de cada persona. Añadir aquí una entrada al incorporar a alguien nuevo
    (y su par --id/--id-soft en las variables CSS de :root). */
@@ -2021,7 +2025,8 @@ function renderYo(){
   el.innerHTML = `<div class="section-title">Quién ves</div>` +
     `<div class="personpicker" id="personPicker"></div>` +
     `<div class="section-title">Fechas de la nutricionista</div>` +
-    (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`);
+    (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
+    `<div class="app-version">Menú semanal · ${APP_VERSION}</div>`;
 
   renderPersonPicker();
 
