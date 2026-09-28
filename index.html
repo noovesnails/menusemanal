@@ -196,12 +196,13 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v1.1.0";
+const APP_VERSION = "v1.2.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
    de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
 const CHANGELOG = [
+  { fecha:"2026-09-28", texto:"Marcar un ingrediente como comprado en la Compra ya no lo hace desaparecer de la lista, solo lo tacha." },
   { fecha:"2026-09-28", texto:"Este historial de mejoras, al final de la pestaña Yo." },
   { fecha:"2026-09-28", texto:"Número de versión de la app visible al final de la pantalla." },
   { fecha:"2026-09-28", texto:"Se puede marcar como comprado cada ingrediente del menú directamente desde la pestaña Compra." },
