@@ -1840,8 +1840,9 @@ function renderCompra(){
   el.innerHTML = `<div class="section-title">Por comprar hoy</div>` +
     (toBuy.length===0
       ? `<div class="empty">Todo lo de este día ya está en la nevera 🎉</div>`
-      : `<div class="card">${toBuy.map(({item,icono,who})=>`
+      : `<div class="card">${toBuy.map(({item,key,icono,who})=>`
           <div class="ing-row">
+            <input type="checkbox" class="compra-check" data-key="${encodeURIComponent(key)}">
             <span style="width:20px;text-align:center">${icono}</span>
             <label>${item}</label>
             <span class="ing-src ${origen(who).cls}">${origen(who).label}</span>
@@ -1859,6 +1860,17 @@ function renderCompra(){
         <button type="submit">Añadir</button>
       </form>
     </div>`;
+
+  el.querySelectorAll('.compra-check').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const key = decodeURIComponent(cb.dataset.key);
+      checks[day.date] = checks[day.date] || {};
+      checks[day.date][key] = cb.checked;
+      scheduleSave();
+      renderNevera();
+      renderCompra();
+    });
+  });
 
   const sueltoForm = document.getElementById('sueltoForm');
   sueltoForm.addEventListener('submit', (e)=>{
