@@ -225,12 +225,13 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v1.5.0";
+const APP_VERSION = "v1.6.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
    de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
 const CHANGELOG = [
+  { fecha:"2026-09-28", texto:"Nueva compra semanal: elige días en Nevera y ve en Compra → Semanal los ingredientes agrupados y sumados." },
   { fecha:"2026-09-28", texto:"Se pueden subir fotos y vídeos a los platos y opciones del menú (vía Cloudinary)." },
   { fecha:"2026-09-28", texto:"Elegir un desayuno, almuerzo o merienda ahora hace que sus ingredientes aparezcan en Nevera y Compra." },
   { fecha:"2026-09-28", texto:"Editar el fin de plan ya no borra la hora de la próxima cita si no se toca ese campo." },
