@@ -1734,8 +1734,10 @@ async function subirMedia(file, clave){
 }
 
 let remoteRecord = {};   // contenido completo del bin (no tocar claves ajenas)
-let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } }
+let checks = {};         // { "2026-09-07": { "400 g morcillo": true, ... } } — "ya tienes esto en la nevera", se edita solo desde Nevera y oculta el ingrediente en Compra
 let checksSemanal = {};  // { "morcillo": true, ... } — igual que checks pero sin fecha, para la compra semanal (#58): un agregado de varios días no tiene un único día al que apuntar
+let comprado = {};       // { "2026-09-07": { "400 g morcillo": true, ... } } — "lo has comprado hoy", se edita solo desde Compra; nunca oculta, solo tacha (issue #44)
+let compradoSemanal = {}; // igual que comprado pero para la compra semanal agrupada
 let itemsSueltos = {};   // { "2026-09-07": [{id, nombre, comprado}] } artículos sueltos por día de compra
 let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por persona
 let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
@@ -1783,6 +1785,8 @@ async function loadRemote(){
     remoteRecord = data.record || {};
     checks = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checks) || {};
     checksSemanal = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.checksSemanal) || {};
+    comprado = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.comprado) || {};
+    compradoSemanal = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.compradoSemanal) || {};
     itemsSueltos = migrarItemsSueltos(remoteRecord.menuSemanal && remoteRecord.menuSemanal.itemsSueltos);
     peso = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.peso) || {};
     nutriEdits = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.nutriEdits) || {};
@@ -1793,6 +1797,8 @@ async function loadRemote(){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
     try{ checks = JSON.parse(localStorage.getItem('menuSemanalChecks')||'{}'); }catch(_){ checks = {}; }
     try{ checksSemanal = JSON.parse(localStorage.getItem('menuSemanalChecksSemanal')||'{}'); }catch(_){ checksSemanal = {}; }
+    try{ comprado = JSON.parse(localStorage.getItem('menuSemanalComprado')||'{}'); }catch(_){ comprado = {}; }
+    try{ compradoSemanal = JSON.parse(localStorage.getItem('menuSemanalCompradoSemanal')||'{}'); }catch(_){ compradoSemanal = {}; }
     try{ itemsSueltos = migrarItemsSueltos(JSON.parse(localStorage.getItem('menuSemanalItemsSueltos')||'{}')); }catch(_){ itemsSueltos = {}; }
     try{ peso = JSON.parse(localStorage.getItem('menuSemanalPeso')||'{}'); }catch(_){ peso = {}; }
     try{ nutriEdits = JSON.parse(localStorage.getItem('menuSemanalNutriEdits')||'{}'); }catch(_){ nutriEdits = {}; }
@@ -1806,6 +1812,8 @@ async function loadRemote(){
 function scheduleSave(){
   localStorage.setItem('menuSemanalChecks', JSON.stringify(checks));
   localStorage.setItem('menuSemanalChecksSemanal', JSON.stringify(checksSemanal));
+  localStorage.setItem('menuSemanalComprado', JSON.stringify(comprado));
+  localStorage.setItem('menuSemanalCompradoSemanal', JSON.stringify(compradoSemanal));
   localStorage.setItem('menuSemanalItemsSueltos', JSON.stringify(itemsSueltos));
   localStorage.setItem('menuSemanalPeso', JSON.stringify(peso));
   localStorage.setItem('menuSemanalNutriEdits', JSON.stringify(nutriEdits));
@@ -1823,6 +1831,8 @@ async function saveRemote(){
     remoteRecord.menuSemanal = remoteRecord.menuSemanal || {};
     remoteRecord.menuSemanal.checks = checks;
     remoteRecord.menuSemanal.checksSemanal = checksSemanal;
+    remoteRecord.menuSemanal.comprado = comprado;
+    remoteRecord.menuSemanal.compradoSemanal = compradoSemanal;
     remoteRecord.menuSemanal.itemsSueltos = itemsSueltos;
     remoteRecord.menuSemanal.peso = peso;
     remoteRecord.menuSemanal.nutriEdits = nutriEdits;
@@ -2526,35 +2536,43 @@ function wireSelectorDias(el){
   });
 }
 
-/* Lista agrupada de la compra semanal con sus checkboxes — se usa tanto en Nevera → Semanal como
-   en Compra → Semanal, con el mismo estado compartido `checksSemanal` (marcar en una se refleja en
-   la otra, igual que ya pasa entre Nevera y Compra del día). */
-function checklistSemanalHtml(){
+/* Lista agrupada de la compra semanal — se usa tanto en Nevera → Semanal ('nevera': marca "ya lo
+   tengo", con checksSemanal, nunca oculta nada) como en Compra → Semanal ('compra': oculta lo que
+   ya está en la nevera según checksSemanal, y su propio checkbox marca "lo he comprado" con
+   compradoSemanal, que solo tacha, igual que ya pasa en la Compra del día — issue #44/#70). */
+function checklistSemanalHtml(modo){
   const dates = Array.from(comprasSemanaDias).sort();
   if(!dates.length) return `<div class="empty">Elige los días para ver aquí la compra agrupada.</div>`;
   const diasInfo = dates.map(f=>WEEK.find(d=>d.date===f)).filter(Boolean);
-  const items = agruparIngredientesSemana(dates);
+  const todos = agruparIngredientesSemana(dates);
+  const esCompra = modo === 'compra';
+  const items = esCompra ? todos.filter(({key})=>!checksSemanal[key]) : todos;
   return `<div class="compra-semana-resumen">${diasInfo.map(d=>`<span class="compra-semana-chip">${d.name.slice(0,3)} ${fmtDate(d.date)}</span>`).join('')}</div>` +
     `<div class="section-title">Compra agrupada</div>` +
     (items.length===0
-      ? `<div class="empty">No hay ingredientes en los días elegidos</div>`
+      ? `<div class="empty">${esCompra && todos.length ? 'Ya tienes todo lo necesario en la nevera 🎉' : 'No hay ingredientes en los días elegidos'}</div>`
       : `<div class="card">${items.map(({item,key,icono})=>{
-          const tachado = !!checksSemanal[key];
+          const tachado = esCompra ? !!compradoSemanal[key] : !!checksSemanal[key];
           return `<div class="ing-row ${tachado?'checked':''}">
-            <input type="checkbox" class="checksemanal-check" data-key="${encodeURIComponent(key)}" ${tachado?'checked':''}>
+            <input type="checkbox" class="checksemanal-check" data-key="${encodeURIComponent(key)}" data-modo="${modo||'nevera'}" ${tachado?'checked':''}>
             <span style="width:20px;text-align:center">${icono}</span>
             <label>${item}</label>
           </div>`;
         }).join('')}</div>`);
 }
-function wireChecklistSemanal(el, otraVista){
+function wireChecklistSemanal(el){
   el.querySelectorAll('.checksemanal-check').forEach(cb=>{
     cb.addEventListener('change', ()=>{
       const key = decodeURIComponent(cb.dataset.key);
-      checksSemanal[key] = cb.checked;
+      if(cb.dataset.modo === 'compra'){
+        compradoSemanal[key] = cb.checked;
+        cb.closest('.ing-row').classList.toggle('checked', cb.checked);
+      } else {
+        checksSemanal[key] = cb.checked;
+        cb.closest('.ing-row').classList.toggle('checked', cb.checked);
+        renderCompra();
+      }
       scheduleSave();
-      cb.closest('.ing-row').classList.toggle('checked', cb.checked);
-      otraVista();
     });
   });
 }
@@ -2567,7 +2585,7 @@ function renderNevera(){
     el.innerHTML = toggleHtml + selectorDiasHtml() + checklistSemanalHtml();
     wireVistaToggle(el);
     wireSelectorDias(el);
-    wireChecklistSemanal(el, renderCompra);
+    wireChecklistSemanal(el);
     return;
   }
 
@@ -2602,6 +2620,7 @@ function renderNevera(){
       checks[day.date][key] = cb.checked;
       cb.closest('.ing-row').classList.toggle('checked', cb.checked);
       scheduleSave();
+      renderCompra();
     });
   });
 
@@ -2623,26 +2642,28 @@ function renderCompra(){
   if(compraVista === 'semanal'){
     el.innerHTML = toggleHtml +
       `<div class="compra-semana-editar"><button type="button" id="irANeveraDias">✏️ Editar días en Nevera</button></div>` +
-      checklistSemanalHtml();
+      checklistSemanalHtml('compra');
     wireVistaToggle(el);
-    wireChecklistSemanal(el, renderNevera);
+    wireChecklistSemanal(el);
     const btnIr = document.getElementById('irANeveraDias');
     if(btnIr) btnIr.addEventListener('click', ()=> document.querySelector('nav .tab[data-tab="nevera"]').click());
     return;
   }
 
   const day = WEEK[currentDay];
-  const items = fridgeItems(day);
+  const todosHoy = fridgeItems(day);
   const dayChecks = checks[day.date] || {};
+  const dayComprado = comprado[day.date] || {};
+  const items = todosHoy.filter(({key})=>!dayChecks[key]);
   const sueltosHoy = itemsSueltos[day.date] || [];
   el.innerHTML = toggleHtml +
     `<div class="section-title">Por comprar hoy</div>` +
     (items.length===0
-      ? `<div class="empty">No hay ingredientes en el menú de hoy</div>`
+      ? `<div class="empty">${todosHoy.length ? 'Ya tienes todo lo necesario en la nevera 🎉' : 'No hay ingredientes en el menú de hoy'}</div>`
       : `<div class="card">${items.map(({item,key,icono,who})=>{
-          const isChecked = !!dayChecks[key];
-          return `<div class="ing-row ${isChecked?'checked':''}">
-            <input type="checkbox" class="compra-check" data-key="${encodeURIComponent(key)}" ${isChecked?'checked':''}>
+          const isComprado = !!dayComprado[key];
+          return `<div class="ing-row ${isComprado?'checked':''}">
+            <input type="checkbox" class="compra-check" data-key="${encodeURIComponent(key)}" ${isComprado?'checked':''}>
             <span style="width:20px;text-align:center">${icono}</span>
             <label>${item}</label>
             <span class="ing-src ${origen(who).cls}">${origen(who).label}</span>
@@ -2667,11 +2688,10 @@ function renderCompra(){
   el.querySelectorAll('.compra-check').forEach(cb=>{
     cb.addEventListener('change', ()=>{
       const key = decodeURIComponent(cb.dataset.key);
-      checks[day.date] = checks[day.date] || {};
-      checks[day.date][key] = cb.checked;
+      comprado[day.date] = comprado[day.date] || {};
+      comprado[day.date][key] = cb.checked;
       scheduleSave();
-      renderNevera();
-      renderCompra();
+      cb.closest('.ing-row').classList.toggle('checked', cb.checked);
     });
   });
 
