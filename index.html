@@ -2,40 +2,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Menú Semanal</title>
 <style>
+  /* Paleta en OKLCH (igual de precisa que los hex que sustituye, verificado byte a byte) en vez de
+     hex: para aclarar/oscurecer un color de persona de forma coherente basta con tocar el canal L,
+     en vez de mantener a mano dos hex distintos por cada tono. */
   :root{
-    --bg:#faf7f2; --card:#ffffff; --ink:#2b2420; --muted:#8a7f74;
-    --accent:#a9455d; --accent-soft:#f3dde2; --line:#ece4dc;
-    --pedro:#6d8a6b; --pedro-soft:#e7efe6; --nuria:#c07a3f; --nuria-soft:#f6e6d5;
-    --rocio:#5b7ea6; --rocio-soft:#e4ecf5;
-    --paqui:#9c6bb0; --paqui-soft:#ede3f2; --sole:#b0506b; --sole-soft:#f4e0e5;
-    --eva:#3f8f8a; --eva-soft:#dfeeed;
-    --marta:#a67c3d; --marta-soft:#f2e6d3;
-    --ok:#5a8c5a;
+    --bg:oklch(97.7% 0.0074 80.7); --card:oklch(100% 0 89.9); --ink:oklch(26.7% 0.0129 51.6); --muted:oklch(60.3% 0.0211 67.4);
+    --accent:oklch(53% 0.1329 7.9); --accent-soft:oklch(91.7% 0.0251 2.1); --line:oklch(92.3% 0.0139 67.7);
+    --pedro:oklch(60.2% 0.0568 143.2); --pedro-soft:oklch(94.4% 0.0147 142.2); --nuria:oklch(64.2% 0.1149 58.7); --nuria-soft:oklch(93.3% 0.0286 69.2);
+    --rocio:oklch(58.3% 0.0736 252.4); --rocio-soft:oklch(94% 0.0149 251.2);
+    --paqui:oklch(60.5% 0.1149 315.7); --paqui-soft:oklch(92.8% 0.0227 314.7); --sole:oklch(56% 0.1278 4.4); --sole-soft:oklch(92.4% 0.0229 0.6);
+    --eva:oklch(59.9% 0.0784 189.7); --eva-soft:oklch(93.8% 0.016 192.1);
+    --marta:oklch(61.5% 0.0958 75.4); --marta-soft:oklch(92.9% 0.0284 79.5);
+    --ok:oklch(59.1% 0.0923 144.3);
+    --shadow-1:0 1px 2px oklch(27% 0.013 52 / 7%),0 2px 6px oklch(27% 0.013 52 / 5%);
+    --shadow-2:0 2px 4px oklch(27% 0.013 52 / 9%),0 6px 16px oklch(27% 0.013 52 / 9%);
+    --shadow-3:0 4px 10px oklch(27% 0.013 52 / 14%),0 14px 32px oklch(27% 0.013 52 / 18%);
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#1b1815; --card:#252220; --ink:#f1ece6; --muted:#a89e93;
-      --accent:#e08296; --accent-soft:#3a2429; --line:#3a3430;
-      --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
-      --rocio:#8ba9cf; --rocio-soft:#232a33;
-      --paqui:#c49bd8; --paqui-soft:#332a38; --sole:#dc8a9d; --sole-soft:#38262a;
-      --eva:#6fc4be; --eva-soft:#213533;
-      --marta:#d4a869; --marta-soft:#362c1e;
-      --ok:#7cb87c;
+      --bg:oklch(21.1% 0.0075 67.4); --card:oklch(25.5% 0.0059 56.1); --ink:oklch(94.5% 0.0097 72.7); --muted:oklch(70.5% 0.0196 70.1);
+      --accent:oklch(71.3% 0.1173 6.8); --accent-soft:oklch(29% 0.0344 4.6); --line:oklch(33% 0.011 56);
+      --pedro:oklch(72.7% 0.065 143.5); --pedro-soft:oklch(29.8% 0.0174 158.8); --nuria:oklch(77.1% 0.1038 68.5); --nuria-soft:oklch(28.7% 0.0207 54.2);
+      --rocio:oklch(72.6% 0.0648 254.5); --rocio-soft:oklch(28.2% 0.0194 254.8);
+      --paqui:oklch(74.8% 0.0965 314.4); --paqui-soft:oklch(30.1% 0.0277 313.4); --sole:oklch(72.3% 0.1023 4.9); --sole-soft:oklch(29.2% 0.0279 4.3);
+      --eva:oklch(76.5% 0.0834 189.7); --eva-soft:oklch(31.1% 0.026 188);
+      --marta:oklch(75.8% 0.0958 75.4); --marta-soft:oklch(30% 0.0278 75.7);
+      --ok:oklch(72.6% 0.1057 144.4);
+      --shadow-1:0 1px 2px oklch(0% 0 0 / 20%),0 2px 6px oklch(0% 0 0 / 16%);
+      --shadow-2:0 2px 4px oklch(0% 0 0 / 24%),0 6px 16px oklch(0% 0 0 / 22%);
+      --shadow-3:0 4px 10px oklch(0% 0 0 / 32%),0 14px 32px oklch(0% 0 0 / 40%);
     }
   }
   :root[data-theme="dark"]{
-    --bg:#1b1815; --card:#252220; --ink:#f1ece6; --muted:#a89e93;
-    --accent:#e08296; --accent-soft:#3a2429; --line:#3a3430;
-    --pedro:#8fb28d; --pedro-soft:#26302a; --nuria:#e0a869; --nuria-soft:#332821;
-    --rocio:#8ba9cf; --rocio-soft:#232a33;
-    --paqui:#c49bd8; --paqui-soft:#332a38; --sole:#dc8a9d; --sole-soft:#38262a;
-    --eva:#6fc4be; --eva-soft:#213533;
-    --marta:#d4a869; --marta-soft:#362c1e;
-    --ok:#7cb87c;
+    --bg:oklch(21.1% 0.0075 67.4); --card:oklch(25.5% 0.0059 56.1); --ink:oklch(94.5% 0.0097 72.7); --muted:oklch(70.5% 0.0196 70.1);
+    --accent:oklch(71.3% 0.1173 6.8); --accent-soft:oklch(29% 0.0344 4.6); --line:oklch(33% 0.011 56);
+    --pedro:oklch(72.7% 0.065 143.5); --pedro-soft:oklch(29.8% 0.0174 158.8); --nuria:oklch(77.1% 0.1038 68.5); --nuria-soft:oklch(28.7% 0.0207 54.2);
+    --rocio:oklch(72.6% 0.0648 254.5); --rocio-soft:oklch(28.2% 0.0194 254.8);
+    --paqui:oklch(74.8% 0.0965 314.4); --paqui-soft:oklch(30.1% 0.0277 313.4); --sole:oklch(72.3% 0.1023 4.9); --sole-soft:oklch(29.2% 0.0279 4.3);
+    --eva:oklch(76.5% 0.0834 189.7); --eva-soft:oklch(31.1% 0.026 188);
+    --marta:oklch(75.8% 0.0958 75.4); --marta-soft:oklch(30% 0.0278 75.7);
+    --ok:oklch(72.6% 0.1057 144.4);
+    --shadow-1:0 1px 2px oklch(0% 0 0 / 20%),0 2px 6px oklch(0% 0 0 / 16%);
+    --shadow-2:0 2px 4px oklch(0% 0 0 / 24%),0 6px 16px oklch(0% 0 0 / 22%);
+    --shadow-3:0 4px 10px oklch(0% 0 0 / 32%),0 14px 32px oklch(0% 0 0 / 40%);
   }
   *{box-sizing:border-box;}
   body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:76px;}
+
+  /* Micro-interacciones baratas (solo transform/opacity, nada de blur ni sombras animadas en bucle)
+     para que tocar algo se sienta con respuesta, incluso en hardware limitado. */
+  button,.opcion-card,.daychip,.onboarding-opt,.personchip,.media-add-btn,.compra-semana-dia,.receta-opt{
+    transition:transform .1s ease,box-shadow .15s ease,background-color .15s ease,border-color .15s ease;
+  }
+  button:active,.opcion-card:active,.daychip:active,.onboarding-opt:active,.personchip:active,.media-add-btn:active,.compra-semana-dia:active{
+    transform:scale(.96);
+  }
+  .ing-row input[type=checkbox]{transition:transform .1s ease;}
+  .ing-row input[type=checkbox]:active{transform:scale(1.15);}
+  .ing-row label{transition:color .15s ease;}
+  nav button .ic{display:inline-block;transition:transform .15s ease;}
+  nav button.active .ic{transform:scale(1.15);}
+  @media (prefers-reduced-motion: reduce){
+    *{transition-duration:0.001ms !important;}
+  }
   h1{font-size:1.1rem;margin:0;padding:14px 16px 4px;letter-spacing:.2px;}
   .sub{padding:0 16px 10px;color:var(--muted);font-size:.8rem;}
 
@@ -43,11 +72,11 @@
   .daychip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;text-align:center;min-width:58px;cursor:pointer;}
   .daychip .dname{font-size:.7rem;color:var(--muted);text-transform:uppercase;}
   .daychip .dnum{font-size:1.05rem;font-weight:600;}
-  .daychip.active{background:var(--pedro);border-color:var(--pedro);}
+  .daychip.active{background:var(--pedro);border-color:var(--pedro);box-shadow:var(--shadow-2);}
   .daychip.active .dname,.daychip.active .dnum{color:#fff;}
 
   main{padding:0 16px 8px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:var(--shadow-1);}
   .person{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:8px;font-size:.95rem;}
   .dot{width:10px;height:10px;border-radius:50%;}
   .dot.pedro{background:var(--pedro);} .dot.nuria{background:var(--nuria);} .dot.rocio{background:var(--rocio);}
@@ -70,7 +99,7 @@
   .opciones-cards{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
   .opcion-card{position:relative;flex:1 1 140px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.82rem;line-height:1.3;cursor:pointer;background:var(--bg);}
   .opcion-card:not(.con-media){padding-right:72px;}
-  .opcion-card.elegida{border-color:var(--accent);background:var(--accent-soft);}
+  .opcion-card.elegida{border-color:var(--accent);background:var(--accent-soft);box-shadow:var(--shadow-2);}
   .opcion-card.con-media{display:flex;flex-direction:column;padding:0;overflow:hidden;}
   .opcion-media-img{position:relative;width:100%;aspect-ratio:4/5;background-size:cover;background-position:center;background-color:var(--line);flex:0 0 auto;}
   .opcion-texto{padding:8px 10px;font-weight:600;}
@@ -80,7 +109,7 @@
   .opcion-card .media-del-btn{right:32px;}
   .opcion-card .video-badge{left:6px;bottom:6px;width:22px;height:22px;font-size:.65rem;}
   .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;}
-  .video-modal video{max-width:92vw;max-height:80vh;border-radius:10px;}
+  .video-modal video{max-width:92vw;max-height:80vh;border-radius:10px;box-shadow:var(--shadow-3);}
   .video-modal-close{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer;}
   .recipe{margin-top:6px;}
   .recipe-btn{font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;display:inline-block;padding:3px 0;}
@@ -98,7 +127,7 @@
   .recipe-toggle{display:flex;align-items:center;gap:10px;margin:0 4px 14px;font-size:.85rem;color:var(--muted);flex-wrap:wrap;}
   .receta-toggle{display:flex;border-radius:17px;background:var(--line);padding:2px;gap:2px;}
   .receta-opt{flex:1;border:none;background:none;border-radius:15px;padding:8px 10px;font-size:.72rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;}
-  .receta-opt.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15);}
+  .receta-opt.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow-1);}
   .compra-semana-grid{display:flex;flex-wrap:wrap;gap:8px;}
   .compra-semana-dia{display:flex;align-items:center;gap:6px;font-size:.78rem;padding:6px 10px;border:1px solid var(--line);border-radius:20px;cursor:pointer;}
   .compra-semana-dia input{width:16px;height:16px;accent-color:var(--accent);}
@@ -180,7 +209,7 @@
   .onboarding p{font-size:.85rem;color:var(--muted);margin:0 0 18px;}
   .onboarding-grid{display:flex;flex-direction:column;gap:8px;}
   .onboarding-opt{border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.9rem;font-weight:600;background:var(--card);color:var(--ink);cursor:pointer;text-align:left;}
-  .onboarding-opt.on{border-color:var(--accent);background:var(--accent-soft);}
+  .onboarding-opt.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:var(--shadow-2);}
   .onboarding-actions{margin-top:20px;display:flex;gap:10px;}
   .onboarding-actions button{flex:1;border:none;border-radius:10px;padding:12px;font-size:.88rem;font-weight:700;cursor:pointer;}
   .onboarding-actions .primary{background:var(--accent);color:#fff;}
