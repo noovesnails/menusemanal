@@ -57,7 +57,7 @@
   .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
   .meal-body{display:flex;align-items:center;gap:10px;}
   .meal-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
-  .meal-title{font-size:.92rem;line-height:1.35;}
+  .meal-title{font-size:1rem;line-height:1.35;}
   .meal-media{position:relative;width:52px;height:52px;border-radius:10px;overflow:hidden;flex:0 0 auto;}
   .meal-media img{width:100%;height:100%;object-fit:cover;display:block;}
   .media-add-btn{width:52px;height:52px;border-radius:10px;border:1.5px dashed var(--line);background:var(--bg);color:var(--muted);font-size:1.1rem;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
@@ -91,7 +91,7 @@
   .recipe-servings{font-size:.78rem;color:var(--muted);}
   .recipe-mode{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px;background:var(--line);color:var(--ink);}
   .recipe-subtitle{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 4px;}
-  .recipe-ing,.recipe-steps{margin:0;padding-left:1.15rem;font-size:.85rem;line-height:1.5;}
+  .recipe-ing,.recipe-steps{margin:0;padding-left:1.15rem;font-size:1rem;line-height:1.5;}
   .recipe-ing li,.recipe-steps li{margin-bottom:3px;}
 
   .section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 4px 8px;}
@@ -1707,6 +1707,17 @@ const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
 const CLOUDINARY_CLOUD = "dtjgzeezk";
 const CLOUDINARY_PRESET = "menusemanal";
 
+/* Inserta una transformación de Cloudinary (formato/calidad automáticos + ancho) en una URL de
+   entrega, para no servir nunca la foto/vídeo original (varios MB, resolución de cámara) cuando
+   solo se muestra en una miniatura o tarjeta pequeña. Se añade como último segmento encadenado,
+   justo antes del nombre de archivo, para que se aplique después de cualquier otra transformación
+   u offset ya presente en la URL (p. ej. el so_0 de las miniaturas de vídeo). */
+function cloudinaryOptim(url, width){
+  if(!url || !url.includes('/upload/')) return url;
+  const idx = url.lastIndexOf('/');
+  return url.slice(0, idx+1) + `f_auto,q_auto,w_${width}/` + url.slice(idx+1);
+}
+
 function normalizarClave(texto){
   return texto.trim().toLowerCase();
 }
@@ -2311,13 +2322,13 @@ function renderMenu(){
     const media = mediaPorPlato[clave];
     const mediaHtml = media
       ? `<div class="meal-media" data-clave="${claveAttr}">
-          <img alt="">
+          <img alt="" loading="lazy">
           ${media.tipo==='video' ? `<button type="button" class="video-badge">▶</button>` : ''}
           <button type="button" class="media-edit-btn" data-clave="${claveAttr}" title="Cambiar foto/vídeo">✏️</button>
           <button type="button" class="media-del-btn" data-clave="${claveAttr}" title="Quitar foto/vídeo">🗑</button>
         </div>`
       : (m.img
-          ? `<img class="meal-thumb" src="${m.img}" alt="">`
+          ? `<img class="meal-thumb" src="${m.img}" alt="" loading="lazy">`
           : `<button type="button" class="media-add-btn" data-clave="${claveAttr}" title="Añadir foto o vídeo">📷</button>`);
     return `
     <div class="meal">
@@ -2407,13 +2418,15 @@ function renderMenu(){
   el.querySelectorAll('.meal-media[data-clave]').forEach(div=>{
     const media = mediaPorPlato[decodeURIComponent(div.dataset.clave)];
     if(!media) return;
-    div.querySelector('img').src = media.tipo==='video' ? media.thumbUrl : media.url;
+    const src = media.tipo==='video' ? media.thumbUrl : media.url;
+    div.querySelector('img').src = cloudinaryOptim(src, 120);
   });
   el.querySelectorAll('.opcion-card.con-media[data-clave]').forEach(card=>{
     const media = mediaPorPlato[decodeURIComponent(card.dataset.clave)];
     if(!media) return;
+    const src = media.tipo==='video' ? media.thumbUrl : media.url;
     const imgDiv = card.querySelector('.opcion-media-img');
-    imgDiv.style.backgroundImage = `url(${JSON.stringify(media.tipo==='video' ? media.thumbUrl : media.url)})`;
+    imgDiv.style.backgroundImage = `url(${JSON.stringify(cloudinaryOptim(src, 640))})`;
   });
 }
 
