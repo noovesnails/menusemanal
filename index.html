@@ -230,12 +230,14 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.3.0";
+const APP_VERSION = "v2.4.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
    de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
 const CHANGELOG = [
+  { fecha:"2026-10-02", texto:"Mejoras de rendimiento para tablets más lentas: la app solo reconstruye la pestaña que estás viendo, en vez de las 5 a la vez." },
+  { fecha:"2026-10-02", texto:"Las fotos y vídeos de los platos pesan mucho menos (se piden ya optimizados a Cloudinary) y el texto de las recetas se lee más grande." },
   { fecha:"2026-09-29", texto:"Corregido: marcar algo como \"ya lo tienes\" en Nevera ahora lo quita de Compra; marcarlo como comprado directamente en Compra se queda tachado, sin ocultarse." },
   { fecha:"2026-09-28", texto:"Corregido: las recetas nuevas ahora tienen versión Thermomix real (vaso/velocidad) además de la tradicional." },
   { fecha:"2026-09-28", texto:"Los 58 platos elaborados que no tenían receta (cremas, guisos, tortillas...) ahora tienen una versión Thermomix." },
