@@ -2895,14 +2895,25 @@ function renderYo(){
   });
 }
 
+/* Reconstruir las 5 pestañas enteras en cada cambio de datos (incluido el refresco silencioso
+   cada 30s) es trabajo de CPU desperdiciado: solo una pestaña está visible a la vez, y las otras
+   cuatro se tiran sin pintarse. Ahora render() solo reconstruye la pestaña activa al momento; las
+   demás se marcan "pendientes" y se repintan en el instante en que el usuario cambia a ellas, así
+   que nunca se ve contenido desactualizado, solo se evita el trabajo que nadie iba a ver. */
+const RENDERERS_POR_TAB = { menu: renderMenu, nevera: renderNevera, compra: renderCompra, peso: renderPeso, yo: renderYo };
+let tabsPendientes = new Set(Object.keys(RENDERERS_POR_TAB));
+
 function render(){
   extenderMenusSegunPlan();
   renderDayPicker();
-  renderMenu();
-  renderNevera();
-  renderCompra();
-  renderPeso();
-  renderYo();
+  Object.keys(RENDERERS_POR_TAB).forEach(tab=>{
+    if(tab === currentTab){
+      RENDERERS_POR_TAB[tab]();
+      tabsPendientes.delete(tab);
+    } else {
+      tabsPendientes.add(tab);
+    }
+  });
   if(miUsuario && PERSONAS[miUsuario]){
     document.getElementById('miUsuarioLabel').innerHTML = `Hola, <b>${PERSONAS[miUsuario].nombre}</b>`;
   }
@@ -2941,6 +2952,10 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
     document.getElementById('viewCompra').style.display = currentTab==='compra' ? '' : 'none';
     document.getElementById('viewPeso').style.display = currentTab==='peso' ? '' : 'none';
     document.getElementById('viewYo').style.display = currentTab==='yo' ? '' : 'none';
+    if(tabsPendientes.has(currentTab)){
+      RENDERERS_POR_TAB[currentTab]();
+      tabsPendientes.delete(currentTab);
+    }
   });
 });
 
