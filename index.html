@@ -455,12 +455,13 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.7.0";
+const APP_VERSION = "v2.8.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
    de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
 const CHANGELOG = [
+  { fecha:"2026-10-03", texto:"En Yo → Tema visual, un desplegable \"Color\" con 10 colores más para cada tema (en Cristal cambian también el degradado), siempre con contraste suficiente para leer bien el texto." },
   { fecha:"2026-10-03", texto:"Nuevo look \"Cristal\" por defecto, y en Yo → Tema visual se puede elegir entre 5 combinaciones, incluidas dos con letra un 25% más grande." },
   { fecha:"2026-10-03", texto:"Desayuno, almuerzo y merienda ahora son desplegables: solo se ve el nombre y se abren suavemente al tocarlos." },
   { fecha:"2026-10-03", texto:"Corregido: las fotos y vídeos ya subidos habían dejado de verse (404) por un error en la optimización de Cloudinary del día anterior." },
