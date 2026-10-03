@@ -100,6 +100,109 @@
     --shadow-3:0 1px 0 oklch(100% 0 0 / 6%) inset,0 16px 34px oklch(0% 0 0 / 55%);
   }
   :root[data-tema="claro-grande"],:root[data-tema="oscuro-grande"]{ font-size:20px; }
+
+  /* Arreglo de contraste de base: en oscuro/oscuro-grande, --accent es claro a propósito (para leerse
+     como texto sobre fondo oscuro), pero eso lo hace ilegible como fondo sólido con texto blanco
+     encima (botones). --accent-btn cubre ese segundo uso con un valor más oscuro del mismo tono; en
+     los temas claros no hace falta redefinirlo, ya vale --accent tal cual (ver fallback en los
+     botones). */
+  :root[data-tema="oscuro"]{ --accent-btn:oklch(45% 0.170 6.8); }
+  :root[data-tema="oscuro-grande"]{ --accent-btn:oklch(45% 0.133 40); }
+
+  /* 10 degradados adicionales dentro de Cristal (selector de colores) — mismo arco de color que el
+     degradado por defecto, solo rotado para centrarse en cada acento. Todos los --accent/--accent-btn
+     de aquí en adelante se calcularon verificando el contraste real (WCAG) contra blanco y contra los
+     fondos de cada tema, y manteniéndose dentro del gamut sRGB — nunca dependen de que el navegador
+     recorte un color fuera de gama. */
+  [data-tema="cristal"][data-acento="rosa"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 128) 0%, oklch(78% 0.13 88) 22%, oklch(72% 0.14 68) 42%, oklch(68% 0.13 18) 68%, oklch(72% 0.1 323) 100%);
+    --accent:oklch(48% 0.181 8); --accent-soft:oklch(92% 0.045 8 / 25%); --accent-btn:oklch(45% 0.170 8);
+  }
+  [data-tema="cristal"][data-acento="coral"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 145) 0%, oklch(78% 0.13 105) 22%, oklch(72% 0.14 85) 42%, oklch(68% 0.13 35) 68%, oklch(72% 0.1 340) 100%);
+    --accent:oklch(48% 0.183 25); --accent-soft:oklch(92% 0.045 25 / 25%); --accent-btn:oklch(45% 0.172 25);
+  }
+  [data-tema="cristal"][data-acento="ambar"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 175) 0%, oklch(78% 0.13 135) 22%, oklch(72% 0.14 115) 42%, oklch(68% 0.13 65) 68%, oklch(72% 0.1 10) 100%);
+    --accent:oklch(48% 0.112 55); --accent-soft:oklch(92% 0.045 55 / 25%); --accent-btn:oklch(45% 0.105 55);
+  }
+  [data-tema="cristal"][data-acento="oliva"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 220) 0%, oklch(78% 0.13 180) 22%, oklch(72% 0.14 160) 42%, oklch(68% 0.13 110) 68%, oklch(72% 0.1 55) 100%);
+    --accent:oklch(48% 0.094 100); --accent-soft:oklch(92% 0.045 100 / 25%); --accent-btn:oklch(45% 0.088 100);
+  }
+  [data-tema="cristal"][data-acento="esmeralda"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 270) 0%, oklch(78% 0.13 230) 22%, oklch(72% 0.14 210) 42%, oklch(68% 0.13 160) 68%, oklch(72% 0.1 105) 100%);
+    --accent:oklch(48% 0.124 150); --accent-soft:oklch(92% 0.045 150 / 25%); --accent-btn:oklch(45% 0.117 150);
+  }
+  [data-tema="cristal"][data-acento="turquesa"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 310) 0%, oklch(78% 0.13 270) 22%, oklch(72% 0.14 250) 42%, oklch(68% 0.13 200) 68%, oklch(72% 0.1 145) 100%);
+    --accent:oklch(48% 0.078 190); --accent-soft:oklch(92% 0.045 190 / 25%); --accent-btn:oklch(45% 0.073 190);
+  }
+  [data-tema="cristal"][data-acento="cielo"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 340) 0%, oklch(78% 0.13 300) 22%, oklch(72% 0.14 280) 42%, oklch(68% 0.13 230) 68%, oklch(72% 0.1 175) 100%);
+    --accent:oklch(48% 0.082 220); --accent-soft:oklch(92% 0.045 220 / 25%); --accent-btn:oklch(45% 0.077 220);
+  }
+  [data-tema="cristal"][data-acento="azul"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 10) 0%, oklch(78% 0.13 330) 22%, oklch(72% 0.14 310) 42%, oklch(68% 0.13 260) 68%, oklch(72% 0.1 205) 100%);
+    --accent:oklch(48% 0.128 250); --accent-soft:oklch(92% 0.045 250 / 25%); --accent-btn:oklch(45% 0.120 250);
+  }
+  [data-tema="cristal"][data-acento="indigo"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 40) 0%, oklch(78% 0.13 0) 22%, oklch(72% 0.14 340) 42%, oklch(68% 0.13 290) 68%, oklch(72% 0.1 235) 100%);
+    --accent:oklch(48% 0.244 280); --accent-soft:oklch(92% 0.045 280 / 25%); --accent-btn:oklch(45% 0.244 280);
+  }
+  [data-tema="cristal"][data-acento="magenta"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 90) 0%, oklch(78% 0.13 50) 22%, oklch(72% 0.14 30) 42%, oklch(68% 0.13 340) 68%, oklch(72% 0.1 285) 100%);
+    --accent:oklch(48% 0.206 330); --accent-soft:oklch(92% 0.045 330 / 25%); --accent-btn:oklch(45% 0.193 330);
+  }
+
+  /* 10 acentos adicionales para "claro" — el fondo no cambia, solo el color de acento. */
+  [data-tema="claro"][data-acento="rosa"]{ --accent:oklch(48% 0.181 8); --accent-soft:oklch(92% 0.045 8); --accent-btn:oklch(45% 0.170 8); }
+  [data-tema="claro"][data-acento="coral"]{ --accent:oklch(48% 0.183 25); --accent-soft:oklch(92% 0.045 25); --accent-btn:oklch(45% 0.172 25); }
+  [data-tema="claro"][data-acento="ambar"]{ --accent:oklch(48% 0.112 55); --accent-soft:oklch(92% 0.045 55); --accent-btn:oklch(45% 0.105 55); }
+  [data-tema="claro"][data-acento="oliva"]{ --accent:oklch(48% 0.094 100); --accent-soft:oklch(92% 0.045 100); --accent-btn:oklch(45% 0.088 100); }
+  [data-tema="claro"][data-acento="esmeralda"]{ --accent:oklch(48% 0.124 150); --accent-soft:oklch(92% 0.045 150); --accent-btn:oklch(45% 0.117 150); }
+  [data-tema="claro"][data-acento="turquesa"]{ --accent:oklch(48% 0.078 190); --accent-soft:oklch(92% 0.045 190); --accent-btn:oklch(45% 0.073 190); }
+  [data-tema="claro"][data-acento="cielo"]{ --accent:oklch(48% 0.082 220); --accent-soft:oklch(92% 0.045 220); --accent-btn:oklch(45% 0.077 220); }
+  [data-tema="claro"][data-acento="azul"]{ --accent:oklch(48% 0.128 250); --accent-soft:oklch(92% 0.045 250); --accent-btn:oklch(45% 0.120 250); }
+  [data-tema="claro"][data-acento="indigo"]{ --accent:oklch(48% 0.244 280); --accent-soft:oklch(92% 0.045 280); --accent-btn:oklch(45% 0.244 280); }
+  [data-tema="claro"][data-acento="magenta"]{ --accent:oklch(48% 0.206 330); --accent-soft:oklch(92% 0.045 330); --accent-btn:oklch(45% 0.193 330); }
+
+  /* 10 acentos adicionales para "oscuro". */
+  [data-tema="oscuro"][data-acento="rosa"]{ --accent:oklch(74% 0.155 8); --accent-soft:oklch(28% 0.06 8); --accent-btn:oklch(45% 0.170 8); }
+  [data-tema="oscuro"][data-acento="coral"]{ --accent:oklch(74% 0.149 25); --accent-soft:oklch(28% 0.06 25); --accent-btn:oklch(45% 0.172 25); }
+  [data-tema="oscuro"][data-acento="ambar"]{ --accent:oklch(74% 0.172 55); --accent-soft:oklch(28% 0.06 55); --accent-btn:oklch(45% 0.105 55); }
+  [data-tema="oscuro"][data-acento="oliva"]{ --accent:oklch(74% 0.145 100); --accent-soft:oklch(28% 0.06 100); --accent-btn:oklch(45% 0.088 100); }
+  [data-tema="oscuro"][data-acento="esmeralda"]{ --accent:oklch(74% 0.192 150); --accent-soft:oklch(28% 0.06 150); --accent-btn:oklch(45% 0.117 150); }
+  [data-tema="oscuro"][data-acento="turquesa"]{ --accent:oklch(74% 0.120 190); --accent-soft:oklch(28% 0.06 190); --accent-btn:oklch(45% 0.073 190); }
+  [data-tema="oscuro"][data-acento="cielo"]{ --accent:oklch(74% 0.127 220); --accent-soft:oklch(28% 0.06 220); --accent-btn:oklch(45% 0.077 220); }
+  [data-tema="oscuro"][data-acento="azul"]{ --accent:oklch(74% 0.132 250); --accent-soft:oklch(28% 0.06 250); --accent-btn:oklch(45% 0.120 250); }
+  [data-tema="oscuro"][data-acento="indigo"]{ --accent:oklch(74% 0.129 280); --accent-soft:oklch(28% 0.06 280); --accent-btn:oklch(45% 0.244 280); }
+  [data-tema="oscuro"][data-acento="magenta"]{ --accent:oklch(74% 0.207 330); --accent-soft:oklch(28% 0.06 330); --accent-btn:oklch(45% 0.193 330); }
+
+  /* 10 acentos adicionales para "claro-grande" (contraste alto). */
+  [data-tema="claro-grande"][data-acento="rosa"]{ --accent:oklch(40% 0.151 8); --accent-soft:oklch(90% 0.05 8); --accent-btn:oklch(45% 0.170 8); }
+  [data-tema="claro-grande"][data-acento="coral"]{ --accent:oklch(40% 0.153 25); --accent-soft:oklch(90% 0.05 25); --accent-btn:oklch(45% 0.172 25); }
+  [data-tema="claro-grande"][data-acento="ambar"]{ --accent:oklch(40% 0.093 55); --accent-soft:oklch(90% 0.05 55); --accent-btn:oklch(45% 0.105 55); }
+  [data-tema="claro-grande"][data-acento="oliva"]{ --accent:oklch(40% 0.078 100); --accent-soft:oklch(90% 0.05 100); --accent-btn:oklch(45% 0.088 100); }
+  [data-tema="claro-grande"][data-acento="esmeralda"]{ --accent:oklch(40% 0.104 150); --accent-soft:oklch(90% 0.05 150); --accent-btn:oklch(45% 0.117 150); }
+  [data-tema="claro-grande"][data-acento="turquesa"]{ --accent:oklch(40% 0.065 190); --accent-soft:oklch(90% 0.05 190); --accent-btn:oklch(45% 0.073 190); }
+  [data-tema="claro-grande"][data-acento="cielo"]{ --accent:oklch(40% 0.069 220); --accent-soft:oklch(90% 0.05 220); --accent-btn:oklch(45% 0.077 220); }
+  [data-tema="claro-grande"][data-acento="azul"]{ --accent:oklch(40% 0.107 250); --accent-soft:oklch(90% 0.05 250); --accent-btn:oklch(45% 0.120 250); }
+  [data-tema="claro-grande"][data-acento="indigo"]{ --accent:oklch(40% 0.228 280); --accent-soft:oklch(90% 0.05 280); --accent-btn:oklch(45% 0.244 280); }
+  [data-tema="claro-grande"][data-acento="magenta"]{ --accent:oklch(40% 0.172 330); --accent-soft:oklch(90% 0.05 330); --accent-btn:oklch(45% 0.193 330); }
+
+  /* 10 acentos adicionales para "oscuro-grande" (contraste alto). */
+  [data-tema="oscuro-grande"][data-acento="rosa"]{ --accent:oklch(82% 0.099 8); --accent-soft:oklch(25% 0.07 8); --accent-btn:oklch(45% 0.170 8); }
+  [data-tema="oscuro-grande"][data-acento="coral"]{ --accent:oklch(82% 0.095 25); --accent-soft:oklch(25% 0.07 25); --accent-btn:oklch(45% 0.172 25); }
+  [data-tema="oscuro-grande"][data-acento="ambar"]{ --accent:oklch(82% 0.111 55); --accent-soft:oklch(25% 0.07 55); --accent-btn:oklch(45% 0.105 55); }
+  [data-tema="oscuro-grande"][data-acento="oliva"]{ --accent:oklch(82% 0.160 100); --accent-soft:oklch(25% 0.07 100); --accent-btn:oklch(45% 0.088 100); }
+  [data-tema="oscuro-grande"][data-acento="esmeralda"]{ --accent:oklch(82% 0.188 150); --accent-soft:oklch(25% 0.07 150); --accent-btn:oklch(45% 0.117 150); }
+  [data-tema="oscuro-grande"][data-acento="turquesa"]{ --accent:oklch(82% 0.133 190); --accent-soft:oklch(25% 0.07 190); --accent-btn:oklch(45% 0.073 190); }
+  [data-tema="oscuro-grande"][data-acento="cielo"]{ --accent:oklch(82% 0.125 220); --accent-soft:oklch(25% 0.07 220); --accent-btn:oklch(45% 0.077 220); }
+  [data-tema="oscuro-grande"][data-acento="azul"]{ --accent:oklch(82% 0.088 250); --accent-soft:oklch(25% 0.07 250); --accent-btn:oklch(45% 0.120 250); }
+  [data-tema="oscuro-grande"][data-acento="indigo"]{ --accent:oklch(82% 0.086 280); --accent-soft:oklch(25% 0.07 280); --accent-btn:oklch(45% 0.244 280); }
+  [data-tema="oscuro-grande"][data-acento="magenta"]{ --accent:oklch(82% 0.156 330); --accent-soft:oklch(25% 0.07 330); --accent-btn:oklch(45% 0.193 330); }
+
   *{box-sizing:border-box;}
   body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:76px;}
 
@@ -211,7 +314,7 @@
   .suelto-del{font-size:.8rem;color:var(--muted);cursor:pointer;flex:0 0 auto;padding:2px 4px;}
   .suelto-form{display:flex;gap:8px;padding:12px 4px 4px;border-top:1px solid var(--line);margin-top:4px;}
   .suelto-form input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.88rem;background:var(--bg);color:var(--ink);}
-  .suelto-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;}
+  .suelto-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;}
   .peso-diff{font-size:.75rem;color:var(--muted);}
   .peso-diff.up{color:var(--accent);}
   .peso-diff.down{color:var(--ok);}
@@ -219,7 +322,7 @@
   .peso-form{display:flex;gap:8px;flex-wrap:wrap;}
   .peso-form select,.peso-form input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.85rem;background:var(--bg);color:var(--ink);}
   .peso-form input[type=number]{width:80px;}
-  .peso-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;}
+  .peso-form button{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;}
   .peso-chart{width:100%;height:100px;margin-bottom:6px;overflow:visible;}
   .peso-chart-line{fill:none;stroke:var(--chart-color, var(--accent));stroke-width:2;}
   .peso-chart-dot{fill:var(--chart-color, var(--accent));}
@@ -246,7 +349,7 @@
   .syncdot.ok{background:var(--ok);}
   .syncdot.err{background:var(--accent);}
   .refresh-btn{margin-left:auto;background:none;border:none;color:var(--muted);font-size:.72rem;padding:2px 8px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:3px;transition:background-color .2s,color .2s;}
-  .refresh-btn.pending{background:var(--accent);color:#fff;}
+  .refresh-btn.pending{background:var(--accent-btn, var(--accent));color:#fff;}
   .refresh-btn.done{background:var(--ok);color:#fff;}
   .reminders{padding:0 0 10px;display:flex;flex-direction:column;gap:6px;}
   .reminder{border-radius:12px;padding:8px 12px;font-size:.78rem;display:flex;align-items:center;gap:8px;}
@@ -263,7 +366,7 @@
   .nutri-edit{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .nutri-edit label{font-size:.68rem;color:var(--muted);display:flex;flex-direction:column;gap:2px;}
   .nutri-edit input{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:.82rem;background:var(--bg);color:var(--ink);}
-  .nutri-edit button{border:none;border-radius:8px;padding:8px 12px;font-size:.8rem;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;align-self:flex-end;}
+  .nutri-edit button{border:none;border-radius:8px;padding:8px 12px;font-size:.8rem;font-weight:600;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;align-self:flex-end;}
   .notas-nutri{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:10px;font-size:.8rem;line-height:1.4;color:var(--ink);white-space:pre-wrap;}
   .app-version{text-align:center;font-size:.68rem;color:var(--muted);opacity:.6;padding:24px 0 8px;}
   .changelog{display:flex;flex-direction:column;gap:6px;padding:0 16px 24px;font-size:.78rem;color:var(--muted);}
@@ -276,7 +379,7 @@
   .onboarding-opt.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:var(--shadow-2);}
   .onboarding-actions{margin-top:20px;display:flex;gap:10px;}
   .onboarding-actions button{flex:1;border:none;border-radius:10px;padding:12px;font-size:.88rem;font-weight:700;cursor:pointer;}
-  .onboarding-actions .primary{background:var(--accent);color:#fff;}
+  .onboarding-actions .primary{background:var(--accent-btn, var(--accent));color:#fff;}
   .onboarding-actions .secondary{background:var(--line);color:var(--ink);}
   .personpicker{display:flex;gap:6px;flex-wrap:wrap;padding:0 0 10px;}
   .personchip{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.75rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);}
@@ -295,6 +398,13 @@
   .tema-texto{flex:1;display:flex;flex-direction:column;gap:2px;font-size:.88rem;}
   .tema-texto span{font-weight:400;color:var(--muted);font-size:.78rem;}
   .tema-check{flex:0 0 auto;color:var(--accent);font-weight:700;font-size:1rem;}
+
+  .acento-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:10px;padding-top:8px;}
+  .acento-opt{display:flex;flex-direction:column;align-items:center;gap:5px;border:none;background:none;padding:4px;cursor:pointer;color:var(--muted);font:inherit;}
+  .acento-swatch{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);box-shadow:var(--shadow-1);}
+  .acento-opt.on .acento-swatch{border-color:var(--ink);box-shadow:var(--shadow-2);}
+  .acento-nombre{font-size:.66rem;font-weight:600;text-align:center;line-height:1.1;}
+  .acento-opt.on .acento-nombre{color:var(--ink);}
 </style>
 
 <script>
@@ -305,6 +415,8 @@
   try{
     var t = localStorage.getItem('temaApp');
     if(t) document.documentElement.setAttribute('data-tema', t);
+    var a = localStorage.getItem('acentoApp');
+    if(a) document.documentElement.setAttribute('data-acento', a);
   }catch(_){}
 })();
 </script>
@@ -2063,6 +2175,29 @@ function aplicarTema(tema){
 }
 aplicarTema(temaApp);
 
+/* Acentos de color adicionales dentro de cada tema (issue selector de colores): en Cristal cambian
+   también el degradado de fondo; en los demás solo el color de acento, el fondo se queda como lo
+   define el tema. "0" = el acento propio del tema, sin redefinir nada (ver bloque [data-tema=...]
+   de más arriba). Solo local, como temaApp. */
+const ACENTOS = {
+  '0': 'Tal como está',
+  rosa: 'Rosa', coral: 'Coral', ambar: 'Ámbar', oliva: 'Oliva', esmeralda: 'Esmeralda',
+  turquesa: 'Turquesa', cielo: 'Cielo', azul: 'Azul', indigo: 'Índigo', magenta: 'Magenta',
+};
+const ACENTO_SWATCH = {
+  rosa:'#cc1b5a', coral:'#d01c2a', ambar:'#a95a14', oliva:'#807214', esmeralda:'#188841',
+  turquesa:'#18827d', cielo:'#187e97', azul:'#1674c3', indigo:'#6052ef', magenta:'#b425ae',
+};
+let acentoApp = ACENTOS[localStorage.getItem('acentoApp')] ? localStorage.getItem('acentoApp') : '0';
+function aplicarAcento(acento){
+  acentoApp = ACENTOS[acento] ? acento : '0';
+  localStorage.setItem('acentoApp', acentoApp);
+  if(acentoApp === '0') document.documentElement.removeAttribute('data-acento');
+  else document.documentElement.setAttribute('data-acento', acentoApp);
+}
+aplicarAcento(acentoApp);
+let colorPickerAbierto = false; // desplegable de acentos en Yo — solo estado visual de la sesión
+
 /* Días elegidos para la compra semanal (issue #54): solo local, no se sincroniza por JSONBin —
    cada móvil hace su propia compra. */
 let comprasSemanaDias;
@@ -3039,11 +3174,31 @@ function renderYo(){
       ${id===temaApp?'<span class="tema-check">✓</span>':''}
     </button>`;
 
+  const esCristal = temaApp === 'cristal';
+  const acentoOptHtml = (id) => {
+    const activo = id === acentoApp;
+    const fondo = id === '0' ? `var(--accent)` : ACENTO_SWATCH[id];
+    return `<button type="button" class="acento-opt${activo?' on':''}" data-acento-id="${id}" title="${ACENTOS[id]}">
+      <span class="acento-swatch" style="background:${fondo}"></span>
+      <span class="acento-nombre">${ACENTOS[id]}</span>
+    </button>`;
+  };
+  const colorPicker = `<button type="button" class="opciones-toggle" id="colorToggle" aria-expanded="${colorPickerAbierto}">
+      <span class="meal-label">${esCristal ? 'Degradado de Cristal' : `Color de acento (${TEMAS[temaApp].nombre})`}</span>
+      <span class="opciones-chevron" style="${colorPickerAbierto?'transform:rotate(180deg)':''}">⌄</span>
+    </button>
+    <div class="opciones-collapse${colorPickerAbierto?' abierto':''}">
+      <div class="opciones-collapse-inner">
+        <div class="acento-picker">${Object.keys(ACENTOS).map(acentoOptHtml).join('')}</div>
+      </div>
+    </div>`;
+
   const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
   el.innerHTML = `<div class="section-title">Quién ves</div>` +
     `<div class="personpicker" id="personPicker"></div>` +
     `<div class="section-title">Tema visual</div>` +
     `<div class="tema-picker">${Object.keys(TEMAS).map(temaOptHtml).join('')}</div>` +
+    colorPicker +
     `<div class="section-title">Fechas de la nutricionista</div>` +
     (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
     `<div class="app-version">Menú semanal · ${APP_VERSION}</div>` +
@@ -3055,6 +3210,20 @@ function renderYo(){
   el.querySelectorAll('.tema-opt').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       aplicarTema(btn.dataset.temaId);
+      colorPickerAbierto = false; // el color ya elegido pertenecía al tema anterior; al cambiar de
+                                   // tema se vuelve a ver "tal como está" del nuevo, mejor cerrado
+      renderYo();
+    });
+  });
+
+  const colorToggle = document.getElementById('colorToggle');
+  if(colorToggle) colorToggle.addEventListener('click', ()=>{
+    colorPickerAbierto = !colorPickerAbierto;
+    renderYo();
+  });
+  el.querySelectorAll('.acento-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      aplicarAcento(btn.dataset.acentoId);
       renderYo();
     });
   });
