@@ -2,10 +2,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Menú Semanal</title>
 <style>
-  /* Paleta en OKLCH (igual de precisa que los hex que sustituye, verificado byte a byte) en vez de
-     hex: para aclarar/oscurecer un color de persona de forma coherente basta con tocar el canal L,
-     en vez de mantener a mano dos hex distintos por cada tono. */
+  /* Sistema de 5 temas elegibles desde Yo (issue de cambio de look + accesibilidad), aplicados vía
+     [data-tema] en <html> y guardados solo en localStorage (preferencia de dispositivo, como
+     modoReceta — cada móvil puede llevar el suyo, no se sincroniza por JSONBin). "cristal" es el
+     tema por defecto (sin atributo = sin esperar a que cargue JS, cero parpadeo). Los dos temas
+     "grande" suben el font-size base del <html>: como casi todo el CSS usa rem, el texto entero
+     crece de forma proporcional sin tocar una sola regla de componente. Colores en OKLCH, igual que
+     ya se hacía: aclarar/oscurecer un tono es solo tocar el canal L. */
   :root{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 60) 0%, oklch(78% 0.13 20) 22%, oklch(72% 0.14 0) 42%, oklch(68% 0.13 310) 68%, oklch(72% 0.1 255) 100%);
+    --card:oklch(100% 0 0 / 55%); --ink:oklch(22% 0.03 300); --muted:oklch(42% 0.025 300 / 85%);
+    --accent:oklch(52% 0.19 300); --accent-soft:oklch(68% 0.14 300 / 20%); --line:oklch(100% 0 0 / 45%);
+    --pedro:oklch(60.2% 0.0568 143.2); --pedro-soft:oklch(94.4% 0.0147 142.2 / 70%); --nuria:oklch(64.2% 0.1149 58.7); --nuria-soft:oklch(93.3% 0.0286 69.2 / 70%);
+    --rocio:oklch(58.3% 0.0736 252.4); --rocio-soft:oklch(94% 0.0149 251.2 / 70%);
+    --paqui:oklch(60.5% 0.1149 315.7); --paqui-soft:oklch(92.8% 0.0227 314.7 / 70%); --sole:oklch(56% 0.1278 4.4); --sole-soft:oklch(92.4% 0.0229 0.6 / 70%);
+    --eva:oklch(59.9% 0.0784 189.7); --eva-soft:oklch(93.8% 0.016 192.1 / 70%);
+    --marta:oklch(61.5% 0.0958 75.4); --marta-soft:oklch(92.9% 0.0284 79.5 / 70%);
+    --ok:oklch(59.1% 0.0923 144.3);
+    --shadow-1:0 1px 0 oklch(100% 0 0 / 65%) inset,0 10px 22px oklch(32% 0.08 300 / 16%);
+    --shadow-2:0 1px 0 oklch(100% 0 0 / 75%) inset,0 14px 28px oklch(32% 0.08 300 / 22%);
+    --shadow-3:0 1px 0 oklch(100% 0 0 / 85%) inset,0 20px 40px oklch(32% 0.08 300 / 30%);
+  }
+  /* "cristal" repite el bloque de :root — así el tema explícito y el que se ve antes de que cargue
+     el JS (atributo aún sin poner) son exactamente el mismo, sin parpadeo al aplicar el atributo. */
+  :root[data-tema="cristal"]{
+    --bg:radial-gradient(120% 90% at 15% 0%, oklch(86% 0.09 60) 0%, oklch(78% 0.13 20) 22%, oklch(72% 0.14 0) 42%, oklch(68% 0.13 310) 68%, oklch(72% 0.1 255) 100%);
+    --card:oklch(100% 0 0 / 55%); --ink:oklch(22% 0.03 300); --muted:oklch(42% 0.025 300 / 85%);
+    --accent:oklch(52% 0.19 300); --accent-soft:oklch(68% 0.14 300 / 20%); --line:oklch(100% 0 0 / 45%);
+    --pedro:oklch(60.2% 0.0568 143.2); --pedro-soft:oklch(94.4% 0.0147 142.2 / 70%); --nuria:oklch(64.2% 0.1149 58.7); --nuria-soft:oklch(93.3% 0.0286 69.2 / 70%);
+    --rocio:oklch(58.3% 0.0736 252.4); --rocio-soft:oklch(94% 0.0149 251.2 / 70%);
+    --paqui:oklch(60.5% 0.1149 315.7); --paqui-soft:oklch(92.8% 0.0227 314.7 / 70%); --sole:oklch(56% 0.1278 4.4); --sole-soft:oklch(92.4% 0.0229 0.6 / 70%);
+    --eva:oklch(59.9% 0.0784 189.7); --eva-soft:oklch(93.8% 0.016 192.1 / 70%);
+    --marta:oklch(61.5% 0.0958 75.4); --marta-soft:oklch(92.9% 0.0284 79.5 / 70%);
+    --ok:oklch(59.1% 0.0923 144.3);
+    --shadow-1:0 1px 0 oklch(100% 0 0 / 65%) inset,0 10px 22px oklch(32% 0.08 300 / 16%);
+    --shadow-2:0 1px 0 oklch(100% 0 0 / 75%) inset,0 14px 28px oklch(32% 0.08 300 / 22%);
+    --shadow-3:0 1px 0 oklch(100% 0 0 / 85%) inset,0 20px 40px oklch(32% 0.08 300 / 30%);
+  }
+  /* Blur limitado a 2 superficies grandes (tarjetas y la barra de navegación) y nunca en chips o
+     botones sueltos: es la diferencia entre un efecto cristal vistoso y uno que castiga la GPU de
+     una tablet Android de gama baja (ver informe de rendimiento — cada superficie con blur cuesta,
+     no es gratis, así que se dosifica en vez de prohibirse). */
+  [data-tema="cristal"] .card,[data-tema="cristal"] nav{backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);}
+  :root[data-tema="claro"]{
     --bg:oklch(97.7% 0.0074 80.7); --card:oklch(100% 0 89.9); --ink:oklch(26.7% 0.0129 51.6); --muted:oklch(60.3% 0.0211 67.4);
     --accent:oklch(53% 0.1329 7.9); --accent-soft:oklch(91.7% 0.0251 2.1); --line:oklch(92.3% 0.0139 67.7);
     --pedro:oklch(60.2% 0.0568 143.2); --pedro-soft:oklch(94.4% 0.0147 142.2); --nuria:oklch(64.2% 0.1149 58.7); --nuria-soft:oklch(93.3% 0.0286 69.2);
@@ -18,22 +57,7 @@
     --shadow-2:0 2px 4px oklch(27% 0.013 52 / 9%),0 6px 16px oklch(27% 0.013 52 / 9%);
     --shadow-3:0 4px 10px oklch(27% 0.013 52 / 14%),0 14px 32px oklch(27% 0.013 52 / 18%);
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:oklch(21.1% 0.0075 67.4); --card:oklch(25.5% 0.0059 56.1); --ink:oklch(94.5% 0.0097 72.7); --muted:oklch(70.5% 0.0196 70.1);
-      --accent:oklch(71.3% 0.1173 6.8); --accent-soft:oklch(29% 0.0344 4.6); --line:oklch(33% 0.011 56);
-      --pedro:oklch(72.7% 0.065 143.5); --pedro-soft:oklch(29.8% 0.0174 158.8); --nuria:oklch(77.1% 0.1038 68.5); --nuria-soft:oklch(28.7% 0.0207 54.2);
-      --rocio:oklch(72.6% 0.0648 254.5); --rocio-soft:oklch(28.2% 0.0194 254.8);
-      --paqui:oklch(74.8% 0.0965 314.4); --paqui-soft:oklch(30.1% 0.0277 313.4); --sole:oklch(72.3% 0.1023 4.9); --sole-soft:oklch(29.2% 0.0279 4.3);
-      --eva:oklch(76.5% 0.0834 189.7); --eva-soft:oklch(31.1% 0.026 188);
-      --marta:oklch(75.8% 0.0958 75.4); --marta-soft:oklch(30% 0.0278 75.7);
-      --ok:oklch(72.6% 0.1057 144.4);
-      --shadow-1:0 1px 2px oklch(0% 0 0 / 20%),0 2px 6px oklch(0% 0 0 / 16%);
-      --shadow-2:0 2px 4px oklch(0% 0 0 / 24%),0 6px 16px oklch(0% 0 0 / 22%);
-      --shadow-3:0 4px 10px oklch(0% 0 0 / 32%),0 14px 32px oklch(0% 0 0 / 40%);
-    }
-  }
-  :root[data-theme="dark"]{
+  :root[data-tema="oscuro"]{
     --bg:oklch(21.1% 0.0075 67.4); --card:oklch(25.5% 0.0059 56.1); --ink:oklch(94.5% 0.0097 72.7); --muted:oklch(70.5% 0.0196 70.1);
     --accent:oklch(71.3% 0.1173 6.8); --accent-soft:oklch(29% 0.0344 4.6); --line:oklch(33% 0.011 56);
     --pedro:oklch(72.7% 0.065 143.5); --pedro-soft:oklch(29.8% 0.0174 158.8); --nuria:oklch(77.1% 0.1038 68.5); --nuria-soft:oklch(28.7% 0.0207 54.2);
@@ -46,6 +70,36 @@
     --shadow-2:0 2px 4px oklch(0% 0 0 / 24%),0 6px 16px oklch(0% 0 0 / 22%);
     --shadow-3:0 4px 10px oklch(0% 0 0 / 32%),0 14px 32px oklch(0% 0 0 / 40%);
   }
+  /* Los dos temas "grande": pensados para alguien a quien le cuesta leer letra pequeña (más
+     contraste, acento más fuerte, bordes algo más marcados), con el texto entero un 25% más grande
+     vía el font-size del html más abajo. */
+  :root[data-tema="claro-grande"]{
+    --bg:oklch(98.5% 0.004 90); --card:oklch(100% 0 0); --ink:oklch(15% 0.01 50); --muted:oklch(38% 0.015 50);
+    --accent:oklch(45% 0.17 35); --accent-soft:oklch(93% 0.05 35); --line:oklch(84% 0.012 50);
+    --pedro:oklch(48% 0.09 143.2); --pedro-soft:oklch(92% 0.03 142.2); --nuria:oklch(52% 0.13 58.7); --nuria-soft:oklch(91% 0.05 69.2);
+    --rocio:oklch(47% 0.1 252.4); --rocio-soft:oklch(91% 0.03 251.2);
+    --paqui:oklch(49% 0.13 315.7); --paqui-soft:oklch(90% 0.04 314.7); --sole:oklch(45% 0.14 4.4); --sole-soft:oklch(90% 0.04 0.6);
+    --eva:oklch(45% 0.09 189.7); --eva-soft:oklch(90% 0.03 192.1);
+    --marta:oklch(49% 0.11 75.4); --marta-soft:oklch(90% 0.05 79.5);
+    --ok:oklch(46% 0.1 144.3);
+    --shadow-1:0 1px 3px oklch(15% 0.01 50 / 10%),0 3px 8px oklch(15% 0.01 50 / 8%);
+    --shadow-2:0 2px 5px oklch(15% 0.01 50 / 13%),0 7px 18px oklch(15% 0.01 50 / 11%);
+    --shadow-3:0 5px 12px oklch(15% 0.01 50 / 18%),0 16px 34px oklch(15% 0.01 50 / 22%);
+  }
+  :root[data-tema="oscuro-grande"]{
+    --bg:oklch(12% 0 0); --card:oklch(19% 0 0); --ink:oklch(97% 0 0); --muted:oklch(78% 0.012 70);
+    --accent:oklch(78% 0.14 40); --accent-soft:oklch(30% 0.06 40); --line:oklch(34% 0 0);
+    --pedro:oklch(78% 0.08 143.5); --pedro-soft:oklch(26% 0.025 158.8); --nuria:oklch(81% 0.11 68.5); --nuria-soft:oklch(25% 0.03 54.2);
+    --rocio:oklch(78% 0.07 254.5); --rocio-soft:oklch(25% 0.025 254.8);
+    --paqui:oklch(80% 0.1 314.4); --paqui-soft:oklch(26% 0.035 313.4); --sole:oklch(78% 0.11 4.9); --sole-soft:oklch(25% 0.035 4.3);
+    --eva:oklch(81% 0.09 189.7); --eva-soft:oklch(27% 0.03 188);
+    --marta:oklch(80% 0.1 75.4); --marta-soft:oklch(26% 0.035 75.7);
+    --ok:oklch(78% 0.11 144.4);
+    --shadow-1:0 1px 0 oklch(100% 0 0 / 4%) inset,0 6px 16px oklch(0% 0 0 / 40%);
+    --shadow-2:0 1px 0 oklch(100% 0 0 / 5%) inset,0 9px 22px oklch(0% 0 0 / 46%);
+    --shadow-3:0 1px 0 oklch(100% 0 0 / 6%) inset,0 16px 34px oklch(0% 0 0 / 55%);
+  }
+  :root[data-tema="claro-grande"],:root[data-tema="oscuro-grande"]{ font-size:20px; }
   *{box-sizing:border-box;}
   body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:76px;}
 
@@ -233,7 +287,27 @@
   .personchip.on.sole{background:var(--sole);border-color:var(--sole);color:#fff;}
   .personchip.on.eva{background:var(--eva);border-color:var(--eva);color:#fff;}
   .personchip.on.marta{background:var(--marta);border-color:var(--marta);color:#fff;}
+
+  .tema-picker{display:flex;flex-direction:column;gap:8px;padding:0 0 10px;}
+  .tema-opt{display:flex;align-items:center;gap:12px;width:100%;border:1px solid var(--line);border-radius:16px;background:var(--card);padding:12px 14px;text-align:left;cursor:pointer;color:inherit;font:inherit;box-shadow:var(--shadow-1);}
+  .tema-opt.on{border-color:var(--accent);box-shadow:var(--shadow-2);}
+  .tema-swatch{width:34px;height:34px;border-radius:10px;flex:0 0 auto;border:1px solid var(--line);}
+  .tema-texto{flex:1;display:flex;flex-direction:column;gap:2px;font-size:.88rem;}
+  .tema-texto span{font-weight:400;color:var(--muted);font-size:.78rem;}
+  .tema-check{flex:0 0 auto;color:var(--accent);font-weight:700;font-size:1rem;}
 </style>
+
+<script>
+/* Aplica el tema guardado ANTES de pintar el resto de la página — si esto esperara al <script>
+   grande de más abajo, cualquiera que no use el tema por defecto ("cristal") vería un parpadeo del
+   tema por defecto al cargar. */
+(function(){
+  try{
+    var t = localStorage.getItem('temaApp');
+    if(t) document.documentElement.setAttribute('data-tema', t);
+  }catch(_){}
+})();
+</script>
 
 <h1>Menú semanal</h1>
 <div class="sub" id="weekSub"></div>
@@ -1966,6 +2040,28 @@ let currentTab = 'menu';
 const MODOS_RECETA = { thermomix:'Thermomix TM7', nutri:'Receta nutri', tradicional:'Tradicional' };
 let modoReceta = MODOS_RECETA[localStorage.getItem('modoReceta')] ? localStorage.getItem('modoReceta') : 'thermomix';
 
+/* Temas visuales (issue de rediseño "Liquid Glass" + accesibilidad): solo local, como modoReceta —
+   cada móvil lleva el suyo, no se sincroniza por JSONBin, porque es justo lo contrario de un dato
+   compartido (cada persona puede preferir uno distinto en su propio dispositivo). */
+const TEMAS = {
+  cristal: { nombre: 'Cristal', detalle: 'El nuevo look por defecto, con cristal translúcido' },
+  claro: { nombre: 'Claro clásico', detalle: 'El claro de toda la vida, tarjetas planas' },
+  oscuro: { nombre: 'Oscuro clásico', detalle: 'El oscuro de toda la vida, tarjetas planas' },
+  'claro-grande': { nombre: 'Claro, letra grande', detalle: 'Más contraste y texto un 25% más grande' },
+  'oscuro-grande': { nombre: 'Oscuro, letra grande', detalle: 'Más contraste y texto un 25% más grande' },
+};
+let temaApp = TEMAS[localStorage.getItem('temaApp')] ? localStorage.getItem('temaApp') : 'cristal';
+function aplicarTema(tema){
+  temaApp = TEMAS[tema] ? tema : 'cristal';
+  localStorage.setItem('temaApp', temaApp);
+  // Siempre se fija el atributo explícito (incluido "cristal"): el primer pintado sin JS ya usa
+  // cristal por los valores de :root sin cualificar, así que esto no cambia nada a la vista, pero
+  // hace falta para que reglas como el backdrop-filter del cristal (ligadas a [data-tema="cristal"])
+  // se apliquen también cuando cristal se eligió a propósito, no solo "por no haber elegido nada".
+  document.documentElement.setAttribute('data-tema', temaApp);
+}
+aplicarTema(temaApp);
+
 /* Días elegidos para la compra semanal (issue #54): solo local, no se sincroniza por JSONBin —
    cada móvil hace su propia compra. */
 let comprasSemanaDias;
@@ -2929,9 +3025,24 @@ function renderYo(){
       </form>
     </div>`;
   };
+  const SWATCHES = {
+    cristal: 'linear-gradient(135deg, #ffb199, #a78bfa)',
+    claro: 'linear-gradient(135deg, #faf7f2 50%, #a9455d 50%)',
+    oscuro: 'linear-gradient(135deg, #1b1815 50%, #e08296 50%)',
+    'claro-grande': 'linear-gradient(135deg, #fdfcfa 50%, #b4441f 50%)',
+    'oscuro-grande': 'linear-gradient(135deg, #0d0d0d 50%, #ff9d57 50%)',
+  };
+  const temaOptHtml = (id) => `<button type="button" class="tema-opt${id===temaApp?' on':''}" data-tema-id="${id}">
+      <span class="tema-swatch" style="background:${SWATCHES[id]}"></span>
+      <span class="tema-texto"><b>${TEMAS[id].nombre}</b><span>${TEMAS[id].detalle}</span></span>
+      ${id===temaApp?'<span class="tema-check">✓</span>':''}
+    </button>`;
+
   const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
   el.innerHTML = `<div class="section-title">Quién ves</div>` +
     `<div class="personpicker" id="personPicker"></div>` +
+    `<div class="section-title">Tema visual</div>` +
+    `<div class="tema-picker">${Object.keys(TEMAS).map(temaOptHtml).join('')}</div>` +
     `<div class="section-title">Fechas de la nutricionista</div>` +
     (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
     `<div class="app-version">Menú semanal · ${APP_VERSION}</div>` +
@@ -2939,6 +3050,13 @@ function renderYo(){
     `<div class="changelog">${CHANGELOG.map(c=>`<div class="changelog-item"><b>${fmtDate(c.fecha)}</b> ${escapeHtml(c.texto)}</div>`).join('')}</div>`;
 
   renderPersonPicker();
+
+  el.querySelectorAll('.tema-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      aplicarTema(btn.dataset.temaId);
+      renderYo();
+    });
+  });
 
   el.querySelectorAll('.nutri-edit').forEach(form=>{
     const n = efectivoNutri(form.dataset.id);
