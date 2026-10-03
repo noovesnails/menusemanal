@@ -367,6 +367,12 @@
   .nutri-edit label{font-size:.68rem;color:var(--muted);display:flex;flex-direction:column;gap:2px;}
   .nutri-edit input{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:.82rem;background:var(--bg);color:var(--ink);}
   .nutri-edit button{border:none;border-radius:8px;padding:8px 12px;font-size:.8rem;font-weight:600;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;align-self:flex-end;}
+
+  .aviso-whatsapp{display:flex;flex-direction:column;gap:10px;}
+  .aviso-label{font-size:.72rem;font-weight:600;color:var(--muted);display:flex;flex-direction:column;gap:4px;}
+  .aviso-label input,.aviso-label textarea{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:.85rem;font-family:inherit;background:var(--bg);color:var(--ink);resize:vertical;}
+  .aviso-whatsapp button{border:none;border-radius:8px;padding:10px 14px;font-size:.85rem;font-weight:700;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;}
+  .aviso-ayuda{font-size:.72rem;color:var(--muted);}
   .notas-nutri{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:10px;font-size:.8rem;line-height:1.4;color:var(--ink);white-space:pre-wrap;}
   .app-version{text-align:center;font-size:.68rem;color:var(--muted);opacity:.6;padding:24px 0 8px;}
   .changelog{display:flex;flex-direction:column;gap:6px;padding:0 16px 24px;font-size:.78rem;color:var(--muted);}
@@ -1995,6 +2001,7 @@ let peso = {};           // { pedro: [{fecha, kg}], ... } histórico de peso por
 let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
 let opcionElegida = {};  // { "2026-09-07": { pedro: { desayuno: 0, merienda: 2 } } } opción de desayuno/almuerzo/merienda elegida ese día por esa persona
 let mediaPorPlato = {};  // { claveNormalizada: {tipo:'image'|'video', url, thumbUrl?} } fotos/vídeos por plato u opción
+let grupoWhatsappLink = '';  // enlace de invitación al grupo de WhatsApp de la familia, para el aviso de cambios (solo lo usa/ve Pedro)
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
 let appVersionPending = false;  // el código servido en producción es distinto al que tenemos cargado
@@ -2044,6 +2051,7 @@ async function loadRemote(){
     nutriEdits = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.nutriEdits) || {};
     opcionElegida = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.opcionElegida) || {};
     mediaPorPlato = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.mediaPorPlato) || {};
+    grupoWhatsappLink = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.grupoWhatsappLink) || '';
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
@@ -2056,6 +2064,7 @@ async function loadRemote(){
     try{ nutriEdits = JSON.parse(localStorage.getItem('menuSemanalNutriEdits')||'{}'); }catch(_){ nutriEdits = {}; }
     try{ opcionElegida = JSON.parse(localStorage.getItem('menuSemanalOpcionElegida')||'{}'); }catch(_){ opcionElegida = {}; }
     try{ mediaPorPlato = JSON.parse(localStorage.getItem('menuSemanalMedia')||'{}'); }catch(_){ mediaPorPlato = {}; }
+    grupoWhatsappLink = localStorage.getItem('menuSemanalGrupoWhatsapp') || '';
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
@@ -2071,6 +2080,7 @@ function scheduleSave(){
   localStorage.setItem('menuSemanalNutriEdits', JSON.stringify(nutriEdits));
   localStorage.setItem('menuSemanalOpcionElegida', JSON.stringify(opcionElegida));
   localStorage.setItem('menuSemanalMedia', JSON.stringify(mediaPorPlato));
+  localStorage.setItem('menuSemanalGrupoWhatsapp', grupoWhatsappLink);
   syncPending = true;
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
@@ -2090,6 +2100,7 @@ async function saveRemote(){
     remoteRecord.menuSemanal.nutriEdits = nutriEdits;
     remoteRecord.menuSemanal.opcionElegida = opcionElegida;
     remoteRecord.menuSemanal.mediaPorPlato = mediaPorPlato;
+    remoteRecord.menuSemanal.grupoWhatsappLink = grupoWhatsappLink;
     remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
     const res = await fetch(JSONBIN_BASE, {
       method: "PUT",
@@ -2393,6 +2404,32 @@ function escapeHtml(s){
   const div = document.createElement('div');
   div.textContent = s;
   return div.innerHTML;
+}
+
+/* Copia texto al portapapeles para el aviso de WhatsApp (issue aviso-whatsapp). navigator.clipboard
+   necesita contexto seguro (https, lo cumple GitHub Pages) y un gesto directo del usuario — lo es,
+   se llama desde el propio click — pero por si el navegador/WebView no lo soporta, hay un segundo
+   intento con el truco clásico de textarea oculto + execCommand. */
+async function copiarAlPortapapeles(texto){
+  try{
+    await navigator.clipboard.writeText(texto);
+    return true;
+  }catch(e){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    }catch(e2){
+      return false;
+    }
+  }
 }
 
 const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
@@ -3204,11 +3241,28 @@ function renderYo(){
     </div>`;
   };
 
+  // Botón de aviso por WhatsApp (issue aviso-whatsapp): solo Pedro lo ve y lo usa, es su número el
+  // que manda el mensaje. No hay forma de rellenar el texto en un grupo ya creado (eso solo existe
+  // para chats 1 a 1), así que se copia el mensaje y se abre el grupo: falta pegar y enviar.
+  const avisoHtml = miUsuario === 'pedro' ? `
+    <div class="section-title">Avisar a la familia</div>
+    <div class="card aviso-whatsapp">
+      <label class="aviso-label">Enlace de invitación al grupo
+        <input type="url" id="grupoWhatsappInput" placeholder="https://chat.whatsapp.com/..." value="${escapeHtml(grupoWhatsappLink)}">
+      </label>
+      <label class="aviso-label">Mensaje
+        <textarea id="avisoMensaje" rows="3">📋 Novedad en el Menú Semanal: ${escapeHtml(CHANGELOG[0] ? CHANGELOG[0].texto : '')}</textarea>
+      </label>
+      <button type="button" id="avisoBtn">📋 Copiar mensaje y abrir el grupo</button>
+      <div class="aviso-ayuda">Se copia el mensaje y se abre el grupo de WhatsApp — solo falta pegar y pulsar enviar.</div>
+    </div>` : '';
+
   const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
   el.innerHTML = `<div class="section-title">Quién ves</div>` +
     `<div class="personpicker" id="personPicker"></div>` +
     `<div class="section-title">Tema visual</div>` +
     `<div class="tema-picker">${Object.keys(TEMAS).map(temaBloqueHtml).join('')}</div>` +
+    avisoHtml +
     `<div class="section-title">Fechas de la nutricionista</div>` +
     (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
     `<div class="app-version">Menú semanal · ${APP_VERSION}</div>` +
@@ -3216,6 +3270,22 @@ function renderYo(){
     `<div class="changelog">${CHANGELOG.map(c=>`<div class="changelog-item"><b>${fmtDate(c.fecha)}</b> ${escapeHtml(c.texto)}</div>`).join('')}</div>`;
 
   renderPersonPicker();
+
+  const grupoInput = document.getElementById('grupoWhatsappInput');
+  if(grupoInput) grupoInput.addEventListener('change', ()=>{
+    grupoWhatsappLink = grupoInput.value.trim();
+    scheduleSave();
+  });
+  const avisoBtn = document.getElementById('avisoBtn');
+  if(avisoBtn) avisoBtn.addEventListener('click', async ()=>{
+    const link = (document.getElementById('grupoWhatsappInput').value || '').trim();
+    if(!link){ alert('Pon primero el enlace de invitación al grupo de WhatsApp.'); return; }
+    const mensaje = document.getElementById('avisoMensaje').value;
+    const copiado = await copiarAlPortapapeles(mensaje);
+    avisoBtn.textContent = copiado ? '✅ Copiado — abriendo WhatsApp…' : '⚠️ No se pudo copiar, cópialo a mano';
+    window.open(link, '_blank');
+    setTimeout(()=>{ if(document.body.contains(avisoBtn)) avisoBtn.textContent = '📋 Copiar mensaje y abrir el grupo'; }, 2500);
+  });
 
   el.querySelectorAll('.tema-opt').forEach(btn=>{
     btn.addEventListener('click', ()=>{
