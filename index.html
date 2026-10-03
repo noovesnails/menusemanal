@@ -391,7 +391,9 @@
   .personchip.on.eva{background:var(--eva);border-color:var(--eva);color:#fff;}
   .personchip.on.marta{background:var(--marta);border-color:var(--marta);color:#fff;}
 
-  .tema-picker{display:flex;flex-direction:column;gap:8px;padding:0 0 10px;}
+  .tema-picker{display:flex;flex-direction:column;gap:14px;padding:0 0 10px;}
+  .tema-bloque{display:flex;flex-direction:column;}
+  .tema-bloque .opciones-toggle{padding:8px 4px 4px 10px;}
   .tema-opt{display:flex;align-items:center;gap:12px;width:100%;border:1px solid var(--line);border-radius:16px;background:var(--card);padding:12px 14px;text-align:left;cursor:pointer;color:inherit;font:inherit;box-shadow:var(--shadow-1);}
   .tema-opt.on{border-color:var(--accent);box-shadow:var(--shadow-2);}
   .tema-swatch{width:34px;height:34px;border-radius:10px;flex:0 0 auto;border:1px solid var(--line);}
@@ -2197,7 +2199,7 @@ function aplicarAcento(acento){
   else document.documentElement.setAttribute('data-acento', acentoApp);
 }
 aplicarAcento(acentoApp);
-let colorPickerAbierto = false; // desplegable de acentos en Yo — solo estado visual de la sesión
+let coloresAbiertos = new Set(); // qué desplegables de colores (uno por tema) están abiertos en Yo — solo estado visual de la sesión
 
 /* Días elegidos para la compra semanal (issue #54): solo local, no se sincroniza por JSONBin —
    cada móvil hace su propia compra. */
@@ -3175,31 +3177,37 @@ function renderYo(){
       ${id===temaApp?'<span class="tema-check">✓</span>':''}
     </button>`;
 
-  const esCristal = temaApp === 'cristal';
-  const acentoOptHtml = (id) => {
-    const activo = id === acentoApp;
-    const fondo = id === '0' ? `var(--accent)` : ACENTO_SWATCH[id];
-    return `<button type="button" class="acento-opt${activo?' on':''}" data-acento-id="${id}" title="${ACENTOS[id]}">
+  const acentoOptHtml = (temaId, acentoId) => {
+    const activo = temaId === temaApp && acentoId === acentoApp;
+    const fondo = acentoId === '0' ? `var(--accent)` : ACENTO_SWATCH[acentoId];
+    return `<button type="button" class="acento-opt${activo?' on':''}" data-tema-id="${temaId}" data-acento-id="${acentoId}" title="${ACENTOS[acentoId]}">
       <span class="acento-swatch" style="background:${fondo}"></span>
-      <span class="acento-nombre">${ACENTOS[id]}</span>
+      <span class="acento-nombre">${ACENTOS[acentoId]}</span>
     </button>`;
   };
-  const colorPicker = `<button type="button" class="opciones-toggle" id="colorToggle" aria-expanded="${colorPickerAbierto}">
-      <span class="meal-label">${esCristal ? 'Degradado de Cristal' : `Color de acento (${TEMAS[temaApp].nombre})`}</span>
-      <span class="opciones-chevron" style="${colorPickerAbierto?'transform:rotate(180deg)':''}">⌄</span>
-    </button>
-    <div class="opciones-collapse${colorPickerAbierto?' abierto':''}">
-      <div class="opciones-collapse-inner">
-        <div class="acento-picker">${Object.keys(ACENTOS).map(acentoOptHtml).join('')}</div>
+  // Cada tema lleva su propio desplegable de colores justo debajo de su botón (antes había uno solo
+  // compartido para el tema activo, y costaba encontrarlo).
+  const temaBloqueHtml = (id) => {
+    const abierto = coloresAbiertos.has(id);
+    return `<div class="tema-bloque">
+      ${temaOptHtml(id)}
+      <button type="button" class="opciones-toggle" data-tema-colores="${id}" aria-expanded="${abierto}">
+        <span class="meal-label">${id==='cristal' ? 'Degradados de Cristal' : `Color de acento (${TEMAS[id].nombre})`}</span>
+        <span class="opciones-chevron" style="${abierto?'transform:rotate(180deg)':''}">⌄</span>
+      </button>
+      <div class="opciones-collapse${abierto?' abierto':''}">
+        <div class="opciones-collapse-inner">
+          <div class="acento-picker">${Object.keys(ACENTOS).map(a=>acentoOptHtml(id,a)).join('')}</div>
+        </div>
       </div>
     </div>`;
+  };
 
   const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
   el.innerHTML = `<div class="section-title">Quién ves</div>` +
     `<div class="personpicker" id="personPicker"></div>` +
     `<div class="section-title">Tema visual</div>` +
-    `<div class="tema-picker">${Object.keys(TEMAS).map(temaOptHtml).join('')}</div>` +
-    colorPicker +
+    `<div class="tema-picker">${Object.keys(TEMAS).map(temaBloqueHtml).join('')}</div>` +
     `<div class="section-title">Fechas de la nutricionista</div>` +
     (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
     `<div class="app-version">Menú semanal · ${APP_VERSION}</div>` +
@@ -3211,19 +3219,19 @@ function renderYo(){
   el.querySelectorAll('.tema-opt').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       aplicarTema(btn.dataset.temaId);
-      colorPickerAbierto = false; // el color ya elegido pertenecía al tema anterior; al cambiar de
-                                   // tema se vuelve a ver "tal como está" del nuevo, mejor cerrado
       renderYo();
     });
   });
-
-  const colorToggle = document.getElementById('colorToggle');
-  if(colorToggle) colorToggle.addEventListener('click', ()=>{
-    colorPickerAbierto = !colorPickerAbierto;
-    renderYo();
+  el.querySelectorAll('[data-tema-colores]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.temaColores;
+      if(coloresAbiertos.has(id)) coloresAbiertos.delete(id); else coloresAbiertos.add(id);
+      renderYo();
+    });
   });
   el.querySelectorAll('.acento-opt').forEach(btn=>{
     btn.addEventListener('click', ()=>{
+      aplicarTema(btn.dataset.temaId);
       aplicarAcento(btn.dataset.acentoId);
       renderYo();
     });
