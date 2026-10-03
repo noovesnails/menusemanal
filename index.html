@@ -1741,13 +1741,18 @@ const CLOUDINARY_PRESET = "menusemanal";
 
 /* Inserta una transformación de Cloudinary (formato/calidad automáticos + ancho) en una URL de
    entrega, para no servir nunca la foto/vídeo original (varios MB, resolución de cámara) cuando
-   solo se muestra en una miniatura o tarjeta pequeña. Se añade como último segmento encadenado,
-   justo antes del nombre de archivo, para que se aplique después de cualquier otra transformación
-   u offset ya presente en la URL (p. ej. el so_0 de las miniaturas de vídeo). */
+   solo se muestra en una miniatura o tarjeta pequeña. Las transformaciones van SIEMPRE justo
+   después de "/upload/", antes de la versión (v1234567890) y del public_id — insertarla más
+   adelante (p. ej. justo antes del nombre de archivo) hace que Cloudinary la interprete como parte
+   del public_id y la imagen deje de resolverse (404), que es justo el bug de la primera versión de
+   esta función. */
 function cloudinaryOptim(url, width){
-  if(!url || !url.includes('/upload/')) return url;
-  const idx = url.lastIndexOf('/');
-  return url.slice(0, idx+1) + `f_auto,q_auto,w_${width}/` + url.slice(idx+1);
+  if(!url) return url;
+  const marker = '/upload/';
+  const i = url.indexOf(marker);
+  if(i === -1) return url;
+  const insertAt = i + marker.length;
+  return url.slice(0, insertAt) + `f_auto,q_auto,w_${width}/` + url.slice(insertAt);
 }
 
 function normalizarClave(texto){
