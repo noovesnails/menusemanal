@@ -259,12 +259,13 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.5.0";
+const APP_VERSION = "v2.5.1";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
    de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
 const CHANGELOG = [
+  { fecha:"2026-10-03", texto:"Corregido: las fotos y vídeos ya subidos habían dejado de verse (404) por un error en la optimización de Cloudinary del día anterior." },
   { fecha:"2026-10-02", texto:"Pulido visual: sombras suaves por niveles en tarjetas y selecciones, y pequeñas animaciones al tocar botones y checkboxes." },
   { fecha:"2026-10-02", texto:"Mejoras de rendimiento para tablets más lentas: la app solo reconstruye la pestaña que estás viendo, en vez de las 5 a la vez." },
   { fecha:"2026-10-02", texto:"Las fotos y vídeos de los platos pesan mucho menos (se piden ya optimizados a Cloudinary) y el texto de las recetas se lee más grande." },
