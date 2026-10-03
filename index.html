@@ -96,6 +96,16 @@
   .media-del-btn{bottom:2px;right:2px;}
   .video-badge{position:absolute;left:2px;bottom:2px;width:18px;height:18px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:.55rem;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 0 0 2px;}
   .opciones-block{margin-top:14px;}
+  .opciones-toggle{display:flex;align-items:center;gap:8px;width:100%;border:none;background:none;padding:4px 0;margin:0;text-align:left;cursor:pointer;color:inherit;font:inherit;}
+  .opciones-toggle .meal-label{margin-bottom:0;flex:0 0 auto;}
+  .opciones-preview{flex:1;min-width:0;font-size:.82rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .opciones-chevron{flex:0 0 auto;color:var(--muted);font-size:.9rem;transition:transform .2s ease;}
+  .opciones-toggle[aria-expanded="true"] .opciones-chevron{transform:rotate(180deg);}
+  /* Truco de grid para animar de alto 0 a "lo que ocupe el contenido" sin tener que medirlo con JS
+     (display:none no se puede animar, y max-height a mano obliga a un valor fijo arbitrario). */
+  .opciones-collapse{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease;}
+  .opciones-collapse.abierto{grid-template-rows:1fr;}
+  .opciones-collapse-inner{overflow:hidden;min-height:0;}
   .opciones-cards{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
   .opcion-card{position:relative;flex:1 1 140px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.82rem;line-height:1.3;cursor:pointer;background:var(--bg);}
   .opcion-card:not(.con-media){padding-right:72px;}
@@ -2026,6 +2036,11 @@ function guardarPersonasVisibles(){
   localStorage.setItem('personasVisibles', JSON.stringify(Array.from(personasVisibles)));
 }
 
+/* Qué bloques de desayuno/almuerzo/merienda están desplegados — por persona+categoría, no por día,
+   para que al cambiar de día no se vuelvan a cerrar solos. Es solo un detalle visual de la sesión
+   actual, no hace falta guardarlo ni sincronizarlo. */
+let opcionesAbiertas = new Set();
+
 /* Fusiona NUTRI (datos de partida, del PDF) con las ediciones a mano guardadas en nutriEdits
    (sincronizadas vía JSONBin) — así cualquiera puede corregir una fecha sin tocar el código. */
 function efectivoNutri(id){
@@ -2421,11 +2436,21 @@ function renderMenu(){
     if(!o) return '';
     return Object.keys(CATS).filter(cat=>o[cat] && o[cat].length).map(cat => {
       const elegidaIdx = opcionElegidaIdx(day.date, who, cat);
+      const elegida = elegidaIdx!=null ? o[cat][elegidaIdx] : null;
+      const abierto = opcionesAbiertas.has(`${who}_${cat}`);
       return `
       <div class="opciones-block">
-        <div class="meal-label">${CATS[cat]}</div>
-        <div class="opciones-cards">
-          ${o[cat].map((opcion,i)=>opcionCard(opcion,who,cat,i,i===elegidaIdx)).join('')}
+        <button type="button" class="opciones-toggle" data-who="${who}" data-cat="${cat}" aria-expanded="${abierto}">
+          <span class="meal-label">${CATS[cat]}</span>
+          ${elegida ? `<span class="opciones-preview">${elegida.texto}</span>` : ''}
+          <span class="opciones-chevron">⌄</span>
+        </button>
+        <div class="opciones-collapse${abierto?' abierto':''}">
+          <div class="opciones-collapse-inner">
+            <div class="opciones-cards">
+              ${o[cat].map((opcion,i)=>opcionCard(opcion,who,cat,i,i===elegidaIdx)).join('')}
+            </div>
+          </div>
         </div>
       </div>`;
     }).join('');
@@ -2450,6 +2475,17 @@ function renderMenu(){
       renderMenu();
       renderNevera();
       renderCompra();
+    });
+  });
+
+  el.querySelectorAll('.opciones-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const { who, cat } = btn.dataset;
+      const key = `${who}_${cat}`;
+      const abierto = opcionesAbiertas.has(key);
+      if(abierto) opcionesAbiertas.delete(key); else opcionesAbiertas.add(key);
+      btn.setAttribute('aria-expanded', String(!abierto));
+      btn.nextElementSibling.classList.toggle('abierto', !abierto);
     });
   });
 
