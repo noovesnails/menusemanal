@@ -370,9 +370,11 @@
 
   .aviso-whatsapp{display:flex;flex-direction:column;gap:10px;}
   .aviso-label{font-size:.72rem;font-weight:600;color:var(--muted);display:flex;flex-direction:column;gap:4px;}
-  .aviso-label input,.aviso-label textarea{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:.85rem;font-family:inherit;background:var(--bg);color:var(--ink);resize:vertical;}
-  .aviso-whatsapp button{border:none;border-radius:8px;padding:10px 14px;font-size:.85rem;font-weight:700;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;}
+  .aviso-label input,.aviso-whatsapp textarea{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:.85rem;font-family:inherit;background:var(--bg);color:var(--ink);resize:vertical;}
+  .aviso-whatsapp > button{border:none;border-radius:8px;padding:10px 14px;font-size:.85rem;font-weight:700;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;}
   .aviso-ayuda{font-size:.72rem;color:var(--muted);}
+  .aviso-label-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:-4px;}
+  .aviso-barajar{border:1px dashed var(--line);border-radius:20px;padding:4px 10px;font-size:.7rem;font-weight:600;background:none;color:var(--accent);cursor:pointer;}
   .notas-nutri{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:10px;font-size:.8rem;line-height:1.4;color:var(--ink);white-space:pre-wrap;}
   .app-version{text-align:center;font-size:.68rem;color:var(--muted);opacity:.6;padding:24px 0 8px;}
   .changelog{display:flex;flex-direction:column;gap:6px;padding:0 16px 24px;font-size:.78rem;color:var(--muted);}
@@ -510,6 +512,30 @@ const CHANGELOG = [
   { fecha:"2026-09-15", texto:"El menú se generalizó a varias personas, incorporando a Rocío." },
   { fecha:"2026-09-06", texto:"Botón de receta (Thermomix TM7 o manual) en los platos elaborados." },
 ];
+
+/* Plantillas alegres para el aviso de WhatsApp (issue aviso-whatsapp-divertido): cada una lleva su
+   emoji y hueco {novedad} para la frase corta que se escribe en el momento. Se elige una al azar
+   cada vez — pensadas para un grupo de amigas con planes de dieta/fitness, tono cercano y animado.
+   No hay forma de adjuntar un GIF animado automáticamente desde solo texto copiado (WhatsApp
+   necesita el archivo real, no un texto pegado), así que el "animado" aquí es a base de emoji. */
+const MENSAJES_NOVEDAD = [
+  "🎉✨ ¡Hola campeonas! Tenemos novedades: {novedad} ¡Daos una vuelta por la app! 💪",
+  "🌈 ¡Chicas, esto os va a encantar! {novedad} 🙌",
+  "🔥 ¡Notición del día! {novedad} ¡Sois las mejores! 💕",
+  "🥳 ¡Sorpresa en la app! {novedad} ¡A disfrutarlo! 🧡",
+  "💪✨ Equipo, novedad fresquita: {novedad} ¡Dadle caña! 🚀",
+  "🌟 ¡Mirad lo que hay nuevo! {novedad} Un beso enorme 💜",
+  "🎨🙌 ¡Atención, chicas! {novedad} ¡Nos vemos dentro! 😍",
+  "💖 ¡Hola guapas! {novedad} ¡Que lo disfrutéis un montón! ✨",
+  "🚀 ¡Update time! {novedad} ¡Vamos con todo! 💪",
+  "🌸 ¡Buenas noticias para el grupo! {novedad} ¡Sois un crack! 🏆",
+  "🎉💪 ¡Novedad fresquita! {novedad} ¡Nos encanta teneros aquí! 🧡",
+  "✨🙋‍♀️ ¡Eh, equipo! {novedad} ¡A tope con la semana! 🔥",
+];
+function mensajeAvisoAlAzar(novedad){
+  const plantilla = MENSAJES_NOVEDAD[Math.floor(Math.random()*MENSAJES_NOVEDAD.length)];
+  return plantilla.replace('{novedad}', novedad);
+}
 
 /* Nombre legible y color de cada persona. Añadir aquí una entrada al incorporar a alguien nuevo
    (y su par --id/--id-soft en las variables CSS de :root). */
@@ -2003,6 +2029,12 @@ let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correc
 let opcionElegida = {};  // { "2026-09-07": { pedro: { desayuno: 0, merienda: 2 } } } opción de desayuno/almuerzo/merienda elegida ese día por esa persona
 let mediaPorPlato = {};  // { claveNormalizada: {tipo:'image'|'video', url, thumbUrl?} } fotos/vídeos por plato u opción
 let grupoWhatsappLink = '';  // enlace de invitación al grupo de WhatsApp de la familia, para el aviso de cambios (solo lo usa/ve Pedro)
+// Borrador del aviso de WhatsApp: solo en memoria de esta sesión (no tiene sentido guardarlo, es un
+// mensaje puntual). avisoMensajeDraft=null significa "aún no se ha compuesto ninguno", para componer
+// uno nuevo la primera vez que se abre Yo sin pisar lo que Pedro ya esté editando en re-renders
+// posteriores causados por otra cosa (p. ej. elegir un tema).
+let avisoNovedadTexto = 'ahora podéis cambiar los colores de la aplicación, entrad y elegid el que más os guste 🎨';
+let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
 let appVersionPending = false;  // el código servido en producción es distinto al que tenemos cargado
@@ -3245,17 +3277,23 @@ function renderYo(){
   // Botón de aviso por WhatsApp (issue aviso-whatsapp): solo Pedro lo ve y lo usa, es su número el
   // que manda el mensaje. No hay forma de rellenar el texto en un grupo ya creado (eso solo existe
   // para chats 1 a 1), así que se copia el mensaje y se abre el grupo: falta pegar y enviar.
+  if(avisoMensajeDraft === null) avisoMensajeDraft = mensajeAvisoAlAzar(avisoNovedadTexto);
   const avisoHtml = miUsuario === 'pedro' ? `
     <div class="section-title">Avisar a la familia</div>
     <div class="card aviso-whatsapp">
       <label class="aviso-label">Enlace de invitación al grupo
         <input type="url" id="grupoWhatsappInput" placeholder="https://chat.whatsapp.com/..." value="${escapeHtml(grupoWhatsappLink)}">
       </label>
-      <label class="aviso-label">Mensaje
-        <textarea id="avisoMensaje" rows="3">📋 Novedad en el Menú Semanal: ${escapeHtml(CHANGELOG[0] ? CHANGELOG[0].texto : '')}</textarea>
+      <label class="aviso-label">¿Qué ha cambiado? (resumen cortito)
+        <input type="text" id="avisoNovedadInput" value="${escapeHtml(avisoNovedadTexto)}">
       </label>
+      <div class="aviso-label-row">
+        <span class="aviso-label">Mensaje</span>
+        <button type="button" id="avisoBarajar" class="aviso-barajar" title="Probar otro mensaje">🎲 Otro mensaje</button>
+      </div>
+      <textarea id="avisoMensaje" rows="3">${escapeHtml(avisoMensajeDraft)}</textarea>
       <button type="button" id="avisoBtn">📋 Copiar mensaje y abrir el grupo</button>
-      <div class="aviso-ayuda">Se copia el mensaje y se abre el grupo de WhatsApp — solo falta pegar y pulsar enviar.</div>
+      <div class="aviso-ayuda">Se copia el mensaje y se abre el grupo de WhatsApp — solo falta pegar y pulsar enviar. Cada vez que le des a "Otro mensaje" sale uno distinto de la colección 🎉</div>
     </div>` : '';
 
   const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
@@ -3276,6 +3314,19 @@ function renderYo(){
   if(grupoInput) grupoInput.addEventListener('change', ()=>{
     grupoWhatsappLink = grupoInput.value.trim();
     scheduleSave();
+  });
+  const avisoNovedadInput = document.getElementById('avisoNovedadInput');
+  if(avisoNovedadInput) avisoNovedadInput.addEventListener('change', ()=>{
+    avisoNovedadTexto = avisoNovedadInput.value;
+  });
+  const avisoMensajeEl = document.getElementById('avisoMensaje');
+  if(avisoMensajeEl) avisoMensajeEl.addEventListener('input', ()=>{
+    avisoMensajeDraft = avisoMensajeEl.value; // para no perder lo que Pedro esté escribiendo si algo más dispara un re-render de Yo
+  });
+  const avisoBarajar = document.getElementById('avisoBarajar');
+  if(avisoBarajar) avisoBarajar.addEventListener('click', ()=>{
+    avisoMensajeDraft = mensajeAvisoAlAzar(avisoNovedadInput.value || avisoNovedadTexto);
+    renderYo();
   });
   const avisoBtn = document.getElementById('avisoBtn');
   if(avisoBtn) avisoBtn.addEventListener('click', async ()=>{
