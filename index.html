@@ -245,7 +245,8 @@
   .meal-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
   .meal-title{font-size:1rem;line-height:1.35;}
   .meal-media{position:relative;width:52px;height:52px;border-radius:10px;overflow:hidden;flex:0 0 auto;}
-  .meal-media img{width:100%;height:100%;object-fit:cover;display:block;}
+  .meal-media img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer;}
+  .meal-thumb{cursor:pointer;}
   .media-add-btn{width:52px;height:52px;border-radius:10px;border:1.5px dashed var(--line);background:var(--bg);color:var(--muted);font-size:1.1rem;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
   .media-add-btn:hover{border-color:var(--accent);color:var(--accent);}
   .media-edit-btn,.media-del-btn{position:absolute;width:18px;height:18px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:.6rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
@@ -268,7 +269,7 @@
   .opcion-card:not(.con-media){padding-right:72px;}
   .opcion-card.elegida{border-color:var(--accent);background:var(--accent-soft);box-shadow:var(--shadow-2);}
   .opcion-card.con-media{display:flex;flex-direction:column;padding:0;overflow:hidden;}
-  .opcion-media-img{position:relative;width:100%;aspect-ratio:4/5;background-size:cover;background-position:center;background-color:var(--line);flex:0 0 auto;}
+  .opcion-media-img{position:relative;width:100%;aspect-ratio:4/5;background-size:cover;background-position:center;background-color:var(--line);flex:0 0 auto;cursor:pointer;}
   .opcion-texto{padding:8px 10px;font-weight:600;}
   .opcion-media-add{position:absolute;top:6px;right:6px;display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:none;background:rgba(0,0,0,.08);color:var(--muted);font-size:.7rem;font-weight:600;cursor:pointer;white-space:nowrap;}
   .opcion-card .media-edit-btn,.opcion-card .media-del-btn{top:6px;width:22px;height:22px;font-size:.7rem;}
@@ -276,7 +277,7 @@
   .opcion-card .media-del-btn{right:32px;}
   .opcion-card .video-badge{left:6px;bottom:6px;width:22px;height:22px;font-size:.65rem;}
   .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;}
-  .video-modal video{max-width:92vw;max-height:80vh;border-radius:10px;box-shadow:var(--shadow-3);}
+  .video-modal video,.video-modal img{max-width:92vw;max-height:80vh;border-radius:10px;box-shadow:var(--shadow-3);}
   .video-modal-close{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer;}
   .recipe{margin-top:6px;}
   .recipe-btn{font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;display:inline-block;padding:3px 0;}
@@ -456,6 +457,7 @@
 
 <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none">
 <div id="videoModal" class="video-modal" style="display:none"></div>
+<div id="imageModal" class="video-modal" style="display:none"></div>
 
 <script>
 /* ---------- DATOS DE LA SEMANA ----------
@@ -2674,6 +2676,17 @@ function abrirVideoModal(url){
   });
 }
 
+function abrirImagenModal(url){
+  const modal = document.getElementById('imageModal');
+  modal.innerHTML = `<button type="button" class="video-modal-close" id="imageModalClose">✕</button><img alt="">`;
+  modal.querySelector('img').src = url;
+  modal.style.display = 'flex';
+  document.getElementById('imageModalClose').addEventListener('click', ()=>{
+    modal.style.display = 'none';
+    modal.innerHTML = '';
+  });
+}
+
 function renderMenu(){
   const day = WEEK[currentDay];
   const el = document.getElementById('viewMenu');
@@ -2778,6 +2791,10 @@ function renderMenu(){
   el.querySelectorAll('.opcion-card').forEach(card=>{
     card.addEventListener('click', (e)=>{
       if(e.target.closest('.media-add-btn,.media-edit-btn,.media-del-btn,.video-badge')) return;
+      if(e.target.closest('.opcion-media-img')){
+        const media = mediaPorPlato[decodeURIComponent(card.dataset.clave || '')];
+        if(media && media.tipo !== 'video'){ abrirImagenModal(cloudinaryOptim(media.url, 1200)); return; }
+      }
       const {who, cat, i} = card.dataset;
       elegirOpcion(day.date, who, cat, Number(i));
       renderMenu();
@@ -2832,7 +2849,16 @@ document.getElementById('viewMenu').addEventListener('click', (e)=>{
     const contenedor = videoBtn.closest('[data-clave]');
     const media = contenedor && mediaPorPlato[decodeURIComponent(contenedor.dataset.clave)];
     if(media) abrirVideoModal(media.url);
+    return;
   }
+  const mediaDiv = e.target.closest('.meal-media[data-clave]');
+  if(mediaDiv){
+    const media = mediaPorPlato[decodeURIComponent(mediaDiv.dataset.clave)];
+    if(media && media.tipo !== 'video') abrirImagenModal(cloudinaryOptim(media.url, 1200));
+    return;
+  }
+  const thumb = e.target.closest('.meal-thumb');
+  if(thumb){ abrirImagenModal(thumb.src); return; }
 });
 
 function renderPersonPicker(){
