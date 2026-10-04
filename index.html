@@ -364,6 +364,7 @@
   .reminder b{font-weight:700;}
   .mi-usuario{padding:0 16px 6px;font-size:.78rem;color:var(--muted);}
   .mi-usuario b{color:var(--ink);}
+  .aviso-sugerencias{display:flex;align-items:center;gap:6px;margin:0 16px 10px;padding:9px 12px;border-radius:10px;background:var(--accent-soft);border:1px solid var(--accent);color:var(--ink);font-size:.78rem;font-weight:700;cursor:pointer;}
   .nutri-edit{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .nutri-edit label{font-size:.68rem;color:var(--muted);display:flex;flex-direction:column;gap:2px;}
   .nutri-edit input{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:.82rem;background:var(--bg);color:var(--ink);}
@@ -376,6 +377,15 @@
   .aviso-ayuda{font-size:.72rem;color:var(--muted);}
   .aviso-label-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:-4px;}
   .aviso-barajar{border:1px dashed var(--line);border-radius:20px;padding:4px 10px;font-size:.7rem;font-weight:600;background:none;color:var(--accent);cursor:pointer;}
+  .sugerencias-card{display:flex;flex-direction:column;gap:10px;}
+  .sugerencias-card textarea{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:.85rem;font-family:inherit;background:var(--bg);color:var(--ink);resize:vertical;}
+  .sugerencias-card > button{border:none;border-radius:8px;padding:10px 14px;font-size:.85rem;font-weight:700;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;align-self:flex-start;}
+  .sugerencias-lista{display:flex;flex-direction:column;gap:10px;}
+  .sugerencia-item{border-top:1px solid var(--line);padding-top:10px;}
+  .sugerencia-item:first-child{border-top:none;padding-top:0;}
+  .sugerencia-autor{display:flex;align-items:center;gap:6px;font-size:.78rem;margin-bottom:3px;}
+  .sugerencia-fecha{color:var(--muted);font-weight:400;margin-left:auto;font-size:.7rem;}
+  .sugerencia-texto{font-size:.85rem;line-height:1.35;}
   .notas-nutri{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:10px;font-size:.8rem;line-height:1.4;color:var(--ink);white-space:pre-wrap;}
   .app-version{text-align:center;font-size:.68rem;color:var(--muted);opacity:.6;padding:24px 0 8px;}
   .changelog{display:flex;flex-direction:column;gap:6px;padding:0 16px 24px;font-size:.78rem;color:var(--muted);}
@@ -436,6 +446,7 @@
 <div class="sub" id="weekSub"></div>
 <div class="mi-usuario" id="miUsuarioLabel"></div>
 <div class="syncbar"><span class="syncdot" id="syncDot"></span><span id="syncText">Cargando…</span><button class="refresh-btn" id="refreshBtn">🔄 Actualizar</button></div>
+<div class="aviso-sugerencias" id="avisoSugerenciasBanner" style="display:none"></div>
 
 <div class="daypicker" id="dayPicker"></div>
 
@@ -2033,6 +2044,12 @@ let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correc
 let opcionElegida = {};  // { "2026-09-07": { pedro: { desayuno: 0, merienda: 2 } } } opción de desayuno/almuerzo/merienda elegida ese día por esa persona
 let mediaPorPlato = {};  // { claveNormalizada: {tipo:'image'|'video', url, thumbUrl?} } fotos/vídeos por plato u opción
 let grupoWhatsappLink = '';  // enlace de invitación al grupo de WhatsApp de la familia, para el aviso de cambios (solo lo usa/ve Pedro)
+let sugerencias = [];     // [{id, autor, texto, fecha(ISO)}] buzón de sugerencias visible para toda la familia en Yo, con registro de quién escribe cada una
+// Hasta qué fecha (ISO) de sugerencias ha visto YA este dispositivo — para el aviso de "hay
+// sugerencias nuevas" en la cabecera. Es de dispositivo (localStorage), no se sincroniza: cada
+// móvil marca como visto lo que ha visto él, igual que el tema o el modo de receta.
+let sugerenciasVistasHasta = localStorage.getItem('sugerenciasVistasHasta') || '';
+let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva sugerencia, para no perderlo si llega un refresco automático de fondo mientras se escribe
 // Borrador del aviso de WhatsApp: solo en memoria de esta sesión (no tiene sentido guardarlo, es un
 // mensaje puntual). avisoMensajeDraft=null significa "aún no se ha compuesto ninguno", para componer
 // uno nuevo la primera vez que se abre Yo sin pisar lo que Pedro ya esté editando en re-renders
@@ -2048,6 +2065,20 @@ function setSync(state, text){
   dot.className = 'syncdot' + (state ? ' '+state : '');
   document.getElementById('syncText').textContent = text;
   refreshBtnState();
+}
+
+/* Aviso en la cabecera (visible en cualquier pestaña) de que hay sugerencias sin leer en Yo — se
+   marcan como leídas al entrar en esa pestaña (ver renderYo), igual pueden ser de uno mismo desde
+   otro móvil o de cualquier otra persona de la familia. */
+function actualizarAvisoSugerencias(){
+  const banner = document.getElementById('avisoSugerenciasBanner');
+  const pendientes = sugerencias.filter(s => s.fecha > sugerenciasVistasHasta).length;
+  if(pendientes > 0){
+    banner.style.display = 'flex';
+    banner.textContent = pendientes === 1 ? '💬 Hay 1 sugerencia nueva en Yo' : `💬 Hay ${pendientes} sugerencias nuevas en Yo`;
+  } else {
+    banner.style.display = 'none';
+  }
 }
 
 /* El botón refleja dos cosas distintas: cambios locales sin guardar (syncPending, #39) y una
@@ -2089,6 +2120,7 @@ async function loadRemote(){
     opcionElegida = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.opcionElegida) || {};
     mediaPorPlato = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.mediaPorPlato) || {};
     grupoWhatsappLink = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.grupoWhatsappLink) || '';
+    sugerencias = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.sugerencias) || [];
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
@@ -2102,6 +2134,7 @@ async function loadRemote(){
     try{ opcionElegida = JSON.parse(localStorage.getItem('menuSemanalOpcionElegida')||'{}'); }catch(_){ opcionElegida = {}; }
     try{ mediaPorPlato = JSON.parse(localStorage.getItem('menuSemanalMedia')||'{}'); }catch(_){ mediaPorPlato = {}; }
     grupoWhatsappLink = localStorage.getItem('menuSemanalGrupoWhatsapp') || '';
+    try{ sugerencias = JSON.parse(localStorage.getItem('menuSemanalSugerencias')||'[]'); }catch(_){ sugerencias = []; }
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
@@ -2118,6 +2151,7 @@ function scheduleSave(){
   localStorage.setItem('menuSemanalOpcionElegida', JSON.stringify(opcionElegida));
   localStorage.setItem('menuSemanalMedia', JSON.stringify(mediaPorPlato));
   localStorage.setItem('menuSemanalGrupoWhatsapp', grupoWhatsappLink);
+  localStorage.setItem('menuSemanalSugerencias', JSON.stringify(sugerencias));
   syncPending = true;
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
@@ -2138,6 +2172,7 @@ async function saveRemote(){
     remoteRecord.menuSemanal.opcionElegida = opcionElegida;
     remoteRecord.menuSemanal.mediaPorPlato = mediaPorPlato;
     remoteRecord.menuSemanal.grupoWhatsappLink = grupoWhatsappLink;
+    remoteRecord.menuSemanal.sugerencias = sugerencias;
     remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
     const res = await fetch(JSONBIN_BASE, {
       method: "PUT",
@@ -2433,6 +2468,12 @@ function mostrarOnboarding(){
 function fmtDate(iso){
   const d = new Date(iso+"T00:00:00");
   return d.getDate() + "/" + (d.getMonth()+1);
+}
+
+function fmtFechaHora(iso){
+  const d = new Date(iso);
+  const hora = String(d.getHours()).padStart(2,'0') + ":" + String(d.getMinutes()).padStart(2,'0');
+  return d.getDate() + "/" + (d.getMonth()+1) + " a las " + hora;
 }
 
 /* Único punto de entrada de texto libre escrito por el usuario (itemsSueltos); todo lo demás en
@@ -3239,6 +3280,28 @@ function renderPeso(){
 
 function renderYo(){
   const el = document.getElementById('viewYo');
+  // Entrar en Yo marca como vistas todas las sugerencias que haya ahora mismo (de cualquiera,
+  // incluido uno mismo desde otro móvil) — así deja de sonar el aviso de la cabecera.
+  if(sugerencias.length){
+    const maxFecha = sugerencias.reduce((max,s)=> s.fecha > max ? s.fecha : max, sugerenciasVistasHasta);
+    if(maxFecha !== sugerenciasVistasHasta){
+      sugerenciasVistasHasta = maxFecha;
+      localStorage.setItem('sugerenciasVistasHasta', sugerenciasVistasHasta);
+    }
+  }
+  actualizarAvisoSugerencias();
+  const sugerenciaItemHtml = (s) => `<div class="sugerencia-item">
+      <div class="sugerencia-autor"><span class="dot ${s.autor}"></span><b>${PERSONAS[s.autor] ? PERSONAS[s.autor].nombre : s.autor}</b><span class="sugerencia-fecha">${fmtFechaHora(s.fecha)}</span></div>
+      <div class="sugerencia-texto">${escapeHtml(s.texto)}</div>
+    </div>`;
+  const sugerenciasHtml = `<div class="section-title">Sugerencias</div>
+    <div class="card sugerencias-card">
+      <textarea id="sugerenciaInput" rows="2" placeholder="Escribe aquí tu sugerencia o idea...">${escapeHtml(sugerenciaDraft)}</textarea>
+      <button type="button" id="sugerenciaBtn">Enviar sugerencia</button>
+      <div class="sugerencias-lista">
+        ${sugerencias.length ? sugerencias.slice().reverse().map(sugerenciaItemHtml).join('') : '<div class="empty">Todavía no hay sugerencias. ¡Sé el primero! 💡</div>'}
+      </div>
+    </div>`;
   const fmtVisita = iso => {
     const [fecha, hora] = iso.split("T");
     return hora ? `${fmtDate(fecha)} a las ${hora}` : fmtDate(fecha);
@@ -3327,6 +3390,7 @@ function renderYo(){
   const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
   el.innerHTML = `<div class="section-title">Quién ves</div>` +
     `<div class="personpicker" id="personPicker"></div>` +
+    sugerenciasHtml +
     `<div class="section-title">Tema visual</div>` +
     `<div class="tema-picker">${Object.keys(TEMAS).map(temaBloqueHtml).join('')}</div>` +
     avisoHtml +
@@ -3337,6 +3401,20 @@ function renderYo(){
     `<div class="changelog">${CHANGELOG.map(c=>`<div class="changelog-item"><b>${fmtDate(c.fecha)}</b> ${escapeHtml(c.texto)}</div>`).join('')}</div>`;
 
   renderPersonPicker();
+
+  const sugerenciaInput = document.getElementById('sugerenciaInput');
+  if(sugerenciaInput) sugerenciaInput.addEventListener('input', ()=>{
+    sugerenciaDraft = sugerenciaInput.value; // para no perderlo si llega un refresco de fondo mientras se escribe
+  });
+  const sugerenciaBtn = document.getElementById('sugerenciaBtn');
+  if(sugerenciaBtn) sugerenciaBtn.addEventListener('click', ()=>{
+    const texto = (sugerenciaInput.value || '').trim();
+    if(!texto) return;
+    sugerencias.push({ id: Date.now() + '_' + Math.random().toString(36).slice(2,8), autor: miUsuario, texto, fecha: new Date().toISOString() });
+    scheduleSave();
+    sugerenciaDraft = '';
+    renderYo();
+  });
 
   const grupoInput = document.getElementById('grupoWhatsappInput');
   if(grupoInput) grupoInput.addEventListener('change', ()=>{
@@ -3440,7 +3518,12 @@ function render(){
   if(miUsuario && PERSONAS[miUsuario]){
     document.getElementById('miUsuarioLabel').innerHTML = `Hola, <b>${PERSONAS[miUsuario].nombre}</b>`;
   }
+  actualizarAvisoSugerencias();
 }
+
+document.getElementById('avisoSugerenciasBanner').addEventListener('click', ()=>{
+  document.querySelector('nav .tab[data-tab="yo"]').click();
+});
 
 document.getElementById('refreshBtn').addEventListener('click', async ()=>{
   await flushPendingSave();
