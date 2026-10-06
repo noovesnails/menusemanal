@@ -74,3 +74,8 @@ campo del tablero.
   `index.html` (mismo fichero → mismo link).
 - **Dónde se anota el desfase main↔producción**: en `.agents/notes/qa-pendiente-main.md` (se crea
   la primera vez que haga falta).
+- **Aviso de WhatsApp siempre al día**: cada cambio visible sube `APP_VERSION` + una entrada de
+  `CHANGELOG` (ver comentario junto a esas constantes en `index.html`). En el mismo commit hay que
+  actualizar también `avisoNovedadTexto` con esa misma novedad en tono de WhatsApp — sin esperar a
+  que Pedro lo pida (se le olvidó actualizar dos veces seguidas, issues #96 y #100, y Pedro pidió
+  explícitamente que dejara de hacer falta pedirlo).
