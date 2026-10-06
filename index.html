@@ -427,6 +427,81 @@
   .acento-nombre{font-size:.66rem;font-weight:600;text-align:center;line-height:1.1;}
   .acento-opt.on .acento-nombre{color:var(--ink);}
 
+  /* ---------- CALENDARIO Y NOTAS ----------
+     Esto se ve en el móvil pero también fijo en la nevera: la referencia visual es un planificador
+     familiar de corcho, no un dashboard. Por eso la cuadrícula del mes va plana y tranquila (31
+     celdas con degradado y sombra cada una se convierte en ruido), y el gesto decorativo se
+     concentra en las notas: son chinchetas/pegatinas de verdad, giradas un poco, cada una con su
+     propio color fijo — el resto (--accent-soft, --card) sigue el tema elegido en Yo para que
+     combine con las 55 combinaciones posibles y nunca pise el contraste del modo oscuro.
+     Una sola transición orquestada (cal-contenido, al cambiar de vista) en vez de animar cada
+     celda/nota por separado en cada render — y el modal responde al toque, no se anima solo. */
+  @keyframes calFadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes calPop{from{opacity:0;transform:scale(.85) rotate(var(--nota-rot, 0deg));}to{opacity:1;transform:scale(1) rotate(var(--nota-rot, 0deg));}}
+  @keyframes calNotaNueva{0%{transform:scale(.6) rotate(0deg);opacity:0;}60%{transform:scale(1.08) rotate(var(--nota-rot, 0deg));opacity:1;}100%{transform:scale(1) rotate(var(--nota-rot, 0deg));}}
+
+  .vista-menu-toggle{margin-bottom:12px;}
+  .cal-vista-toggle{margin-bottom:14px;max-width:280px;}
+  .cal-contenido{animation:calFadeIn .3s ease both;}
+
+  .mes-cabecera{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .mes-titulo{font-weight:700;font-size:1rem;text-transform:capitalize;}
+  .mes-nav{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .mes-dias-semana{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
+  .mes-dias-semana span{text-align:center;font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;}
+  .mes-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .mes-celda{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background:var(--card);padding:4px 3px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;overflow:hidden;}
+  .mes-celda-vacia{border:none;background:none;}
+  .mes-celda-hoy{border:1.5px solid var(--accent);background:var(--accent-soft);}
+  .mes-celda-hoy .mes-celda-num{color:var(--accent);font-weight:800;}
+  .mes-celda-num{font-size:.72rem;font-weight:600;color:var(--ink);}
+  .mes-celda-chips{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;}
+  .mes-chip{font-size:.52rem;font-weight:700;color:#fff;border-radius:6px;padding:1px 3px;line-height:1.3;}
+  .mes-chip.pedro{background:var(--pedro);} .mes-chip.nuria{background:var(--nuria);} .mes-chip.rocio{background:var(--rocio);}
+  .mes-chip.paqui{background:var(--paqui);} .mes-chip.sole{background:var(--sole);} .mes-chip.eva{background:var(--eva);} .mes-chip.marta{background:var(--marta);}
+  .mes-celda-stickers{position:absolute;bottom:2px;right:3px;font-size:.6rem;line-height:1;}
+
+  .cal-semana{display:flex;flex-direction:column;gap:14px;}
+  .cal-dia-card{background:linear-gradient(165deg, var(--accent-soft), var(--card) 55%);border:1px solid var(--line);border-radius:18px;padding:14px;}
+  .dia-detalle-fecha{font-weight:700;font-size:.92rem;margin-bottom:10px;}
+  .cal-persona-card{background:var(--card);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+  .cal-comida{font-size:.8rem;margin-top:3px;}
+  .cal-comida b{color:var(--muted);font-weight:700;margin-right:4px;}
+
+  .cal-notas-vacio{margin:6px 0 10px;}
+  /* Las notas van como chinchetas sobre el corcho: ligeramente giradas (alternando sentido),
+     sombra propia en vez de la sombra plana del tema, y el sticker sobresale un poco por encima
+     como si estuviera pegado — es el detalle "bonito, con stickers" que pide el encargo. */
+  .cal-notas-lista{display:flex;flex-direction:column;gap:10px;margin:10px 0 12px;}
+  .cal-nota{--nota-rot:-1.2deg;position:relative;display:flex;align-items:flex-start;gap:10px;background:var(--card);border-radius:10px;padding:10px 12px 10px 16px;box-shadow:2px 3px 8px rgba(0,0,0,.12);transform:rotate(var(--nota-rot));}
+  .cal-nota:nth-child(even){--nota-rot:1deg;}
+  .cal-nota-sticker{flex:0 0 auto;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.05rem;background:#fde2e4;box-shadow:0 2px 4px rgba(0,0,0,.18);transform:translateY(-10px) rotate(calc(var(--nota-rot) * -2));}
+  .cal-nota-medico .cal-nota-sticker{background:#d7e8fb;}
+  .cal-nota-recordatorio .cal-nota-sticker{background:#fff3c4;}
+  .cal-nota-fecha .cal-nota-sticker{background:#e3d9fb;}
+  .cal-nota-asistencia .cal-nota-sticker{background:#d7f5e3;}
+  .cal-nota-otro .cal-nota-sticker{background:#fde2e4;}
+  .cal-nota-cuerpo{flex:1;min-width:0;}
+  .cal-nota-texto{font-size:.83rem;line-height:1.35;}
+  .cal-nota-autor{font-size:.68rem;color:var(--muted);margin-top:2px;font-weight:600;}
+  .cal-nota-del{flex:0 0 auto;background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;padding:2px;}
+  .cal-nota.nota-nueva{animation:calNotaNueva .4s cubic-bezier(.34,1.56,.64,1) both;}
+
+  .cal-composer{margin-top:4px;}
+  .cal-composer-abrir{cursor:pointer;font-size:.8rem;font-weight:700;color:var(--accent);list-style:none;padding:6px 0;}
+  .cal-composer-abrir::-webkit-details-marker{display:none;}
+  .cal-composer-form{display:flex;flex-direction:column;gap:8px;padding-top:6px;}
+  .cal-sticker-picker{display:flex;gap:6px;flex-wrap:wrap;}
+  .cal-sticker-opt{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .cal-sticker-opt.on{border-color:var(--accent);box-shadow:var(--shadow-2);transform:scale(1.08);}
+  .cal-composer-row{display:flex;gap:8px;align-items:flex-start;}
+  .cal-nota-input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:.85rem;font-family:inherit;background:var(--bg);color:var(--ink);resize:vertical;}
+  .cal-dictar-btn{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:none;background:var(--accent-soft);color:var(--accent);font-size:1.1rem;cursor:pointer;}
+  .cal-dictar-btn:disabled{opacity:.6;}
+  .cal-guardar-nota{align-self:flex-start;border:none;border-radius:8px;padding:9px 16px;font-size:.82rem;font-weight:700;background:var(--accent-btn, var(--accent));color:#fff;cursor:pointer;}
+
+  .dia-modal .dia-detalle-modal{background:var(--card);border-radius:22px;padding:20px;max-width:420px;width:92vw;max-height:84vh;overflow-y:auto;box-shadow:var(--shadow-3);}
+
   /* ---------- MODO TABLET (nevera) ----------
      Pensado para una tablet de ~10" apaisada montada en la nevera (p. ej. 1280x800 o 1920x1080),
      accedida como una página web normal, sin instalar nada. Se activa solo por tamaño/orientación
@@ -488,6 +563,7 @@
 <div class="daypicker" id="dayPicker"></div>
 
 <main id="viewMenu"></main>
+<main id="viewCalendario" style="display:none"></main>
 <main id="viewNevera" style="display:none"></main>
 <main id="viewCompra" style="display:none"></main>
 <main id="viewPeso" style="display:none"></main>
@@ -506,6 +582,7 @@
 <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none">
 <div id="videoModal" class="video-modal" style="display:none"></div>
 <div id="imageModal" class="video-modal" style="display:none"></div>
+<div id="diaModal" class="video-modal dia-modal" style="display:none"></div>
 
 <script>
 /* ---------- DATOS DE LA SEMANA ----------
@@ -2086,6 +2163,10 @@ let opcionElegida = {};  // { "2026-09-07": { pedro: { desayuno: 0, merienda: 2 
 let mediaPorPlato = {};  // { claveNormalizada: {tipo:'image'|'video', url, thumbUrl?} } fotos/vídeos por plato u opción
 let grupoWhatsappLink = '';  // enlace de invitación al grupo de WhatsApp de la familia, para el aviso de cambios (solo lo usa/ve Pedro)
 let sugerencias = [];     // [{id, autor, texto, fecha(ISO)}] buzón de sugerencias visible para toda la familia en Yo, con registro de quién escribe cada una
+// Notas del calendario familiar: { "2026-10-15": [{id, autor, texto, tipo, creada(ISO)}] }. Citas
+// médicas, recordatorios, fechas señaladas... Se escriben a mano o por dictado de voz desde el
+// propio calendario; más adelante también podrán llegar por Siri (fase 2, servidor aparte).
+let notasCalendario = {};
 // Hasta qué fecha (ISO) de sugerencias ha visto YA este dispositivo — para el aviso de "hay
 // sugerencias nuevas" en la cabecera. Es de dispositivo (localStorage), no se sincroniza: cada
 // móvil marca como visto lo que ha visto él, igual que el tema o el modo de receta.
@@ -2167,6 +2248,7 @@ async function loadRemote(){
     mediaPorPlato = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.mediaPorPlato) || {};
     grupoWhatsappLink = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.grupoWhatsappLink) || '';
     sugerencias = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.sugerencias) || [];
+    notasCalendario = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.notasCalendario) || {};
     setSync('ok', 'Sincronizado');
   }catch(e){
     console.warn("No se pudo cargar JSONBin, usando almacenamiento local", e);
@@ -2181,6 +2263,7 @@ async function loadRemote(){
     try{ mediaPorPlato = JSON.parse(localStorage.getItem('menuSemanalMedia')||'{}'); }catch(_){ mediaPorPlato = {}; }
     grupoWhatsappLink = localStorage.getItem('menuSemanalGrupoWhatsapp') || '';
     try{ sugerencias = JSON.parse(localStorage.getItem('menuSemanalSugerencias')||'[]'); }catch(_){ sugerencias = []; }
+    try{ notasCalendario = JSON.parse(localStorage.getItem('menuSemanalNotasCalendario')||'{}'); }catch(_){ notasCalendario = {}; }
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
@@ -2198,6 +2281,7 @@ function scheduleSave(){
   localStorage.setItem('menuSemanalMedia', JSON.stringify(mediaPorPlato));
   localStorage.setItem('menuSemanalGrupoWhatsapp', grupoWhatsappLink);
   localStorage.setItem('menuSemanalSugerencias', JSON.stringify(sugerencias));
+  localStorage.setItem('menuSemanalNotasCalendario', JSON.stringify(notasCalendario));
   syncPending = true;
   clearTimeout(saveTimer);
   setSync('', 'Guardando…');
@@ -2219,6 +2303,7 @@ async function saveRemote(){
     remoteRecord.menuSemanal.mediaPorPlato = mediaPorPlato;
     remoteRecord.menuSemanal.grupoWhatsappLink = grupoWhatsappLink;
     remoteRecord.menuSemanal.sugerencias = sugerencias;
+    remoteRecord.menuSemanal.notasCalendario = notasCalendario;
     remoteRecord.menuSemanal.updatedAt = new Date().toISOString();
     const res = await fetch(JSONBIN_BASE, {
       method: "PUT",
@@ -2283,6 +2368,31 @@ function todayIndex(){
 }
 let currentDay = todayIndex();
 let currentTab = 'menu';
+
+/* Qué se ve bajo la pestaña "Menú" del nav: el día a día de siempre, o el calendario — se recuerda
+   por dispositivo cuál fue la última elegida con el botón de arriba, y arranca ahí directamente
+   (issue calendario-notas: "la vista por defecto será la última con la que arranque"). */
+let vistaMenu = localStorage.getItem('vistaMenu') === 'calendario' ? 'calendario' : 'dia';
+function guardarVistaMenu(v){ vistaMenu = v; localStorage.setItem('vistaMenu', v); }
+
+/* Dentro del calendario: día / semana / mes. También de dispositivo. */
+let vistaCalendario = ['dia','semana','mes'].includes(localStorage.getItem('vistaCalendario')) ? localStorage.getItem('vistaCalendario') : 'mes';
+function guardarVistaCalendario(v){ vistaCalendario = v; localStorage.setItem('vistaCalendario', v); }
+
+/* Mes que se está viendo en la vista Mes del calendario (independiente de currentDay: un mes puede
+   no tener ningún día con menú real, y aun así se puede navegar y anotar notas en él). Solo en
+   memoria, no hace falta recordarlo entre sesiones. */
+let mesCalendario = (()=>{ const d = new Date((WEEK[currentDay] && WEEK[currentDay].date || todayISOReal())+"T00:00:00"); return { y:d.getFullYear(), m:d.getMonth() }; })();
+
+const TIPOS_NOTA = {
+  medico:       { icono:'🩺', nombre:'Visita médica' },
+  recordatorio: { icono:'⏰', nombre:'Recordatorio' },
+  fecha:        { icono:'🎉', nombre:'Fecha señalada' },
+  asistencia:   { icono:'📋', nombre:'Asistencia' },
+  otro:         { icono:'📝', nombre:'Nota' },
+};
+
+function notasDelDia(iso){ return notasCalendario[iso] || []; }
 const MODOS_RECETA = { thermomix:'Thermomix TM7', nutri:'Receta nutri', tradicional:'Tradicional' };
 let modoReceta = MODOS_RECETA[localStorage.getItem('modoReceta')] ? localStorage.getItem('modoReceta') : 'thermomix';
 
@@ -2782,6 +2892,32 @@ function abrirImagenModal(url){
   });
 }
 
+/* Botón para pasar de la vista diaria del menú al calendario de notas y viceversa (issue
+   calendario-notas). Vive dentro de la pestaña "Menú" del nav — no es una pestaña nueva — y
+   recuerda cuál fue la última elegida para arrancar ahí la próxima vez. */
+function vistaMenuToggleHtml(){
+  return `<div class="vista-menu-toggle receta-toggle" role="radiogroup">
+    <button type="button" class="receta-opt ${vistaMenu==='dia'?'on':''}" data-vista-menu="dia" role="radio" aria-checked="${vistaMenu==='dia'}">🍽️ Menú semanal</button>
+    <button type="button" class="receta-opt ${vistaMenu==='calendario'?'on':''}" data-vista-menu="calendario" role="radio" aria-checked="${vistaMenu==='calendario'}">📅 Calendario</button>
+  </div>`;
+}
+function wireVistaMenuToggle(el){
+  el.querySelectorAll('.vista-menu-toggle [data-vista-menu]').forEach(btn=>{
+    btn.addEventListener('click', ()=> cambiarVistaMenu(btn.dataset.vistaMenu));
+  });
+}
+function actualizarVisibilidadMenu(){
+  const activo = currentTab === 'menu';
+  document.getElementById('viewMenu').style.display = (activo && vistaMenu==='dia') ? '' : 'none';
+  document.getElementById('viewCalendario').style.display = (activo && vistaMenu==='calendario') ? '' : 'none';
+}
+function cambiarVistaMenu(v){
+  if(v === vistaMenu) return;
+  guardarVistaMenu(v);
+  actualizarVisibilidadMenu();
+  if(vistaMenu === 'calendario') renderCalendario(); else renderMenu();
+}
+
 function renderMenu(){
   const day = WEEK[currentDay];
   const el = document.getElementById('viewMenu');
@@ -2879,9 +3015,10 @@ function renderMenu(){
       ${opciones(who)}
     </div>`;
   const visibles = Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id));
-  el.innerHTML = visibles.length
+  el.innerHTML = vistaMenuToggleHtml() + (visibles.length
     ? visibles.map(block).join('')
-    : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`;
+    : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`);
+  wireVistaMenuToggle(el);
 
   el.querySelectorAll('.opcion-card').forEach(card=>{
     card.addEventListener('click', (e)=>{
@@ -2955,6 +3092,231 @@ document.getElementById('viewMenu').addEventListener('click', (e)=>{
   const thumb = e.target.closest('.meal-thumb');
   if(thumb){ abrirImagenModal(thumb.src); return; }
 });
+
+/* ---------- CALENDARIO Y NOTAS ----------
+   Vive dentro de la pestaña "Menú" (ver vistaMenuToggleHtml más arriba), con sus propias vistas
+   Día/Semana/Mes. Día y Semana siguen al mismo currentDay/WEEK que la vista diaria normal (el
+   selector de días de arriba también los mueve); Mes navega con sus propias flechas, independiente
+   de WEEK, porque se puede querer anotar una fecha sin menú real todavía (p.ej. el mes que viene). */
+
+function formatoFechaLarga(iso){
+  const d = new Date(iso+"T00:00:00");
+  return `${NOMBRES_DIA_SEMANA[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
+function notasListHtml(iso){
+  const notas = notasDelDia(iso);
+  if(!notas.length) return `<div class="empty cal-notas-vacio">Sin notas todavía.</div>`;
+  return `<div class="cal-notas-lista">${notas.slice().sort((a,b)=>a.creada.localeCompare(b.creada)).map(n=>{
+    const tipo = TIPOS_NOTA[n.tipo] || TIPOS_NOTA.otro;
+    const autor = PERSONAS[n.autor] ? PERSONAS[n.autor].nombre : '🧊 Tablet';
+    return `<div class="cal-nota cal-nota-${n.tipo}" data-nota-id="${n.id}">
+      <span class="cal-nota-sticker" title="${tipo.nombre}">${tipo.icono}</span>
+      <div class="cal-nota-cuerpo">
+        <div class="cal-nota-texto">${escapeHtml(n.texto)}</div>
+        <div class="cal-nota-autor">${autor}</div>
+      </div>
+      <button type="button" class="cal-nota-del" data-nota-id="${n.id}" data-nota-fecha="${iso}" title="Borrar nota">🗑</button>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function composerNotaHtml(iso){
+  return `<details class="cal-composer">
+    <summary class="cal-composer-abrir">➕ Añadir nota</summary>
+    <div class="cal-composer-form" data-fecha="${iso}">
+      <div class="cal-sticker-picker">
+        ${Object.keys(TIPOS_NOTA).map((t,i)=>`<button type="button" class="cal-sticker-opt${i===0?' on':''}" data-tipo="${t}" title="${TIPOS_NOTA[t].nombre}">${TIPOS_NOTA[t].icono}</button>`).join('')}
+      </div>
+      <div class="cal-composer-row">
+        <textarea class="cal-nota-input" rows="2" placeholder="Escribe la nota, o dicta pulsando el micro..."></textarea>
+        <button type="button" class="cal-dictar-btn" title="Dictar por voz">🎤</button>
+      </div>
+      <button type="button" class="cal-guardar-nota">Guardar nota</button>
+    </div>
+  </details>`;
+}
+
+/* Bloque reutilizado en Día, en cada tarjeta de Semana, y dentro del modal de Mes: menú condensado
+   de cada persona visible ese día + sus notas + el compositor para añadir una nueva. */
+function diaDetalleHtml(iso, opts){
+  opts = opts || {};
+  const diaWeek = WEEK.find(d=>d.date===iso);
+  const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id) && diaWeek && diaWeek[id]);
+  const personaCard = (id) => {
+    const m = diaWeek[id];
+    return `<div class="cal-persona-card">
+      <div class="person"><span class="dot ${id}"></span>${PERSONAS[id].nombre}</div>
+      <div class="cal-comida"><b>Comida</b> ${m.comida.title}</div>
+      <div class="cal-comida"><b>Cena</b> ${m.cena.title}</div>
+    </div>`;
+  };
+  return `${opts.modal ? `<button type="button" class="video-modal-close dia-modal-close">✕</button>` : ''}
+    <div class="dia-detalle${opts.modal?' dia-detalle-modal':''}">
+      <div class="dia-detalle-fecha">${formatoFechaLarga(iso)}</div>
+      ${visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Sin menú registrado este día.</div>`}
+      <div class="section-title">Notas</div>
+      ${notasListHtml(iso)}
+      ${composerNotaHtml(iso)}
+    </div>`;
+}
+
+function abrirDiaModal(iso){
+  const modal = document.getElementById('diaModal');
+  modal.innerHTML = diaDetalleHtml(iso, {modal:true});
+  modal.style.display = 'flex';
+  modal.querySelector('.dia-modal-close').addEventListener('click', ()=>{
+    modal.style.display = 'none';
+    modal.innerHTML = '';
+  });
+  wireNotasCalendario(modal);
+}
+
+/* Dicta por voz dentro del textarea más cercano (Web Speech API). Si el navegador no lo soporta
+   (Safari/iOS es irregular según versión), se avisa y se puede escribir a mano igualmente. */
+function dictarEnTextarea(btn){
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const textarea = btn.closest('.cal-composer-row').querySelector('.cal-nota-input');
+  if(!SpeechRec){ alert('Este navegador no permite dictar por voz aquí. Escribe la nota a mano.'); return; }
+  const rec = new SpeechRec();
+  rec.lang = 'es-ES';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  const iconoOriginal = btn.textContent;
+  btn.textContent = '🔴';
+  btn.disabled = true;
+  rec.onresult = (e) => {
+    const texto = e.results[0][0].transcript;
+    textarea.value = (textarea.value ? textarea.value.trim() + ' ' : '') + texto;
+  };
+  rec.onerror = () => { alert('No se ha podido dictar. Inténtalo de nuevo o escribe la nota.'); };
+  rec.onend = () => { btn.textContent = iconoOriginal; btn.disabled = false; };
+  rec.start();
+}
+
+/* Wiring compartido por Día/Semana/Mes(modal): puede haber varios compositores/listas de notas a
+   la vez en el mismo contenedor (Semana tiene 7), cada uno sabe su fecha por data-fecha. */
+function wireNotasCalendario(container){
+  container.querySelectorAll('.cal-sticker-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      btn.parentElement.querySelectorAll('.cal-sticker-opt').forEach(b=>b.classList.toggle('on', b===btn));
+    });
+  });
+  container.querySelectorAll('.cal-dictar-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> dictarEnTextarea(btn));
+  });
+  container.querySelectorAll('.cal-guardar-nota').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const form = btn.closest('.cal-composer-form');
+      const iso = form.dataset.fecha;
+      const textarea = form.querySelector('.cal-nota-input');
+      const texto = (textarea.value || '').trim();
+      if(!texto) return;
+      const tipoBtn = form.querySelector('.cal-sticker-opt.on');
+      const tipo = tipoBtn ? tipoBtn.dataset.tipo : 'otro';
+      if(!notasCalendario[iso]) notasCalendario[iso] = [];
+      const id = Date.now()+'_'+Math.random().toString(36).slice(2,8);
+      notasCalendario[iso].push({ id, autor: miUsuario, texto, tipo, creada: new Date().toISOString() });
+      scheduleSave();
+      if(btn.closest('#diaModal')) abrirDiaModal(iso); else renderCalendario();
+      // Solo la nota recién creada "aparece" con gesto de chincheta — las demás no se vuelven a
+      // animar en cada render, sería ruido (ver nota de diseño junto al CSS de .cal-nota).
+      const marcar = () => document.querySelector(`.cal-nota[data-nota-id="${id}"]`)?.classList.add('nota-nueva');
+      requestAnimationFrame(marcar);
+    });
+  });
+  container.querySelectorAll('.cal-nota-del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(!confirm('¿Borrar esta nota?')) return;
+      const iso = btn.dataset.notaFecha;
+      const id = btn.dataset.notaId;
+      notasCalendario[iso] = (notasCalendario[iso]||[]).filter(n=>n.id!==id);
+      if(!notasCalendario[iso].length) delete notasCalendario[iso];
+      scheduleSave();
+      if(btn.closest('#diaModal')) abrirDiaModal(iso); else renderCalendario();
+    });
+  });
+}
+
+function renderDiaCalendarioHtml(iso){
+  return `<div class="cal-dia-card cal-dia-card-solo">${diaDetalleHtml(iso)}</div>`;
+}
+
+function renderSemanaHtml(){
+  const weekStart = Math.floor(currentDay/7)*7;
+  const diasSemana = WEEK.slice(weekStart, weekStart+7);
+  if(!diasSemana.length) return `<div class="empty">No hay días disponibles.</div>`;
+  return `<div class="cal-semana">${diasSemana.map(d=>`<div class="cal-dia-card">${diaDetalleHtml(d.date)}</div>`).join('')}</div>`;
+}
+
+function renderMesHtml(){
+  const {y,m} = mesCalendario;
+  const primerDiaMes = new Date(y, m, 1);
+  const diasEnMes = new Date(y, m+1, 0).getDate();
+  const offsetLunes = (primerDiaMes.getDay() + 6) % 7; // getDay(): 0=domingo -> queremos lunes primero
+  const celdas = [];
+  for(let i=0;i<offsetLunes;i++) celdas.push(null);
+  for(let d=1; d<=diasEnMes; d++) celdas.push(d);
+  while(celdas.length % 7 !== 0) celdas.push(null);
+
+  const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
+  const hoy = todayISOReal();
+  const celdaHtml = (dia) => {
+    if(dia===null) return `<div class="mes-celda mes-celda-vacia"></div>`;
+    const iso = `${y}-${String(m+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+    const diaWeek = WEEK.find(d=>d.date===iso);
+    const personasConMenu = diaWeek ? visibles.filter(id=>diaWeek[id]) : [];
+    const notas = notasDelDia(iso);
+    const stickersUnicos = [...new Set(notas.map(n=>(TIPOS_NOTA[n.tipo]||TIPOS_NOTA.otro).icono))].slice(0,3);
+    return `<button type="button" class="mes-celda${iso===hoy?' mes-celda-hoy':''}" data-fecha="${iso}">
+      <span class="mes-celda-num">${dia}</span>
+      <span class="mes-celda-chips">${personasConMenu.map(id=>`<span class="mes-chip ${id}" title="${PERSONAS[id].nombre}">${PERSONAS[id].nombre.slice(0,2)}</span>`).join('')}</span>
+      ${stickersUnicos.length ? `<span class="mes-celda-stickers">${stickersUnicos.join('')}</span>` : ''}
+    </button>`;
+  };
+  const nombreMes = MESES[m].charAt(0).toUpperCase() + MESES[m].slice(1);
+  return `
+    <div class="mes-cabecera">
+      <button type="button" class="mes-nav" data-mes-offset="-1" aria-label="Mes anterior">‹</button>
+      <div class="mes-titulo">${nombreMes} ${y}</div>
+      <button type="button" class="mes-nav" data-mes-offset="1" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="mes-dias-semana">${['L','M','X','J','V','S','D'].map(d=>`<span>${d}</span>`).join('')}</div>
+    <div class="mes-grid">${celdas.map(celdaHtml).join('')}</div>`;
+}
+
+function renderCalendario(){
+  const el = document.getElementById('viewCalendario');
+  const fechaActual = WEEK[currentDay] ? WEEK[currentDay].date : todayISOReal();
+  const NOMBRES_VISTA = { dia:'Día', semana:'Semana', mes:'Mes' };
+  const calToggleHtml = `<div class="cal-vista-toggle receta-toggle" role="radiogroup">
+    ${['dia','semana','mes'].map(v=>`<button type="button" class="receta-opt ${vistaCalendario===v?'on':''}" data-vista-cal="${v}" role="radio" aria-checked="${vistaCalendario===v}">${NOMBRES_VISTA[v]}</button>`).join('')}
+  </div>`;
+  let contenido;
+  if(vistaCalendario === 'mes') contenido = renderMesHtml();
+  else if(vistaCalendario === 'semana') contenido = renderSemanaHtml();
+  else contenido = renderDiaCalendarioHtml(fechaActual);
+
+  el.innerHTML = vistaMenuToggleHtml() + calToggleHtml + `<div class="cal-contenido cal-vista-${vistaCalendario}">${contenido}</div>`;
+  wireVistaMenuToggle(el);
+  el.querySelectorAll('.cal-vista-toggle [data-vista-cal]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ guardarVistaCalendario(btn.dataset.vistaCal); renderCalendario(); });
+  });
+  el.querySelectorAll('.mes-nav').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const offset = Number(btn.dataset.mesOffset);
+      let {y,m} = mesCalendario;
+      m += offset;
+      if(m<0){ m=11; y--; } else if(m>11){ m=0; y++; }
+      mesCalendario = {y,m};
+      renderCalendario();
+    });
+  });
+  el.querySelectorAll('.mes-celda[data-fecha]').forEach(btn=>{
+    btn.addEventListener('click', ()=> abrirDiaModal(btn.dataset.fecha));
+  });
+  wireNotasCalendario(el);
+}
 
 function renderPersonPicker(){
   const el = document.getElementById('personPicker');
@@ -3554,7 +3916,7 @@ function renderYo(){
    cuatro se tiran sin pintarse. Ahora render() solo reconstruye la pestaña activa al momento; las
    demás se marcan "pendientes" y se repintan en el instante en que el usuario cambia a ellas, así
    que nunca se ve contenido desactualizado, solo se evita el trabajo que nadie iba a ver. */
-const RENDERERS_POR_TAB = { menu: renderMenu, nevera: renderNevera, compra: renderCompra, peso: renderPeso, yo: renderYo };
+const RENDERERS_POR_TAB = { menu: ()=> vistaMenu==='calendario' ? renderCalendario() : renderMenu(), nevera: renderNevera, compra: renderCompra, peso: renderPeso, yo: renderYo };
 let tabsPendientes = new Set(Object.keys(RENDERERS_POR_TAB));
 
 function render(){
@@ -3568,6 +3930,7 @@ function render(){
       tabsPendientes.add(tab);
     }
   });
+  actualizarVisibilidadMenu();
   if(miUsuario && PERSONAS[miUsuario]){
     document.getElementById('miUsuarioLabel').innerHTML = `Hola, <b>${PERSONAS[miUsuario].nombre}</b>`;
   } else if(modoNevera){
@@ -3608,7 +3971,7 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     currentTab = btn.dataset.tab;
     document.querySelectorAll('nav .tab').forEach(b=>b.classList.toggle('active', b===btn));
-    document.getElementById('viewMenu').style.display = currentTab==='menu' ? '' : 'none';
+    actualizarVisibilidadMenu();
     document.getElementById('viewNevera').style.display = currentTab==='nevera' ? '' : 'none';
     document.getElementById('viewCompra').style.display = currentTab==='compra' ? '' : 'none';
     document.getElementById('viewPeso').style.display = currentTab==='peso' ? '' : 'none';
