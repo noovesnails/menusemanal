@@ -519,7 +519,9 @@ const APP_VERSION = "v2.12.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
-   de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo". */
+   de versión, no hay build step que lo automatice. Se muestra al final de la pestaña "Yo".
+   IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
+   novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
   { fecha:"2026-10-06", texto:"Nuevo modo tablet: en una pantalla ancha y apaisada (como la tablet de la nevera) la app se adapta sola, con menú lateral y el menú de toda la familia a la vez." },
   { fecha:"2026-10-04", texto:"Nuevo buzón de sugerencias en Yo: cualquiera puede escribir una idea y queda visible para toda la familia, con aviso en la cabecera cuando hay alguna sin leer." },
@@ -2093,6 +2095,11 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // mensaje puntual). avisoMensajeDraft=null significa "aún no se ha compuesto ninguno", para componer
 // uno nuevo la primera vez que se abre Yo sin pisar lo que Pedro ya esté editando en re-renders
 // posteriores causados por otra cosa (p. ej. elegir un tema).
+// El valor de partida es la ÚLTIMA novedad desplegada, en tono de WhatsApp (ver CHANGELOG más
+// arriba para la misma novedad en tono changelog). Se quedó desfasado dos veces seguidas por
+// olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
+// CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
+// pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
 let avisoNovedadTexto = 'ya tenéis la app también en la tablet de la nevera, para consultar el menú sin coger el móvil 📱🧊';
 let avisoMensajeDraft = null;
 let saveTimer = null;
