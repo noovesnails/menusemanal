@@ -426,6 +426,43 @@
   .acento-opt.on .acento-swatch{border-color:var(--ink);box-shadow:var(--shadow-2);}
   .acento-nombre{font-size:.66rem;font-weight:600;text-align:center;line-height:1.1;}
   .acento-opt.on .acento-nombre{color:var(--ink);}
+
+  /* ---------- MODO TABLET (nevera) ----------
+     Pensado para una tablet de ~10" apaisada montada en la nevera (p. ej. 1280x800 o 1920x1080),
+     accedida como una página web normal, sin instalar nada. Se activa solo por tamaño/orientación
+     real de la pantalla — no hace falta guardar ninguna preferencia ni elegir nada a mano: cada vez
+     que arranca, al ser una pantalla ancha y baja, el navegador aplica este bloque desde el primer
+     pintado. El umbral (min-width 1000px Y min-height 650px, los dos a la vez) deja fuera a los
+     móviles grandes en horizontal (que son anchos pero bajos, <500px de alto) y solo entra con una
+     pantalla realmente de tablet u ordenador. La identidad de "quién eres" (modoNevera) es un JS
+     aparte, ver más abajo — este bloque es puramente visual. */
+  @media (min-width: 1000px) and (min-height: 650px){
+    body{padding-bottom:0; padding-left:104px;}
+
+    nav{position:fixed; top:0; bottom:0; left:0; right:auto; width:104px; height:100%;
+      flex-direction:column; justify-content:center; gap:6px; padding:16px 10px;
+      border-top:none; border-right:1px solid var(--line);}
+    nav button{flex:0 0 auto; padding:14px 4px; border-radius:12px;}
+    nav button .ic{font-size:1.5rem;}
+    nav button.active{background:var(--accent-soft);}
+
+    h1{padding:22px 32px 4px; font-size:1.4rem;}
+    .sub,.mi-usuario,.syncbar,.daypicker{padding-left:32px; padding-right:32px;}
+    .aviso-sugerencias{margin-left:32px; margin-right:32px;}
+    main{padding:0 32px 32px;}
+
+    main,h1,.sub,.mi-usuario,.syncbar,.aviso-sugerencias,.daypicker{max-width:1180px; margin-left:auto; margin-right:auto;}
+
+    /* Menú: una persona por tarjeta en columnas, en vez de apiladas — es la pantalla que más se
+       beneficia del ancho, con varias personas visibles a la vez sin hacer scroll sin fin. */
+    #viewMenu{display:grid; grid-template-columns:repeat(auto-fit, minmax(360px,1fr)); gap:18px; align-items:start;}
+    #viewMenu .card{margin-bottom:0;}
+    #viewMenu .empty{grid-column:1/-1;}
+
+    /* Nevera/Compra/Peso/Yo: listas de lectura, mejor con un ancho de línea cómodo que estiradas
+       de punta a punta de la pantalla. */
+    #viewNevera,#viewCompra,#viewPeso,#viewYo{max-width:760px; margin-left:auto; margin-right:auto;}
+  }
 </style>
 
 <script>
@@ -2341,6 +2378,13 @@ function resolverReceta(recipe, modo){
    onboarding antes que cualquier otra pantalla. */
 let miUsuario = localStorage.getItem('miUsuario') || null;
 
+/* Modo nevera: dispositivo compartido (la tablet de la cocina), sin una identidad de una persona
+   concreta — se detecta solo por tamaño/orientación de pantalla la primera vez que arranca sin
+   miUsuario (ver el arranque al final del fichero), así no hace falta elegir nada a mano. Una vez
+   detectado se recuerda en localStorage para que siga siéndolo aunque algún día se abra la página
+   con una ventana más pequeña (p. ej. modo responsive del navegador). */
+let modoNevera = localStorage.getItem('modoNevera') === '1';
+
 /* personas visibles en la vista Menú, por defecto todas las que tengan al menos un plato en WEEK */
 let personasVisibles;
 try{
@@ -3518,6 +3562,8 @@ function render(){
   });
   if(miUsuario && PERSONAS[miUsuario]){
     document.getElementById('miUsuarioLabel').innerHTML = `Hola, <b>${PERSONAS[miUsuario].nombre}</b>`;
+  } else if(modoNevera){
+    document.getElementById('miUsuarioLabel').innerHTML = `🧊 <b>Tablet de la cocina</b> · menú de toda la familia`;
   }
   actualizarAvisoSugerencias();
 }
@@ -3566,5 +3612,14 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
   });
 });
 
-if(!miUsuario){ mostrarOnboarding(); } else { loadRemote(); }
+/* Primer arranque sin identidad guardada: si la pantalla es ancha y baja (tablet apaisada de
+   verdad, no un móvil grande en horizontal), se asume que es un dispositivo compartido — la
+   tablet de la nevera — y se entra directo mostrando a toda la familia, sin pedir "¿quién eres?".
+   Cualquier móvil (incluso en horizontal) tiene menos de 650px de alto y sigue yendo al
+   onboarding normal. */
+if(!miUsuario && !modoNevera && window.matchMedia('(min-width:1000px) and (min-height:650px)').matches){
+  modoNevera = true;
+  localStorage.setItem('modoNevera', '1');
+}
+if(!miUsuario && !modoNevera){ mostrarOnboarding(); } else { loadRemote(); }
 </script>
