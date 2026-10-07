@@ -217,8 +217,8 @@
   .ing-row input[type=checkbox]{transition:transform .1s ease;}
   .ing-row input[type=checkbox]:active{transform:scale(1.15);}
   .ing-row label{transition:color .15s ease;}
-  nav button .ic{display:inline-block;transition:transform .15s ease;}
-  nav button.active .ic{transform:scale(1.15);}
+  nav button .ic{display:inline-block;transition:transform .4s cubic-bezier(.3,1.6,.5,1);}
+  nav button.active .ic{transform:scale(1.15) translateY(-1px);}
   @media (prefers-reduced-motion: reduce){
     *{transition-duration:0.001ms !important;}
   }
@@ -340,10 +340,25 @@
 
   .empty{color:var(--muted);font-size:.85rem;padding:20px 4px;text-align:center;}
 
-  nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);}
-  nav button{flex:1;background:none;border:none;color:var(--muted);font-size:.68rem;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);z-index:1;}
+  nav button{position:relative;z-index:1;flex:1;background:none;border:none;color:var(--muted);font-size:.68rem;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;}
   nav button .ic{font-size:1.15rem;}
-  nav button.active{color:var(--accent);font-weight:700;}
+  nav button.active{color:#fff;font-weight:700;}
+
+  /* ---------- NAV LÍQUIDO ----------
+     Una gota sigue a la pestaña activa con una pequeña física de muelle (ver el JS); su color sale
+     de --accent-btn, el mismo token ya usado y verificado con contraste suficiente en los botones
+     sólidos de toda la app, así combina con cualquiera de los 5 temas × 11 acentos sin tener que
+     revalidar nada. El filtro "goo" fusiona la gota con su cola cuando están cerca, dando el efecto
+     de líquido. Solo en el móvil: en modo tablet el nav es una barra lateral vertical y este efecto
+     se desactiva (ver el bloque de modo tablet, más abajo). */
+  .liquido{position:absolute;inset:0;overflow:hidden;filter:url(#navGoo);pointer-events:none;z-index:0;}
+  .gota{position:absolute;top:50%;left:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:var(--accent-btn, var(--accent));will-change:transform;}
+  .gota.cola{width:34px;height:34px;margin:-17px 0 0 -17px;}
+  .cuello{position:absolute;top:50%;left:0;width:1px;height:24px;margin-top:-12px;background:var(--accent-btn, var(--accent));border-radius:12px;transform-origin:0 50%;will-change:transform;}
+  @media (prefers-reduced-motion: reduce){
+    .gota,.cola,.cuello{transition:none;}
+  }
 
   .syncbar{display:flex;align-items:center;gap:6px;padding:0 16px 4px;font-size:.72rem;color:var(--muted);}
   .syncdot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
@@ -520,7 +535,11 @@
       border-top:none; border-right:1px solid var(--line);}
     nav button{flex:0 0 auto; padding:14px 4px; border-radius:12px;}
     nav button .ic{font-size:1.5rem;}
-    nav button.active{background:var(--accent-soft);}
+    nav button.active{background:var(--accent-soft); color:var(--accent);}
+    /* La gota líquida es un efecto de barra horizontal — aquí el nav es una barra lateral vertical,
+       se queda con el resaltado simple de siempre (arriba) en vez de intentar adaptar la física del
+       muelle a un eje vertical. */
+    .liquido{display:none;}
 
     h1{padding:22px 32px 4px; font-size:1.4rem;}
     .sub,.mi-usuario,.syncbar,.daypicker{padding-left:32px; padding-right:32px;}
@@ -570,13 +589,27 @@
 <main id="viewPeso" style="display:none"></main>
 <main id="viewYo" style="display:none"></main>
 
-<nav>
+<nav id="navBar">
+  <div class="liquido" id="navLiquido" aria-hidden="true">
+    <div class="cuello" id="navCuello"></div>
+    <div class="gota cola" id="navCola"></div>
+    <div class="gota" id="navGota"></div>
+  </div>
   <button class="tab active" data-tab="menu"><span class="ic">🍽️</span>Menú</button>
   <button class="tab" data-tab="nevera"><span class="ic">🧊</span>Nevera</button>
   <button class="tab" data-tab="compra"><span class="ic">🛒</span>Compra</button>
   <button class="tab" data-tab="peso"><span class="ic">⚖️</span>Peso</button>
   <button class="tab" data-tab="yo"><span class="ic">🙋</span>Yo</button>
 </nav>
+
+<!-- Filtro "goo": desenfoca y vuelve a endurecer el borde, así la gota y su cola se funden como
+     líquido de verdad cuando se acercan al cambiar de pestaña. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="navGoo">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
+    <feColorMatrix in="blur" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9"/>
+  </filter>
+</svg>
 
 <div id="onboarding" class="onboarding" style="display:none"></div>
 
@@ -4072,6 +4105,76 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
     }
   });
 });
+
+/* ---------- NAV LÍQUIDO ----------
+   Puramente visual: una gota con físicas de muelle persigue a la pestaña activa, con una cola que
+   la sigue con retraso y un cuello que las une y se adelgaza al estirarse — el filtro "goo" del SVG
+   las funde en una sola forma cuando están cerca. No sustituye nada del cambio de pestaña de
+   arriba, solo escucha los mismos clics para saber hacia dónde animarse. Se desactiva en modo
+   tablet (barra lateral, no hay eje horizontal que seguir) y respeta "reducir movimiento". */
+(function(){
+  const esTablet = () => window.matchMedia('(min-width:1000px) and (min-height:650px)').matches;
+  const barra = document.getElementById('navBar');
+  const gota = document.getElementById('navGota');
+  const colaEl = document.getElementById('navCola');
+  const cuello = document.getElementById('navCuello');
+  const tabs = Array.from(document.querySelectorAll('nav .tab'));
+  if(!barra || !gota || !tabs.length) return;
+  const quieto = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let x = 0, v = 0;     // gota principal: posición y velocidad
+  let xc = 0, vc = 0;   // la cola: persigue a la gota con retraso
+  let objetivo = 0;
+  let animando = false;
+
+  const centro = (i) => {
+    const r = tabs[i].getBoundingClientRect();
+    return r.left - barra.getBoundingClientRect().left + r.width / 2;
+  };
+
+  function pintar(){
+    const s = Math.min(Math.abs(v) / 28, .5);
+    gota.style.transform = `translateX(${x}px) scale(${1 + s}, ${1 - s * .55})`;
+    const d = Math.abs(x - xc);
+    colaEl.style.transform = `translateX(${xc}px) scale(${.6 + Math.min(d / 260, .3)})`;
+    const grosor = Math.max(.22, 1 - d / 240);
+    cuello.style.transform = `translateX(${Math.min(x, xc)}px) scale(${d}, ${grosor})`;
+  }
+
+  function paso(){
+    v = (v + (objetivo - x) * .11) * .69;
+    x += v;
+    vc = (vc + (x - xc) * .07) * .76;
+    xc += vc;
+    pintar();
+    const resta = Math.abs(v) + Math.abs(vc) + Math.abs(objetivo - x) + Math.abs(x - xc);
+    if(resta > .05 && !esTablet()) requestAnimationFrame(paso); else animando = false;
+  }
+
+  function irA(idx){
+    if(esTablet() || idx < 0) return;
+    objetivo = centro(idx);
+    if(quieto()){ x = xc = objetivo; v = vc = 0; pintar(); return; }
+    if(!animando){ animando = true; requestAnimationFrame(paso); }
+  }
+
+  function indiceActivo(){
+    const i = tabs.findIndex(t => t.classList.contains('active'));
+    return i === -1 ? 0 : i;
+  }
+
+  tabs.forEach((t, i) => t.addEventListener('click', () => irA(i)));
+
+  function colocar(){
+    if(esTablet()) return;
+    objetivo = x = xc = centro(indiceActivo());
+    v = vc = 0;
+    pintar();
+  }
+  window.addEventListener('resize', colocar);
+  // Tras el primer pintado, para que las medidas de los botones ya sean reales.
+  requestAnimationFrame(colocar);
+})();
 
 /* Primer arranque sin identidad guardada: si la pantalla es ancha y baja (tablet apaisada de
    verdad, no un móvil grande en horizontal), se asume que es un dispositivo compartido — la
