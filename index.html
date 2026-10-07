@@ -353,9 +353,13 @@
      de líquido. Solo en el móvil: en modo tablet el nav es una barra lateral vertical y este efecto
      se desactiva (ver el bloque de modo tablet, más abajo). */
   .liquido{position:absolute;inset:0;overflow:hidden;filter:url(#navGoo);pointer-events:none;z-index:0;}
-  .gota{position:absolute;top:50%;left:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:var(--accent-btn, var(--accent));will-change:transform;}
-  .gota.cola{width:34px;height:34px;margin:-17px 0 0 -17px;}
-  .cuello{position:absolute;top:50%;left:0;width:1px;height:24px;margin-top:-12px;background:var(--accent-btn, var(--accent));border-radius:12px;transform-origin:0 50%;will-change:transform;}
+  /* Rectángulo redondeado, no círculo: el icono y la etiqueta van apilados (no solo icono, como en
+     el ejemplo original en móvil), así que a la altura del texto un círculo ya se ha estrechado y
+     las letras se salen por los lados. Con las esquinas redondeadas se mantiene el ancho completo
+     en toda la altura, cubriendo icono+texto sin recortar ninguno de los dos. */
+  .gota{position:absolute;top:50%;left:0;width:60px;height:50px;margin:-25px 0 0 -30px;border-radius:18px;background:var(--accent-btn, var(--accent));will-change:transform;}
+  .gota.cola{width:44px;height:38px;margin:-19px 0 0 -22px;border-radius:14px;}
+  .cuello{position:absolute;top:50%;left:0;width:1px;height:30px;margin-top:-15px;background:var(--accent-btn, var(--accent));border-radius:12px;transform-origin:0 50%;will-change:transform;}
   @media (prefers-reduced-motion: reduce){
     .gota,.cola,.cuello{transition:none;}
   }
