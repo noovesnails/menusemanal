@@ -442,6 +442,7 @@
 
   .vista-menu-toggle{margin-bottom:12px;}
   .cal-vista-toggle{margin-bottom:14px;max-width:280px;}
+  .cal-panel-estado{font-size:.72rem;color:var(--muted);margin:-6px 0 14px;}
   .cal-contenido{animation:calFadeIn .3s ease both;}
 
   .mes-cabecera{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -2099,10 +2100,23 @@ const WEEK = [
   }
 ];
 
-/* ---------- JSONBIN (estado compartido: check de nevera) ---------- */
+/* ---------- JSONBIN (estado compartido: check de nevera) ----------
+   Única declaración de la Master Key en todo el fichero (no se repite en ningún otro sitio) — si
+   Pedro la regenera en jsonbin.io, esta es la única línea que hay que tocar. Vive en el HTML
+   porque esto es una app 100% cliente sin servidor propio; asumido conscientemente desde el
+   principio del proyecto (ver update.md), no hay forma de evitarlo sin añadir un backend. */
 const JSONBIN_ID = "6a301b19f5f4af5e29f5ec66";
 const JSONBIN_KEY = "$2a$10$vFbnhWMCDqkb4eHXuuPjyOmhB88kcnaQjTnU/zfXL53RdRIcQpx56";
 const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
+
+/* ---------- NOTAS POR SIRI (Panel NOOVES, fase 2) ----------
+   Mismo tratamiento que JSONBIN_KEY: una única declaración, pensada para quedar pública (el token
+   que vaya aquí no debe poder hacer nada más que leer este feed de notas — si el Panel no puede
+   acotarlo así, que avisen antes de dárnoslo). Vacío hasta que Pedro pase la URL y el token de
+   solo lectura; mientras tanto cargarNotasPanel() no intenta ninguna petición y el calendario
+   simplemente no muestra notas de Siri, sin romper nada de lo que ya funciona. */
+const PANEL_NOTAS_URL = "";
+const PANEL_NOTAS_TOKEN = "";
 
 /* Subida de fotos/vídeos vía Cloudinary (unsigned upload preset — pensado para subir desde el
    cliente sin exponer una clave secreta; el preset solo permite subir, no gestionar la cuenta). */
@@ -2168,6 +2182,63 @@ let sugerencias = [];     // [{id, autor, texto, fecha(ISO)}] buzón de sugerenc
 // médicas, recordatorios, fechas señaladas... Se escriben a mano o por dictado de voz desde el
 // propio calendario; más adelante también podrán llegar por Siri (fase 2, servidor aparte).
 let notasCalendario = {};
+
+/* Notas leídas del Panel NOOVES (Siri), solo en memoria de esta carga — nunca se escriben en
+   JSONBin ni en el Panel desde aquí, es un feed de solo lectura que se fusiona con notasCalendario
+   únicamente al mostrar (ver notasDelDia). No tiene sentido persistirlas: cada carga se vuelve a
+   pedir el feed entero. */
+let notasPanel = [];
+let notasPanelEstado = 'sin-configurar'; // 'sin-configurar' | 'cargando' | 'ok' | 'error'
+
+/* Lee el feed de notas de Siri del Panel NOOVES y lo deja listo en notasPanel. No hace nada (ni
+   una petición de red) mientras PANEL_NOTAS_URL/TOKEN estén vacíos — así se puede desplegar esto
+   ya mismo sin que rompa nada, antes de que exista la URL y el token de verdad.
+   Formato esperado por entrada (se ajusta en cuanto el Panel confirme la forma real del feed):
+   { id, detail, entry_date?, creada?, autor_nombre? }. El "@AAAA-MM-DD" al principio del detalle,
+   si lo lleva, manda sobre entry_date/creada para decidir en qué día cae la nota (así Siri puede
+   apuntar "la revisión del jueves" aunque se dicte hoy). */
+async function cargarNotasPanel(){
+  if(!PANEL_NOTAS_URL || !PANEL_NOTAS_TOKEN){ notasPanelEstado = 'sin-configurar'; return; }
+  notasPanelEstado = 'cargando';
+  try{
+    const res = await fetch(PANEL_NOTAS_URL, { headers: { 'Authorization': 'Bearer ' + PANEL_NOTAS_TOKEN } });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    notasPanel = parseNotasPanel(data);
+    notasPanelEstado = 'ok';
+  }catch(e){
+    console.warn('No se pudo leer el feed de notas del Panel', e);
+    notasPanelEstado = 'error';
+  }
+  if(currentTab === 'menu' && vistaMenu === 'calendario') renderCalendario();
+}
+
+function parseNotasPanel(data){
+  const entradas = Array.isArray(data) ? data : (data.data || data.entries || []);
+  const vistos = new Set();
+  const notas = [];
+  entradas.forEach(e => {
+    const panelId = String(e.id);
+    if(vistos.has(panelId)) return; // dedupe por id del Panel: no duplicar si se lee en cada vista
+    vistos.add(panelId);
+    let texto = String(e.detail || e.texto || '').trim();
+    let fecha = null;
+    const m = /^@(\d{4}-\d{2}-\d{2})\s*/.exec(texto);
+    if(m){ fecha = m[1]; texto = texto.slice(m[0].length).trim(); }
+    if(!fecha) fecha = String(e.entry_date || e.creada || '').slice(0,10) || todayISOReal();
+    if(!texto) return;
+    notas.push({
+      id: 'panel_' + panelId,
+      texto,
+      tipo: 'otro',
+      creada: e.creada || e.created_at || new Date().toISOString(),
+      fecha,
+      origen: 'panel',
+      autorNombre: e.autor_nombre || e.owner_name || null,
+    });
+  });
+  return notas;
+}
 // Hasta qué fecha (ISO) de sugerencias ha visto YA este dispositivo — para el aviso de "hay
 // sugerencias nuevas" en la cabecera. Es de dispositivo (localStorage), no se sincroniza: cada
 // móvil marca como visto lo que ha visto él, igual que el tema o el modo de receta.
@@ -2268,6 +2339,7 @@ async function loadRemote(){
     setSync('err', 'Sin conexión (guardado local)');
   }
   render();
+  cargarNotasPanel(); // en paralelo, no bloquea el resto — se repinta sola cuando llegue (o no)
 }
 
 function scheduleSave(){
@@ -2393,7 +2465,13 @@ const TIPOS_NOTA = {
   otro:         { icono:'📝', nombre:'Nota' },
 };
 
-function notasDelDia(iso){ return notasCalendario[iso] || []; }
+/* Fusiona las notas propias (JSONBin, editables) con las leídas del Panel (Siri, solo lectura) —
+   se muestran juntas en la misma lista, cada una reconocible por su sticker/autor. */
+function notasDelDia(iso){
+  const propias = notasCalendario[iso] || [];
+  const deSiri = notasPanel.filter(n => n.fecha === iso);
+  return propias.concat(deSiri);
+}
 const MODOS_RECETA = { thermomix:'Thermomix TM7', nutri:'Receta nutri', tradicional:'Tradicional' };
 let modoReceta = MODOS_RECETA[localStorage.getItem('modoReceta')] ? localStorage.getItem('modoReceta') : 'thermomix';
 
@@ -3105,19 +3183,24 @@ function formatoFechaLarga(iso){
   return `${NOMBRES_DIA_SEMANA[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
 }
 
+function autorNotaHtml(n){
+  if(n.origen === 'panel') return n.autorNombre || '🗣️ Siri';
+  return PERSONAS[n.autor] ? PERSONAS[n.autor].nombre : '🧊 Tablet';
+}
+
 function notasListHtml(iso){
   const notas = notasDelDia(iso);
   if(!notas.length) return `<div class="empty cal-notas-vacio">Sin notas todavía.</div>`;
   return `<div class="cal-notas-lista">${notas.slice().sort((a,b)=>a.creada.localeCompare(b.creada)).map(n=>{
     const tipo = TIPOS_NOTA[n.tipo] || TIPOS_NOTA.otro;
-    const autor = PERSONAS[n.autor] ? PERSONAS[n.autor].nombre : '🧊 Tablet';
+    const esPanel = n.origen === 'panel';
     return `<div class="cal-nota cal-nota-${n.tipo}" data-nota-id="${n.id}">
       <span class="cal-nota-sticker" title="${tipo.nombre}">${tipo.icono}</span>
       <div class="cal-nota-cuerpo">
         <div class="cal-nota-texto">${escapeHtml(n.texto)}</div>
-        <div class="cal-nota-autor">${autor}</div>
+        <div class="cal-nota-autor">${autorNotaHtml(n)}</div>
       </div>
-      <button type="button" class="cal-nota-del" data-nota-id="${n.id}" data-nota-fecha="${iso}" title="Borrar nota">🗑</button>
+      ${esPanel ? '' : `<button type="button" class="cal-nota-del" data-nota-id="${n.id}" data-nota-fecha="${iso}" title="Borrar nota">🗑</button>`}
     </div>`;
   }).join('')}</div>`;
 }
@@ -3298,7 +3381,13 @@ function renderCalendario(){
   else if(vistaCalendario === 'semana') contenido = renderSemanaHtml();
   else contenido = renderDiaCalendarioHtml(fechaActual);
 
-  el.innerHTML = vistaMenuToggleHtml() + calToggleHtml + `<div class="cal-contenido cal-vista-${vistaCalendario}">${contenido}</div>`;
+  // Un único aviso por vista (no uno por día) de que las notas por Siri aún no están conectadas —
+  // discreto, no es un error real, es una fase 2 todavía pendiente del lado del Panel.
+  const avisoPanelHtml = (notasPanelEstado === 'sin-configurar' || notasPanelEstado === 'error')
+    ? `<div class="cal-panel-estado">📡 Sin conexión con el Panel — las notas por Siri llegarán aquí más adelante.</div>`
+    : '';
+
+  el.innerHTML = vistaMenuToggleHtml() + calToggleHtml + avisoPanelHtml + `<div class="cal-contenido cal-vista-${vistaCalendario}">${contenido}</div>`;
   wireVistaMenuToggle(el);
   el.querySelectorAll('.cal-vista-toggle [data-vista-cal]').forEach(btn=>{
     btn.addEventListener('click', ()=>{ guardarVistaCalendario(btn.dataset.vistaCal); renderCalendario(); });
