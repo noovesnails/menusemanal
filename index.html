@@ -703,7 +703,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.17.0";
+const APP_VERSION = "v2.18.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -711,6 +711,7 @@ const APP_VERSION = "v2.17.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-07", texto:"En la vista de tablet hay un indicador de batería arriba a la derecha, el mes completo del calendario ya cabe sin hacer scroll y la app refresca datos sin recargarse de más." },
   { fecha:"2026-10-07", texto:"La vista de tablet ahora ocupa toda la pantalla: sin título ni cabecera arriba, con las tarjetas del menú y los días de la semana deslizables con el dedo." },
   { fecha:"2026-10-07", texto:"Ahora se puede añadir la app a la pantalla de inicio de una tablet o móvil y se abre a pantalla completa, sin la barra del navegador." },
   { fecha:"2026-10-07", texto:"En Yo hay un nuevo interruptor para forzar la vista de tablet (menú lateral) en cualquier dispositivo, para las tablets donde no se active sola." },
@@ -2367,7 +2368,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'la tablet de la cocina ahora aprovecha toda la pantalla: sin cabecera arriba y con el menú y los días deslizables con el dedo 👉📱';
+let avisoNovedadTexto = 'la tablet de la cocina ahora tiene indicador de batería, el mes del calendario se ve entero y refresca mejor, sin recargarse de más 🔋📅';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
