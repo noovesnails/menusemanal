@@ -1,6 +1,18 @@
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Menú Semanal</title>
+<!-- Permite abrir la app como icono de pantalla de inicio sin la barra del navegador (tablet de la
+     nevera, issue "pantalla completa"). El manifest cubre Android/Chrome; iOS/Safari no lo lee para
+     esto y necesita estas meta etiquetas propias. Si el icono ya estaba creado en el dispositivo
+     ANTES de este cambio, hay que borrarlo y volver a "Añadir a pantalla de inicio" — el aspecto
+     queda fijado en el momento de crear el icono, no se actualiza solo. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#c15d8e">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Menú semanal">
 <style>
   /* Sistema de 5 temas elegibles desde Yo (issue de cambio de look + accesibilidad), aplicados vía
      [data-tema] en <html> y guardados solo en localStorage (preferencia de dispositivo, como
