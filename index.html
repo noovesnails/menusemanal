@@ -667,7 +667,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.15.0";
+const APP_VERSION = "v2.16.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -675,6 +675,7 @@ const APP_VERSION = "v2.15.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-07", texto:"Ahora se puede añadir la app a la pantalla de inicio de una tablet o móvil y se abre a pantalla completa, sin la barra del navegador." },
   { fecha:"2026-10-07", texto:"En Yo hay un nuevo interruptor para forzar la vista de tablet (menú lateral) en cualquier dispositivo, para las tablets donde no se active sola." },
   { fecha:"2026-10-07", texto:"La barra de pestañas de abajo ahora tiene un efecto líquido: una gota sigue a la pestaña que eliges, como una gotita que se estira." },
   { fecha:"2026-10-06", texto:"Nuevo calendario de menús y notas (día/semana/mes) en Menú → Calendario: citas, recordatorios y fechas señaladas con sticker, escritas a mano o dictadas por voz." },
@@ -2329,7 +2330,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'si la tablet de la cocina no se pone sola en modo pantalla grande, ahora hay un interruptor en Yo para forzarlo 📱➡️🖥️';
+let avisoNovedadTexto = 'ya podéis poner el icono de la app en la pantalla de inicio de la tablet o el móvil y se abre a pantalla completa, sin la barra del navegador 📲🖥️';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
