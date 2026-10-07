@@ -524,13 +524,15 @@
 
   /* ---------- MODO TABLET (nevera) ----------
      Pensado para una tablet de ~10" apaisada montada en la nevera (p. ej. 1280x800 o 1920x1080),
-     accedida como una página web normal, sin instalar nada. Se activa solo por tamaño/orientación
-     real de la pantalla — no hace falta guardar ninguna preferencia ni elegir nada a mano: cada vez
-     que arranca, al ser una pantalla ancha y baja, el navegador aplica este bloque desde el primer
-     pintado. El umbral (min-width 1000px Y min-height 650px, los dos a la vez) deja fuera a los
-     móviles grandes en horizontal (que son anchos pero bajos, <500px de alto) y solo entra con una
-     pantalla realmente de tablet u ordenador. La identidad de "quién eres" (modoNevera) es un JS
-     aparte, ver más abajo — este bloque es puramente visual. */
+     accedida como una página web normal, sin instalar nada. Se activa sola por tamaño/orientación
+     real de la pantalla (umbral min-width 1000px Y min-height 650px, los dos a la vez — deja fuera
+     a los móviles grandes en horizontal, que son anchos pero bajos). Pero algunas tablets reales
+     restan tanto espacio con la barra del navegador que no llegan a ese alto aunque sean tablets de
+     sobra — por eso además de la media query hay un interruptor manual (pestaña Yo) que añade la
+     clase `vista-tablet` al <html> y fuerza este mismo aspecto sin depender de adivinar el tamaño
+     exacto de cada pantalla. Las reglas de aquí abajo se repiten para los dos disparadores porque
+     CSS no permite combinar un media query con un selector de clase en un único bloque sin JS.
+     La identidad de "quién eres" (modoNevera) es un JS aparte, ver más abajo — esto es solo visual. */
   @media (min-width: 1000px) and (min-height: 650px){
     body{padding-bottom:0; padding-left:104px;}
 
@@ -562,6 +564,29 @@
        de punta a punta de la pantalla. */
     #viewNevera,#viewCompra,#viewPeso,#viewYo{max-width:760px; margin-left:auto; margin-right:auto;}
   }
+
+  html.vista-tablet body{padding-bottom:0; padding-left:104px;}
+
+  html.vista-tablet nav{position:fixed; top:0; bottom:0; left:0; right:auto; width:104px; height:100%;
+    flex-direction:column; justify-content:center; gap:6px; padding:16px 10px;
+    border-top:none; border-right:1px solid var(--line);}
+  html.vista-tablet nav button{flex:0 0 auto; padding:14px 4px; border-radius:12px;}
+  html.vista-tablet nav button .ic{font-size:1.5rem;}
+  html.vista-tablet nav button.active{background:var(--accent-soft); color:var(--accent);}
+  html.vista-tablet .liquido{display:none;}
+
+  html.vista-tablet h1{padding:22px 32px 4px; font-size:1.4rem;}
+  html.vista-tablet .sub,html.vista-tablet .mi-usuario,html.vista-tablet .syncbar,html.vista-tablet .daypicker{padding-left:32px; padding-right:32px;}
+  html.vista-tablet .aviso-sugerencias{margin-left:32px; margin-right:32px;}
+  html.vista-tablet main{padding:0 32px 32px;}
+
+  html.vista-tablet main,html.vista-tablet h1,html.vista-tablet .sub,html.vista-tablet .mi-usuario,html.vista-tablet .syncbar,html.vista-tablet .aviso-sugerencias,html.vista-tablet .daypicker{max-width:1180px; margin-left:auto; margin-right:auto;}
+
+  html.vista-tablet #viewMenu{display:grid; grid-template-columns:repeat(auto-fit, minmax(360px,1fr)); gap:18px; align-items:start;}
+  html.vista-tablet #viewMenu .card{margin-bottom:0;}
+  html.vista-tablet #viewMenu .empty{grid-column:1/-1;}
+
+  html.vista-tablet #viewNevera,html.vista-tablet #viewCompra,html.vista-tablet #viewPeso,html.vista-tablet #viewYo{max-width:760px; margin-left:auto; margin-right:auto;}
 </style>
 
 <script>
@@ -2620,6 +2645,19 @@ let miUsuario = localStorage.getItem('miUsuario') || null;
    con una ventana más pequeña (p. ej. modo responsive del navegador). */
 let modoNevera = localStorage.getItem('modoNevera') === '1';
 
+/* La vista de tablet (barra lateral, menú en columnas) se activa sola si la pantalla es ancha y
+   alta de verdad, pero algunas tablets reales le restan tanto espacio (barra del navegador, modo
+   partido…) que nunca llegan al umbral aunque sean tablets de sobra. `forzarVistaTablet` es el
+   escape manual para ese caso: un interruptor en la pestaña Yo que cualquiera de la familia puede
+   activar en el dispositivo que lo necesite, sin depender de adivinar su tamaño exacto. */
+function actualizarVistaTablet(){
+  const forzado = localStorage.getItem('forzarVistaTablet') === '1';
+  const encaja = window.matchMedia('(min-width:1000px) and (min-height:650px)').matches;
+  document.documentElement.classList.toggle('vista-tablet', forzado || encaja);
+}
+actualizarVistaTablet();
+window.addEventListener('resize', actualizarVistaTablet);
+
 /* personas visibles en la vista Menú, por defecto todas las que tengan al menos un plato en WEEK */
 let personasVisibles;
 try{
@@ -3930,12 +3968,22 @@ function renderYo(){
       <div class="aviso-ayuda">Se copia el mensaje y se abre el grupo de WhatsApp — solo falta pegar y pulsar enviar. Cada vez que le des a "Otro mensaje" sale uno distinto de la colección 🎉</div>
     </div>` : '';
 
+  const vistaTabletHtml = `<div class="section-title">Vista de pantalla</div>
+    <div class="card">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+        <input type="checkbox" id="forzarVistaTabletInput" ${localStorage.getItem('forzarVistaTablet')==='1' ? 'checked' : ''}>
+        <span>Forzar vista de tablet en este dispositivo</span>
+      </label>
+      <div class="aviso-ayuda">Úsalo si estás en una tablet o un ordenador y no sale el menú en una barra lateral solo al entrar — algunas pantallas le restan tanto espacio al navegador que no llegan al tamaño mínimo que detectamos automáticamente. Solo afecta a este dispositivo.</div>
+    </div>`;
+
   const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
   el.innerHTML = `<div class="section-title">Quién ves</div>` +
     `<div class="personpicker" id="personPicker"></div>` +
     sugerenciasHtml +
     `<div class="section-title">Tema visual</div>` +
     `<div class="tema-picker">${Object.keys(TEMAS).map(temaBloqueHtml).join('')}</div>` +
+    vistaTabletHtml +
     avisoHtml +
     `<div class="section-title">Fechas de la nutricionista</div>` +
     (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
@@ -3957,6 +4005,12 @@ function renderYo(){
     scheduleSave();
     sugerenciaDraft = '';
     renderYo();
+  });
+
+  const forzarVistaTabletInput = document.getElementById('forzarVistaTabletInput');
+  if(forzarVistaTabletInput) forzarVistaTabletInput.addEventListener('change', ()=>{
+    localStorage.setItem('forzarVistaTablet', forzarVistaTabletInput.checked ? '1' : '0');
+    actualizarVistaTablet();
   });
 
   const grupoInput = document.getElementById('grupoWhatsappInput');
@@ -4118,7 +4172,7 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
    arriba, solo escucha los mismos clics para saber hacia dónde animarse. Se desactiva en modo
    tablet (barra lateral, no hay eje horizontal que seguir) y respeta "reducir movimiento". */
 (function(){
-  const esTablet = () => window.matchMedia('(min-width:1000px) and (min-height:650px)').matches;
+  const esTablet = () => document.documentElement.classList.contains('vista-tablet');
   const barra = document.getElementById('navBar');
   const gota = document.getElementById('navGota');
   const colaEl = document.getElementById('navCola');
