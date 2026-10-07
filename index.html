@@ -626,7 +626,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.13.0";
+const APP_VERSION = "v2.14.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -634,6 +634,7 @@ const APP_VERSION = "v2.13.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-07", texto:"La barra de pestañas de abajo ahora tiene un efecto líquido: una gota sigue a la pestaña que eliges, como una gotita que se estira." },
   { fecha:"2026-10-06", texto:"Nuevo calendario de menús y notas (día/semana/mes) en Menú → Calendario: citas, recordatorios y fechas señaladas con sticker, escritas a mano o dictadas por voz." },
   { fecha:"2026-10-06", texto:"Nuevo modo tablet: en una pantalla ancha y apaisada (como la tablet de la nevera) la app se adapta sola, con menú lateral y el menú de toda la familia a la vez." },
   { fecha:"2026-10-04", texto:"Nuevo buzón de sugerencias en Yo: cualquiera puede escribir una idea y queda visible para toda la familia, con aviso en la cabecera cuando hay alguna sin leer." },
@@ -2286,7 +2287,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'ya hay un calendario de menús y notas en la app (citas, recordatorios, fechas señaladas...), con stickers y hasta dictado por voz 📅🎀';
+let avisoNovedadTexto = 'la barra de pestañas de abajo tiene ahora un efecto líquido chulísimo, entrad a verlo 💧✨';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
