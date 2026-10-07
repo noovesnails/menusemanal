@@ -581,8 +581,10 @@
     font-size:.85rem; font-weight:700; color:var(--ink); background:var(--card); border:1px solid var(--line);
     border-radius:999px; padding:6px 14px; box-shadow:var(--shadow-1);}
 
-  /* Con la cabecera oculta ya no hace falta tanto aire arriba del todo. */
-  html.vista-tablet main{padding:12px 32px 32px; max-width:1180px; margin-left:auto; margin-right:auto;}
+  /* Con la cabecera oculta ya no hace falta tanto aire arriba del todo; y con menos margen entre
+     filas (ver también abajo) queda más sitio para el calendario. */
+  html.vista-tablet main{padding:8px 32px 20px; max-width:1180px; margin-left:auto; margin-right:auto;}
+  html.vista-tablet .vista-menu-toggle{margin-bottom:8px;}
 
   /* Menú: el interruptor Menú/Calendario ocupa su propia fila arriba, y las tarjetas de cada
      persona (envueltas en .menu-cards, ver renderMenu) se ven una al lado de otra a pantalla
@@ -600,12 +602,28 @@
   html.vista-tablet .cal-semana::-webkit-scrollbar{display:none;}
   html.vista-tablet .cal-semana .cal-dia-card{flex:0 0 auto; width:min(340px, 86vw); scroll-snap-align:start;}
 
-  /* Calendario → Mes: las celdas son cuadradas por defecto (aspect-ratio:1), ligadas al ancho —
-     en tablet se quita esa atadura (se deja una altura fija propia) para poder usar todo el ancho
-     disponible, con el nombre completo del día (ver DIAS_SEMANA_MES), sin que las celdas crezcan de
-     alto hasta no caber en la pantalla. */
-  html.vista-tablet .mes-celda{aspect-ratio:auto; min-height:104px;}
+  /* El Día/Semana/Mes no ocupa todo el ancho (está limitado a 280px) — en tablet el aviso del
+     Panel (si lo hay) se pone en la misma fila, a su derecha, en vez de gastar una fila entera
+     solo para ese aviso. En móvil .cal-vista-row es un bloque normal, sigue todo apilado. */
+  html.vista-tablet .cal-vista-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:8px;}
+  html.vista-tablet .cal-vista-toggle{margin-bottom:0;}
+  html.vista-tablet .cal-panel-estado{margin:0; flex:1; min-width:200px;}
+
+  /* Calendario → Mes: para que el mes quepa SIEMPRE entero sin depender de adivinar la altura
+     real de cada tablet (ya nos quedamos cortos una vez calculando a ojo), la cuadrícula ya no
+     tiene una altura fija en px: #viewCalendario ocupa exactamente la pantalla (100vh, con el
+     padding de main ya descontado por box-sizing:border-box) y .mes-grid se queda con todo lo que
+     sobra tras el resto de filas (toggles, cabecera del mes, nombres de los días) — las celdas
+     dejan de ser cuadradas (aspect-ratio) y se reparten esa altura a partes iguales entre sí,
+     tantas filas como tenga el mes, más grandes y usando también los laterales. Solo afecta a la
+     vista Mes (:has(.cal-vista-mes)) — Semana y Día siguen con su alto natural y scroll normal. */
+  html.vista-tablet #viewCalendario:has(.cal-vista-mes){height:100vh; display:flex; flex-direction:column; overflow:hidden;}
+  html.vista-tablet #viewCalendario:has(.cal-vista-mes) .cal-contenido{flex:1; min-height:0; display:flex; flex-direction:column;}
+  html.vista-tablet .mes-cabecera{margin-bottom:6px; flex:0 0 auto;}
+  html.vista-tablet .mes-dias-semana{margin-bottom:4px; flex:0 0 auto;}
   html.vista-tablet .mes-dias-semana span{font-size:.72rem;}
+  html.vista-tablet .mes-grid{flex:1; min-height:0; grid-auto-rows:1fr;}
+  html.vista-tablet .mes-celda{aspect-ratio:auto;}
 
   /* Nevera/Compra/Peso/Yo: listas de lectura, mejor con un ancho de línea cómodo que estiradas
      de punta a punta de la pantalla. */
@@ -3579,7 +3597,11 @@ function renderCalendario(){
     ? `<div class="cal-panel-estado">📡 Sin conexión con el Panel — las notas por Siri llegarán aquí más adelante.</div>`
     : '';
 
-  el.innerHTML = vistaMenuToggleHtml() + calToggleHtml + avisoPanelHtml + `<div class="cal-contenido cal-vista-${vistaCalendario}">${contenido}</div>`;
+  // calToggleHtml y avisoPanelHtml van envueltos juntos en .cal-vista-row: en tablet se ponen en
+  // la misma fila (hay sitio de sobra a la derecha del Día/Semana/Mes, que no ocupa todo el ancho),
+  // para no gastar una fila entera solo en el aviso del Panel. En móvil se quedan apilados como
+  // siempre (ver CSS, .cal-vista-row es un bloque normal fuera de modo tablet).
+  el.innerHTML = vistaMenuToggleHtml() + `<div class="cal-vista-row">${calToggleHtml}${avisoPanelHtml}</div>` + `<div class="cal-contenido cal-vista-${vistaCalendario}">${contenido}</div>`;
   wireVistaMenuToggle(el);
   el.querySelectorAll('.cal-vista-toggle [data-vista-cal]').forEach(btn=>{
     btn.addEventListener('click', ()=>{ guardarVistaCalendario(btn.dataset.vistaCal); renderCalendario(); });
