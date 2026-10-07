@@ -354,6 +354,9 @@
 
   nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:6px 8px calc(env(safe-area-inset-bottom) + 6px);z-index:1;}
   nav button{position:relative;z-index:1;flex:1;background:none;border:none;color:var(--muted);font-size:.68rem;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  /* Contenedor vacío fuera de modo tablet: los días y el sincronizado solo se mudan aquí dentro
+     (colocarInfoNav) cuando hay vista-tablet activa, ver el bloque de ese modo más abajo. */
+  .nav-info{display:none;}
   nav button .ic{font-size:1.15rem;}
   nav button.active{color:#fff;font-weight:700;}
 
@@ -535,70 +538,78 @@
   .dia-modal .dia-detalle-modal{background:var(--card);border-radius:22px;padding:20px;max-width:420px;width:92vw;max-height:84vh;overflow-y:auto;box-shadow:var(--shadow-3);}
 
   /* ---------- MODO TABLET (nevera) ----------
-     Pensado para una tablet de ~10" apaisada montada en la nevera (p. ej. 1280x800 o 1920x1080),
-     accedida como una página web normal, sin instalar nada. Se activa sola por tamaño/orientación
-     real de la pantalla (umbral min-width 1000px Y min-height 650px, los dos a la vez — deja fuera
-     a los móviles grandes en horizontal, que son anchos pero bajos). Pero algunas tablets reales
-     restan tanto espacio con la barra del navegador que no llegan a ese alto aunque sean tablets de
-     sobra — por eso además de la media query hay un interruptor manual (pestaña Yo) que añade la
-     clase `vista-tablet` al <html> y fuerza este mismo aspecto sin depender de adivinar el tamaño
-     exacto de cada pantalla. Las reglas de aquí abajo se repiten para los dos disparadores porque
-     CSS no permite combinar un media query con un selector de clase en un único bloque sin JS.
-     La identidad de "quién eres" (modoNevera) es un JS aparte, ver más abajo — esto es solo visual. */
-  @media (min-width: 1000px) and (min-height: 650px){
-    body{padding-bottom:0; padding-left:104px;}
-
-    nav{position:fixed; top:0; bottom:0; left:0; right:auto; width:104px; height:100%;
-      flex-direction:column; justify-content:center; gap:6px; padding:16px 10px;
-      border-top:none; border-right:1px solid var(--line);}
-    nav button{flex:0 0 auto; padding:14px 4px; border-radius:12px;}
-    nav button .ic{font-size:1.5rem;}
-    nav button.active{background:var(--accent-soft); color:var(--accent);}
-    /* La gota líquida es un efecto de barra horizontal — aquí el nav es una barra lateral vertical,
-       se queda con el resaltado simple de siempre (arriba) en vez de intentar adaptar la física del
-       muelle a un eje vertical. */
-    .liquido{display:none;}
-
-    h1{padding:22px 32px 4px; font-size:1.4rem;}
-    .sub,.mi-usuario,.syncbar,.daypicker{padding-left:32px; padding-right:32px;}
-    .aviso-sugerencias{margin-left:32px; margin-right:32px;}
-    main{padding:0 32px 32px;}
-
-    main,h1,.sub,.mi-usuario,.syncbar,.aviso-sugerencias,.daypicker{max-width:1180px; margin-left:auto; margin-right:auto;}
-
-    /* Menú: una persona por tarjeta en columnas, en vez de apiladas — es la pantalla que más se
-       beneficia del ancho, con varias personas visibles a la vez sin hacer scroll sin fin. */
-    #viewMenu{display:grid; grid-template-columns:repeat(auto-fit, minmax(360px,1fr)); gap:18px; align-items:start;}
-    #viewMenu .card{margin-bottom:0;}
-    #viewMenu .empty{grid-column:1/-1;}
-
-    /* Nevera/Compra/Peso/Yo: listas de lectura, mejor con un ancho de línea cómodo que estiradas
-       de punta a punta de la pantalla. */
-    #viewNevera,#viewCompra,#viewPeso,#viewYo{max-width:760px; margin-left:auto; margin-right:auto;}
-  }
-
+     Pensado para una tablet de ~10" apaisada montada en la nevera, a pantalla completa, controlada
+     con los dedos. Se activa por tamaño real de pantalla O a mano desde un interruptor en Yo — las
+     dos vías acaban en la misma clase `vista-tablet` en <html> (ver actualizarVistaTablet() en el
+     script), así que todo el diseño vive en un solo sitio. Antes había un bloque @media duplicado
+     como red de seguridad para no depender de JS; se quitó: ese JS corre en un bloque de script
+     síncrono colocado justo después de todo el HTML y antes de que el navegador pinte nada, así que no hace
+     falta la versión solo-CSS y mantenerla duplicada era el doble de riesgo de que se desincronizara
+     en cada cambio como este. La identidad de "quién eres" (modoNevera) es un JS aparte, ver más
+     abajo — esto es solo visual.
+     Para que ocupe toda la pantalla sin estorbar: la cabecera (título, fecha, quién eres, aviso de
+     sugerencias) se oculta del todo — no hace falta en una tablet fija de cocina. Los días y el
+     estado de sincronización sí se necesitan a mano, así que no desaparecen: se mudan de sitio DE
+     VERDAD (con JS, ver colocarInfoNav()) al fondo del menú lateral, a modo informativo — el botón
+     actualizar se queda pulsable ahí mismo. */
   html.vista-tablet body{padding-bottom:0; padding-left:104px;}
 
   html.vista-tablet nav{position:fixed; top:0; bottom:0; left:0; right:auto; width:104px; height:100%;
-    flex-direction:column; justify-content:center; gap:6px; padding:16px 10px;
+    flex-direction:column; justify-content:flex-start; gap:6px; padding:16px 10px;
     border-top:none; border-right:1px solid var(--line);}
   html.vista-tablet nav button{flex:0 0 auto; padding:14px 4px; border-radius:12px;}
   html.vista-tablet nav button .ic{font-size:1.5rem;}
   html.vista-tablet nav button.active{background:var(--accent-soft); color:var(--accent);}
+  /* La gota líquida es un efecto de barra horizontal — aquí el nav es una barra lateral vertical,
+     se queda con el resaltado simple de siempre (arriba) en vez de intentar adaptar la física del
+     muelle a un eje vertical. */
   html.vista-tablet .liquido{display:none;}
 
-  html.vista-tablet h1{padding:22px 32px 4px; font-size:1.4rem;}
-  html.vista-tablet .sub,html.vista-tablet .mi-usuario,html.vista-tablet .syncbar,html.vista-tablet .daypicker{padding-left:32px; padding-right:32px;}
-  html.vista-tablet .aviso-sugerencias{margin-left:32px; margin-right:32px;}
-  html.vista-tablet main{padding:0 32px 32px;}
+  html.vista-tablet h1,
+  html.vista-tablet .sub,
+  html.vista-tablet .mi-usuario,
+  html.vista-tablet .aviso-sugerencias{display:none;}
 
-  html.vista-tablet main,html.vista-tablet h1,html.vista-tablet .sub,html.vista-tablet .mi-usuario,html.vista-tablet .syncbar,html.vista-tablet .aviso-sugerencias,html.vista-tablet .daypicker{max-width:1180px; margin-left:auto; margin-right:auto;}
+  html.vista-tablet main{padding:24px 32px 32px; max-width:1180px; margin-left:auto; margin-right:auto;}
 
-  html.vista-tablet #viewMenu{display:grid; grid-template-columns:repeat(auto-fit, minmax(360px,1fr)); gap:18px; align-items:start;}
-  html.vista-tablet #viewMenu .card{margin-bottom:0;}
-  html.vista-tablet #viewMenu .empty{grid-column:1/-1;}
+  /* Menú: el interruptor Menú/Calendario ocupa su propia fila arriba, y las tarjetas de cada
+     persona (envueltas en .menu-cards, ver renderMenu) se ven una al lado de otra a pantalla
+     completa, con desplazamiento horizontal táctil en vez de scroll hacia abajo. */
+  html.vista-tablet .menu-cards{display:flex; gap:18px; overflow-x:auto; overflow-y:hidden;
+    scroll-snap-type:x mandatory; padding:6px 2px 16px; scrollbar-width:none;}
+  html.vista-tablet .menu-cards::-webkit-scrollbar{display:none;}
+  html.vista-tablet .menu-cards .card{flex:0 0 auto; width:min(420px, 86vw); scroll-snap-align:start; margin-bottom:0;}
+  html.vista-tablet .menu-cards .empty{width:100%;}
 
+  /* Calendario → Semana: mismo criterio, los 7 días uno al lado del otro con el dedo en vez de en
+     lista vertical. Mes ya es una cuadrícula y Día es uno solo, ninguno de los dos lo necesita. */
+  html.vista-tablet .cal-semana{flex-direction:row; overflow-x:auto; overflow-y:hidden;
+    scroll-snap-type:x mandatory; padding:6px 2px 16px; scrollbar-width:none;}
+  html.vista-tablet .cal-semana::-webkit-scrollbar{display:none;}
+  html.vista-tablet .cal-semana .cal-dia-card{flex:0 0 auto; width:min(340px, 86vw); scroll-snap-align:start;}
+
+  /* Nevera/Compra/Peso/Yo: listas de lectura, mejor con un ancho de línea cómodo que estiradas
+     de punta a punta de la pantalla. */
   html.vista-tablet #viewNevera,html.vista-tablet #viewCompra,html.vista-tablet #viewPeso,html.vista-tablet #viewYo{max-width:760px; margin-left:auto; margin-right:auto;}
+
+  /* Los días y el estado de sincronización, mudados aquí abajo por colocarInfoNav(): pegados al
+     fondo del menú lateral (margin-top:auto en el propio flujo flex de nav), a modo informativo —
+     pulsar "Actualizar" sigue refrescando con normalidad. */
+  html.vista-tablet #navInfo{margin-top:auto; width:100%; display:flex; flex-direction:column; gap:10px;
+    padding-top:14px; border-top:1px solid var(--line);}
+  /* Hasta 7 días visibles sin cortar (altura aprox. de 7 filas); con más (p. ej. ciclos de 2
+     semanas) se desplaza en vertical por dentro, sin desbordar fuera de la pantalla — el día activo
+     se lleva siempre a la vista (ver renderDayPicker). */
+  html.vista-tablet #navInfo .daypicker{display:flex; flex-direction:column; gap:4px; padding:0;
+    max-height:224px; overflow-y:auto; scrollbar-width:none;}
+  html.vista-tablet #navInfo .daypicker::-webkit-scrollbar{display:none;}
+  html.vista-tablet #navInfo .daychip{width:100%; min-width:0; padding:4px 2px; border-radius:8px;
+    display:flex; align-items:baseline; justify-content:center; gap:4px;}
+  html.vista-tablet #navInfo .daychip .dname{font-size:.58rem;}
+  html.vista-tablet #navInfo .daychip .dnum{font-size:.76rem;}
+  html.vista-tablet #navInfo .syncbar{flex-direction:column; align-items:center; gap:4px; padding:0;
+    text-align:center; font-size:.6rem;}
+  html.vista-tablet #navInfo .refresh-btn{margin-left:0;}
 </style>
 
 <script>
@@ -641,6 +652,7 @@
   <button class="tab" data-tab="compra"><span class="ic">🛒</span>Compra</button>
   <button class="tab" data-tab="peso"><span class="ic">⚖️</span>Peso</button>
   <button class="tab" data-tab="yo"><span class="ic">🙋</span>Yo</button>
+  <div class="nav-info" id="navInfo"></div>
 </nav>
 
 <!-- Filtro "goo": desenfoca y vuelve a endurecer el borde, así la gota y su cola se funden como
@@ -2664,10 +2676,34 @@ let modoNevera = localStorage.getItem('modoNevera') === '1';
    partido…) que nunca llegan al umbral aunque sean tablets de sobra. `forzarVistaTablet` es el
    escape manual para ese caso: un interruptor en la pestaña Yo que cualquiera de la familia puede
    activar en el dispositivo que lo necesite, sin depender de adivinar su tamaño exacto. */
+/* En modo tablet, los días y el sincronizado no se ocultan: se mudan de verdad (moviendo los
+   mismos nodos del DOM, no una copia) al fondo del menú lateral (#navInfo), para que sigan siendo
+   exactamente los mismos elementos que ya actualizan renderDayPicker()/setSync() y para que el
+   botón #refreshBtn conserve su listener sin tener que volver a engancharlo. Al salir de modo
+   tablet se devuelven a su sitio original, justo delante de los anclajes estables que ya existían
+   ahí (el aviso de sugerencias y la vista Menú). */
+function colocarInfoNav(){
+  const tablet = document.documentElement.classList.contains('vista-tablet');
+  const navInfo = document.getElementById('navInfo');
+  const daypicker = document.getElementById('dayPicker');
+  const syncbar = document.querySelector('.syncbar');
+  if(!navInfo || !daypicker || !syncbar) return;
+  if(tablet){
+    navInfo.appendChild(syncbar);
+    navInfo.appendChild(daypicker);
+  } else {
+    const avisoBanner = document.getElementById('avisoSugerenciasBanner');
+    const viewMenu = document.getElementById('viewMenu');
+    if(avisoBanner) avisoBanner.parentNode.insertBefore(syncbar, avisoBanner);
+    if(viewMenu) viewMenu.parentNode.insertBefore(daypicker, viewMenu);
+  }
+}
+
 function actualizarVistaTablet(){
   const forzado = localStorage.getItem('forzarVistaTablet') === '1';
   const encaja = window.matchMedia('(min-width:1000px) and (min-height:650px)').matches;
   document.documentElement.classList.toggle('vista-tablet', forzado || encaja);
+  colocarInfoNav();
 }
 actualizarVistaTablet();
 window.addEventListener('resize', actualizarVistaTablet);
@@ -3019,7 +3055,10 @@ function renderDayPicker(){
     el.appendChild(chip);
     if(i===currentDay) activeChip = chip;
   });
-  if(activeChip) el.scrollLeft = activeChip.offsetLeft - el.offsetLeft;
+  // scrollIntoView con block/inline "nearest" funciona tanto en la fila horizontal de siempre
+  // (móvil) como en la lista vertical que usa el modo tablet dentro del menú lateral — no hay que
+  // distinguir cuál de las dos está activa.
+  if(activeChip) activeChip.scrollIntoView({block:'nearest', inline:'nearest'});
   document.getElementById('weekSub').textContent = WEEK[currentDay].name + " " + fmtDate(WEEK[currentDay].date) + " " + fmtMesAnio(WEEK[currentDay].date);
 }
 
@@ -3184,9 +3223,12 @@ function renderMenu(){
       ${opciones(who)}
     </div>`;
   const visibles = Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id));
-  el.innerHTML = vistaMenuToggleHtml() + (visibles.length
+  // Las tarjetas van envueltas en .menu-cards para poder convertirlas en una fila de
+  // desplazamiento horizontal en modo tablet sin que el interruptor Menú/Calendario de arriba
+  // se vea arrastrado a la misma fila (issue "vista tablet: tarjetas y calendario").
+  el.innerHTML = vistaMenuToggleHtml() + `<div class="menu-cards">` + (visibles.length
     ? visibles.map(block).join('')
-    : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`);
+    : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) + `</div>`;
   wireVistaMenuToggle(el);
 
   el.querySelectorAll('.opcion-card').forEach(card=>{
