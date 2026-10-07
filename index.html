@@ -357,6 +357,10 @@
   /* Contenedor vacío fuera de modo tablet: los días y el sincronizado solo se mudan aquí dentro
      (colocarInfoNav) cuando hay vista-tablet activa, ver el bloque de ese modo más abajo. */
   .nav-info{display:none;}
+  /* Igual que .nav-info: solo se ve en modo tablet (ver ese bloque más abajo) — el JS la rellena
+     solo si el navegador soporta la Battery Status API (Chromium/WebView de Android sí, Safari y
+     Firefox no la tienen, así que en el móvil de cada uno simplemente no aparece, sin dar error). */
+  .bateria-indicador{display:none;}
   nav button .ic{font-size:1.15rem;}
   nav button.active{color:#fff;font-weight:700;}
 
@@ -570,7 +574,16 @@
   html.vista-tablet .mi-usuario,
   html.vista-tablet .aviso-sugerencias{display:none;}
 
-  html.vista-tablet main{padding:24px 32px 32px; max-width:1180px; margin-left:auto; margin-right:auto;}
+  /* Indicador de batería, arriba a la derecha — informativo, mismo estilo discreto que las fechas
+     de la nutricionista. Lo rellena el JS solo si el navegador lo soporta, ver más abajo. */
+  html.vista-tablet .bateria-indicador{display:block; position:fixed; top:16px; right:22px; z-index:5;
+    font-size:.85rem; font-weight:700; color:var(--ink); background:var(--card); border:1px solid var(--line);
+    border-radius:999px; padding:6px 14px; box-shadow:var(--shadow-1);}
+
+  /* Con la cabecera oculta ya no hace falta tanto aire arriba del todo. */
+  /* padding-top deja sitio al indicador de batería, que flota fijo encima (arriba a la derecha) —
+     así el contenido nunca queda debajo, igual que una barra de estado de verdad. */
+  html.vista-tablet main{padding:54px 32px 32px; max-width:1180px; margin-left:auto; margin-right:auto;}
 
   /* Menú: el interruptor Menú/Calendario ocupa su propia fila arriba, y las tarjetas de cada
      persona (envueltas en .menu-cards, ver renderMenu) se ven una al lado de otra a pantalla
@@ -587,6 +600,14 @@
     scroll-snap-type:x mandatory; padding:6px 2px 16px; scrollbar-width:none;}
   html.vista-tablet .cal-semana::-webkit-scrollbar{display:none;}
   html.vista-tablet .cal-semana .cal-dia-card{flex:0 0 auto; width:min(340px, 86vw); scroll-snap-align:start;}
+
+  /* Calendario → Mes: las celdas son cuadradas (aspect-ratio:1) y se hacen tan anchas como el ancho
+     disponible entre las 7 columnas — en una pantalla ancha de tablet eso las infla tanto que el
+     mes entero no cabe de alto sin hacer scroll. Limitando el ancho de la cuadrícula las celdas se
+     quedan más pequeñas (y por tanto más bajas), y el mes completo entra de una vez. */
+  html.vista-tablet .mes-cabecera,
+  html.vista-tablet .mes-dias-semana,
+  html.vista-tablet .mes-grid{max-width:640px; margin-left:auto; margin-right:auto;}
 
   /* Nevera/Compra/Peso/Yo: listas de lectura, mejor con un ancho de línea cómodo que estiradas
      de punta a punta de la pantalla. */
@@ -654,6 +675,9 @@
   <button class="tab" data-tab="yo"><span class="ic">🙋</span>Yo</button>
   <div class="nav-info" id="navInfo"></div>
 </nav>
+
+<!-- Indicador de batería, solo visible en modo tablet (arriba a la derecha) — ver JS más abajo. -->
+<div class="bateria-indicador" id="bateriaIndicador"></div>
 
 <!-- Filtro "goo": desenfoca y vuelve a endurecer el borde, así la gota y su cola se funden como
      líquido de verdad cuando se acercan al cambiar de pestaña. -->
@@ -2709,6 +2733,23 @@ function actualizarVistaTablet(){
 actualizarVistaTablet();
 window.addEventListener('resize', actualizarVistaTablet);
 
+/* Indicador de batería (solo visible en modo tablet, vía CSS — ver html.vista-tablet
+   .bateria-indicador). La Battery Status API solo existe en navegadores Chromium (incluido el
+   WebView de Android que monta la tablet); Safari y Firefox no la tienen, así que en el móvil de
+   cada uno simplemente no hay nada que pintar — no es un fallo, es que no aplica ahí. */
+if(navigator.getBattery){
+  navigator.getBattery().then(bateria=>{
+    const el = document.getElementById('bateriaIndicador');
+    function pintarBateria(){
+      const pct = Math.round(bateria.level * 100);
+      el.textContent = (bateria.charging ? '🔌 ' : '🔋 ') + pct + '%';
+    }
+    pintarBateria();
+    bateria.addEventListener('levelchange', pintarBateria);
+    bateria.addEventListener('chargingchange', pintarBateria);
+  }).catch(()=>{});
+}
+
 /* personas visibles en la vista Menú, por defecto todas las que tengan al menos un plato en WEEK */
 let personasVisibles;
 try{
@@ -4199,9 +4240,13 @@ document.addEventListener('visibilitychange', ()=>{
   autoPullIfIdle();
 });
 window.addEventListener('pagehide', flushPendingSave);
+// checkAppVersion() se pide la página entera (todo index.html) para comparar versiones — pedirla
+// cada 30s de por vida es un gasto de datos/batería innecesario en una tablet siempre encendida.
+// Solo hace falta comprobarlo al arrancar/retomar la app (visibilitychange de arriba) o al pulsar
+// "Actualizar" (que ya recarga la página entera igualmente). El bucle de 30s se queda solo con el
+// repaso de datos (menú/notas compartidas), que sí interesa que esté siempre al día.
 setInterval(()=>{
   if(document.visibilityState !== 'visible') return;
-  checkAppVersion();
   autoPullIfIdle();
 }, 30000);
 setTimeout(checkAppVersion, 3000);
