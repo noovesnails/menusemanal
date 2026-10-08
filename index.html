@@ -498,7 +498,13 @@
   .mes-chip{font-size:.52rem;font-weight:700;color:#fff;border-radius:6px;padding:1px 3px;line-height:1.3;}
   .mes-chip.pedro{background:var(--pedro);} .mes-chip.nuria{background:var(--nuria);} .mes-chip.rocio{background:var(--rocio);}
   .mes-chip.paqui{background:var(--paqui);} .mes-chip.sole{background:var(--sole);} .mes-chip.eva{background:var(--eva);} .mes-chip.marta{background:var(--marta);}
-  .mes-celda-stickers{position:absolute;bottom:2px;right:3px;font-size:.6rem;line-height:1;}
+  /* Globito con el icono del tipo de la primera nota (+ el total si hay más de una) asomando por
+     la esquina — y, si cabe, una línea con el texto de esa primera nota, recortado con puntos
+     suspensivos si no entra. El resto de notas del día se ven completas al tocar la celda (modal). */
+  .mes-celda-badge{position:absolute;top:2px;right:2px;background:var(--accent-btn, var(--accent));
+    color:#fff;font-size:.56rem;font-weight:700;padding:2px 5px;border-radius:999px;line-height:1.3;z-index:2;}
+  .mes-celda-nota-preview{width:100%;font-size:.6rem;color:var(--ink);background:rgba(255,255,255,.55);
+    border-radius:4px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;}
 
   .cal-semana{display:flex;flex-direction:column;gap:14px;}
   .cal-dia-card{background:linear-gradient(165deg, var(--accent-soft), var(--card) 55%);border:1px solid var(--line);border-radius:18px;padding:14px;}
@@ -636,7 +642,10 @@
   html.vista-tablet .mes-dias-semana{margin-bottom:4px; flex:0 0 auto;}
   html.vista-tablet .mes-dias-semana span{font-size:.72rem;}
   html.vista-tablet .mes-grid{flex:1; min-height:0; grid-auto-rows:1fr;}
-  html.vista-tablet .mes-celda{aspect-ratio:auto;}
+  html.vista-tablet .mes-celda{aspect-ratio:auto; padding:6px 6px;}
+  html.vista-tablet .mes-celda-num{font-size:.85rem;}
+  html.vista-tablet .mes-celda-badge{font-size:.66rem; padding:3px 7px;}
+  html.vista-tablet .mes-celda-nota-preview{font-size:.7rem; padding:2px 5px;}
 
   /* Nevera/Compra/Peso/Yo: listas de lectura, mejor con un ancho de línea cómodo que estiradas
      de punta a punta de la pantalla. */
@@ -3580,12 +3589,17 @@ function renderMesHtml(){
     const iso = `${y}-${String(m+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
     const diaWeek = WEEK.find(d=>d.date===iso);
     const personasConMenu = diaWeek ? visibles.filter(id=>diaWeek[id]) : [];
-    const notas = notasDelDia(iso);
-    const stickersUnicos = [...new Set(notas.map(n=>(TIPOS_NOTA[n.tipo]||TIPOS_NOTA.otro).icono))].slice(0,3);
+    const notas = notasDelDia(iso).slice().sort((a,b)=>a.creada.localeCompare(b.creada));
+    const primeraNota = notas[0];
+    // Antes solo se veía el icono del tipo de nota en la celda, había que tocar el día para leerla
+    // (issue "notas en vista mes"). Ahora un vistazo rápido ya enseña de qué va (la primera, por
+    // hora) y un globito con el total cuando hay más de una — el resto se ve completo al tocar la
+    // celda (modal con la lista entera, ya con cabecera y hora propias).
     return `<button type="button" class="mes-celda${iso===hoy?' mes-celda-hoy':''}" data-fecha="${iso}">
+      ${notas.length ? `<span class="mes-celda-badge">${(TIPOS_NOTA[primeraNota.tipo]||TIPOS_NOTA.otro).icono}${notas.length>1?' '+notas.length:''}</span>` : ''}
       <span class="mes-celda-num">${dia}</span>
       <span class="mes-celda-chips">${personasConMenu.map(id=>`<span class="mes-chip ${id}" title="${PERSONAS[id].nombre}">${PERSONAS[id].nombre.slice(0,2)}</span>`).join('')}</span>
-      ${stickersUnicos.length ? `<span class="mes-celda-stickers">${stickersUnicos.join('')}</span>` : ''}
+      ${primeraNota ? `<span class="mes-celda-nota-preview" title="${escapeHtml(primeraNota.texto)}">${escapeHtml(primeraNota.texto)}</span>` : ''}
     </button>`;
   };
   const nombreMes = MESES[m].charAt(0).toUpperCase() + MESES[m].slice(1);
