@@ -502,7 +502,15 @@
 
   .cal-semana{display:flex;flex-direction:column;gap:14px;}
   .cal-dia-card{background:linear-gradient(165deg, var(--accent-soft), var(--card) 55%);border:1px solid var(--line);border-radius:18px;padding:14px;}
+  .dia-detalle{position:relative;}
   .dia-detalle-fecha{font-weight:700;font-size:.92rem;margin-bottom:10px;}
+  /* Globo flotante con el número de notas del día, asomando por la esquina de la tarjeta — para
+     verlo de un vistazo sin tener que bajar hasta la sección Notas (sobre todo en Semana, donde la
+     tarjeta puede ser bastante alta con el menú de varias personas encima). A la izquierda para no
+     chocar con la "✕" de cerrar del modal de Mes, que va a la derecha. */
+  .cal-nota-badge{position:absolute;top:-10px;left:-8px;background:var(--accent-btn, var(--accent));
+    color:#fff;font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:999px;
+    box-shadow:var(--shadow-2);z-index:2;display:flex;align-items:center;gap:3px;}
   .cal-persona-card{background:var(--card);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
   .cal-comida{font-size:.8rem;margin-top:3px;}
   .cal-comida b{color:var(--muted);font-weight:700;margin-right:4px;}
@@ -521,7 +529,12 @@
   .cal-nota-asistencia .cal-nota-sticker{background:#d7f5e3;}
   .cal-nota-otro .cal-nota-sticker{background:#fde2e4;}
   .cal-nota-cuerpo{flex:1;min-width:0;}
-  .cal-nota-texto{font-size:.83rem;line-height:1.35;}
+  /* Tipo + hora van siempre arriba del todo de la nota, antes del texto — así quedan a la vista
+     tengas la nota que tengas, por larga que sea (issue "notas en vista semanal"). */
+  .cal-nota-cabecera{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .cal-nota-cabecera .meal-label{margin-bottom:0;}
+  .cal-nota-hora{flex:0 0 auto;font-size:.68rem;font-weight:700;color:var(--muted);}
+  .cal-nota-texto{font-size:.83rem;line-height:1.35;margin-top:2px;}
   .cal-nota-autor{font-size:.68rem;color:var(--muted);margin-top:2px;font-weight:600;}
   .cal-nota-del{flex:0 0 auto;background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;padding:2px;}
   .cal-nota.nota-nueva{animation:calNotaNueva .4s cubic-bezier(.34,1.56,.64,1) both;}
@@ -2910,6 +2923,11 @@ function fmtFechaHora(iso){
   return d.getDate() + "/" + (d.getMonth()+1) + " a las " + hora;
 }
 
+function fmtHora(iso){
+  const d = new Date(iso);
+  return String(d.getHours()).padStart(2,'0') + ":" + String(d.getMinutes()).padStart(2,'0');
+}
+
 /* Único punto de entrada de texto libre escrito por el usuario (itemsSueltos); todo lo demás en
    la app viene de constantes propias, no necesita escaparse. */
 function escapeHtml(s){
@@ -3400,6 +3418,10 @@ function notasListHtml(iso){
     return `<div class="cal-nota cal-nota-${n.tipo}" data-nota-id="${n.id}">
       <span class="cal-nota-sticker" title="${tipo.nombre}">${tipo.icono}</span>
       <div class="cal-nota-cuerpo">
+        <div class="cal-nota-cabecera">
+          <span class="meal-label">${tipo.nombre}</span>
+          <span class="cal-nota-hora">${fmtHora(n.creada)}</span>
+        </div>
         <div class="cal-nota-texto">${escapeHtml(n.texto)}</div>
         <div class="cal-nota-autor">${autorNotaHtml(n)}</div>
       </div>
@@ -3438,8 +3460,10 @@ function diaDetalleHtml(iso, opts){
       <div class="cal-comida"><b>Cena</b> ${m.cena.title}</div>
     </div>`;
   };
+  const numNotas = notasDelDia(iso).length;
   return `${opts.modal ? `<button type="button" class="video-modal-close dia-modal-close">✕</button>` : ''}
     <div class="dia-detalle${opts.modal?' dia-detalle-modal':''}">
+      ${numNotas ? `<div class="cal-nota-badge" title="${numNotas} nota${numNotas>1?'s':''} este día">📝 ${numNotas}</div>` : ''}
       <div class="dia-detalle-fecha">${formatoFechaLarga(iso)}</div>
       ${visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Sin menú registrado este día.</div>`}
       <div class="section-title">Notas</div>
