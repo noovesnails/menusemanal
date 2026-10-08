@@ -732,7 +732,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.20.0";
+const APP_VERSION = "v2.21.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -740,6 +740,7 @@ const APP_VERSION = "v2.20.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-08", texto:"Las notas del calendario muestran ahora la hora en que se escribieron, y cada día con notas lleva un globito indicador en la esquina de su tarjeta." },
   { fecha:"2026-10-07", texto:"En tablet, el indicador de batería se ha mudado junto al botón Calendario y Calendario → Mes ahora siempre cabe entero en la pantalla, sea cual sea el tamaño real de la tablet." },
   { fecha:"2026-10-07", texto:"En Calendario, la vista Semana empieza siempre por el día actual en vez de por el lunes, y en tablet el mes se ve con los días completos (Lunes, Martes...) y celdas más grandes." },
   { fecha:"2026-10-07", texto:"En la vista de tablet hay un indicador de batería arriba a la derecha, el mes completo del calendario ya cabe sin hacer scroll y la app refresca datos sin recargarse de más." },
@@ -2399,7 +2400,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'en la tablet, el mes del calendario ya cabe siempre entero en pantalla y la batería está junto al botón Calendario 📅🔋';
+let avisoNovedadTexto = 'las notas del calendario ya muestran la hora, y cada día con notas tiene un globito en la esquina de la tarjeta para verlo de un vistazo 📝💬';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
