@@ -847,8 +847,8 @@ const NUTRI = {
   pedro:{ proximaVisita:"2026-09-30T18:00", inicioNuevoPlan:"2026-09-14", finPlanActual:"2026-09-27", notaPendiente:null },
   nuria:{ proximaVisita:"2026-09-16", inicioNuevoPlan:"2026-09-21", finPlanActual:null, notaPendiente:null },
   rocio:{ proximaVisita:"2026-09-16", inicioNuevoPlan:"2026-09-21", finPlanActual:null, notaPendiente:"confirmar próxima visita: no se dio fecha nueva, se mantuvo la anterior" },
-  paqui:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
-  sole:{ proximaVisita:"2026-10-06", inicioNuevoPlan:null, finPlanActual:"2026-10-11", notaPendiente:null },
+  paqui:{ proximaVisita:"2026-11-03", inicioNuevoPlan:"2026-10-09", finPlanActual:"2026-11-07", notaPendiente:null },
+  sole:{ proximaVisita:"2026-11-03", inicioNuevoPlan:"2026-10-09", finPlanActual:"2026-11-07", notaPendiente:null },
   eva:{ proximaVisita:"2026-10-05", inicioNuevoPlan:"2026-09-28", finPlanActual:null, notaPendiente:null },
   marta:{ proximaVisita:"2026-10-02", inicioNuevoPlan:"2026-09-21", finPlanActual:null, notaPendiente:null, notasNutri:"Evitar pomelo por posibles interacciones con el tratamiento." }
 };
@@ -2197,18 +2197,12 @@ const WEEK = [
         ing:["sepia","calabacín","zanahoria","pimientos"]}
     },
     paqui:{
-      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
-        ing:["130 g merluza","calabacín","tomatitos cherry"]},
-      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
-        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"],
-        recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"],steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+      comida:{title:"Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta", ing:["100 g garbanzo cocido","espinacas","cebolla","pimentón","30 g feta"], recipe:{servings:"1 ración",thermomix:{steps:["Pon la cebolla en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.","Añade las espinacas y el pimentón, cocina 3 min/100°/vel 1, giro a la izquierda.","Incorpora el garbanzo cocido y mezcla: 3 min/100°/vel cuchara, giro a la izquierda.","Sirve con el feta desmenuzado por encima."]},tradicional:{steps:["Pica la cebolla y sofríela en una sartén con un chorrito de aceite 4-5 min.","Añade las espinacas y el pimentón, cocina 2-3 min hasta que las espinacas reduzcan.","Incorpora el garbanzo cocido, mezcla bien y cocina 3-4 min más a fuego medio.","Sirve con el feta desmenuzado por encima."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
     },
     sole:{
-      comida:{title:"Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
-        ing:["130 g merluza","calabacín","tomatitos cherry"]},
-      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120-150g de claras)",
-        ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"],
-        recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{ing:["1 huevo","120-150 g claras de huevo","ajos tiernos"],steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+      comida:{title:"Espinacas salteadas con pimentón + merluza a la plancha (130g)", ing:["espinacas","pimentón","130 g merluza"], recipe:{servings:"1 ración",thermomix:{steps:["Pon las espinacas en el vaso con la mariposa puesta, el aceite y el pimentón: 5 min/100°/vel 1.","Mientras, cocina la merluza a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas salteadas."]},tradicional:{steps:["Saltea las espinacas en una sartén con un chorrito de aceite y el pimentón 3-4 min, hasta que reduzcan.","Salpimienta la merluza y cocínala a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
     }
   },
   { name:"Sábado", date:"2026-10-10",
@@ -2220,16 +2214,12 @@ const WEEK = [
         ing:["mejillones o clochinas","tomate","canónigos","espárragos blancos o palmitos"]}
     },
     paqui:{
-      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
-        ing:["120 g conejo o pollo","brotes","pepino","tomate"]},
-      cena:{title:"Mejillones al vapor + tomate natural con albahaca, cebolla y piparras o pepinillos",
-        ing:["mejillones","tomate natural","albahaca","cebolla","piparras o pepinillos"]}
+      comida:{title:"Pollo (120g) con calabaza asada, rúcula y rabanitos", ing:["120 g pollo","calabaza","rúcula","rabanitos"]},
+      cena:{title:"Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry", ing:["1 lata de melva","brócoli","cebolla roja","tomatitos cherry"]}
     },
     sole:{
-      comida:{title:"Conejo o pollo al horno (120g) + ensalada de brotes, zanahoria, tomate",
-        ing:["120 g conejo o pollo","brotes","zanahoria","tomate"]},
-      cena:{title:"Mejillones al vapor 250-300g con concha (100-120g limpios) + tomate natural con albahaca",
-        ing:["250-300 g mejillones con concha","tomate natural","albahaca"]}
+      comida:{title:"Pollo (120g) salteado con espárragos y espinacas", ing:["120 g pollo","espárragos","espinacas"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade los espárragos troceados y las espinacas: 5 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en una sartén o wok con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En la misma sartén saltea los espárragos troceados 3-4 min, añade las espinacas y saltea 2 min más hasta que reduzcan.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa", ing:["canónigos","remolacha","80 g queso fresco sin lactosa"]}
     }
   },
   { name:"Domingo", date:"2026-10-11",
@@ -2242,17 +2232,282 @@ const WEEK = [
         recipe:{servings:"1 ración",thermomix:{steps:["Pon las espinacas en el vaso con la mariposa puesta y un chorrito de aceite: 5 min/100°/vel 1.","Escurre el exceso de agua, mezcla con el huevo batido (y claras) y cuaja la tortilla en una sartén aparte."]},tradicional:{ing:["espinacas","1-2 huevos (claras a demanda)"],steps:["Saltea las espinacas en una sartén con unas gotas de aceite 2-3 min hasta que reduzcan y suelten el agua; escurre el exceso de líquido.","Bate los huevos (y claras) con una pizca de sal y mezcla con las espinacas.","Cuaja la tortilla en la misma sartén a fuego medio-bajo, vuelta y vuelta."]}}}
     },
     paqui:{
-      comida:{title:"Filete de lubina al horno (130g) + pimiento, calabacín al horno",
-        ing:["130 g lubina","pimiento","calabacín"]},
-      cena:{title:"Hervido de brócoli + pollo a la plancha (120g)",
-        ing:["brócoli","120 g pollo"]}
+      comida:{title:"Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno", ing:["120 g bacalao","cebolla roja","perejil","tomate"]},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","100 g pollo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y el pollo troceado: 15 min/100°/vel 1."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y el pollo troceado; cuece 20-25 min a fuego medio hasta que las verduras y el pollo estén tiernos."]}}}
     },
     sole:{
-      comida:{title:"Filete de lubina al horno (130g) + calabacín al horno + remolacha en rodajas",
-        ing:["130 g lubina","calabacín","remolacha"]},
-      cena:{title:"Puré de calabaza + pollo a la plancha (120g)",
-        ing:["calabaza (para puré)","120 g pollo"],
-        recipe:{servings:"1 ración",thermomix:{steps:["Trocea la calabaza y ponla en el vaso con un vaso de agua: 20 min/100°/vel 1.","Cuela el exceso de agua, añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.","Cocina el pollo a la plancha aparte, 3-4 min por cada lado.","Sirve el pollo sobre el puré."]},tradicional:{ing:["calabaza (para puré)","120 g pollo"],steps:["Pela y trocea la calabaza, cuécela en agua con sal 15-20 min hasta que esté tierna, escurre y tritura con un chorrito de aceite hasta obtener un puré.","Salpimienta la pechuga de pollo y cocínala a la plancha 3-4 min por cada lado.","Sirve el pollo sobre el puré de calabaza."]}}}
+      comida:{title:"Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno", ing:["120 g bacalao","cebolla roja","perejil","tomate"]},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","100 g pollo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y el pollo troceado: 15 min/100°/vel 1."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y el pollo troceado; cuece 20-25 min a fuego medio hasta que las verduras y el pollo estén tiernos."]}}}
+    }
+  },
+  { name:"Lunes", date:"2026-10-12",
+    paqui:{
+      comida:{title:"Wok de pollo (120g) con brócoli, coliflor y calabacín", ing:["120 g pollo","brócoli","coliflor","calabacín"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade el brócoli, la coliflor y el calabacín troceados: 6 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en un wok o sartén grande con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En el mismo wok saltea el brócoli y la coliflor troceados 4-5 min, añade el calabacín y saltea 3 min más.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca o menta y palmitos", ing:["mejillones","tomate natural","albahaca o menta","palmitos"]}
+    },
+    sole:{
+      comida:{title:"Judías verdes hervidas + 1 huevo, 1 lata de atún reducido en sal, tomatitos cherry", ing:["judías verdes","1 huevo","1 lata de atún reducido en sal","tomatitos cherry"]},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca o menta y palmitos", ing:["mejillones","tomate natural","albahaca o menta","palmitos"]}
+    }
+  },
+  { name:"Martes", date:"2026-10-13",
+    paqui:{
+      comida:{title:"Filete de dorada (120g) + ensalada de tomates, palmito y perejil", ing:["120 g dorada","tomate","palmito","perejil"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas", ing:["1 huevo","120 g claras de huevo","ajos tiernos"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+    },
+    sole:{
+      comida:{title:"Filete de dorada (120g) + ensalada de tomates, palmito y perejil", ing:["120 g dorada","tomate","palmito","perejil"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120g de claras)", ing:["1 huevo","120 g claras de huevo","ajos tiernos"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+    }
+  },
+  { name:"Miércoles", date:"2026-10-14",
+    paqui:{
+      comida:{title:"Pollo al horno (120g) + pimiento al horno", ing:["120 g pollo","pimiento"]},
+      cena:{title:"Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas", ing:["1 huevo","120 g claras de huevo","calabacín","tomate"], recipe:{servings:"1 ración",thermomix:{steps:["Pon el calabacín troceado en el vaso: 3 seg/vel 4.","Coloca la mariposa, añade el aceite y sofríe: 6 min/120°/vel 1.","Bate el huevo con las claras y una pizca de sal, mezcla con el calabacín y cuaja la tortilla en una sartén aparte, vuelta y vuelta."]},tradicional:{steps:["Corta el calabacín en dados pequeños o láminas finas y saltéalo en una sartén con unas gotas de aceite y una pizca de sal 5-6 min hasta que esté tierno.","Bate el huevo con las claras y una pizca de sal y mézclalo con el calabacín salteado.","Vierte de nuevo en la sartén a fuego medio-bajo y cuaja la tortilla por ambos lados.","Sirve con el tomate en rodajas aparte."]}}}
+    },
+    sole:{
+      comida:{title:"Pollo al horno (120g) + berenjena al horno y canónigos", ing:["120 g pollo","berenjena","canónigos"]},
+      cena:{title:"Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas", ing:["1 huevo","120 g claras de huevo","espárragos","tomate"], recipe:{servings:"1 ración",thermomix:{steps:["Pon los espárragos troceados en el vaso: 3 seg/vel 4.","Coloca la mariposa, añade el aceite y sofríe: 5 min/120°/vel 1.","Bate el huevo con las claras y una pizca de sal, mezcla con los espárragos y cuaja la tortilla en una sartén aparte, vuelta y vuelta."]},tradicional:{steps:["Corta los espárragos en trozos pequeños y saltéalos en una sartén con unas gotas de aceite 4-5 min hasta que estén tiernos.","Bate el huevo con las claras y una pizca de sal y mézclalo con los espárragos salteados.","Vierte de nuevo en la sartén a fuego medio-bajo y cuaja la tortilla por ambos lados.","Sirve con el tomate en rodajas aparte."]}}}
+    }
+  },
+  { name:"Jueves", date:"2026-10-15",
+    paqui:{
+      comida:{title:"Lubina (120g) al horno con calabaza y calabacín", ing:["120 g lubina","calabaza","calabacín"]},
+      cena:{title:"Yogur proteico natural + kiwi + 1 c/s de semillas de chía o lino molidas", ing:["yogur proteico natural","kiwi","1 c/s semillas de chía o lino molidas"]}
+    },
+    sole:{
+      comida:{title:"Lubina (120g) al horno con canónigos y remolacha", ing:["120 g lubina","canónigos","remolacha"]},
+      cena:{title:"Crema de calabacín + 70g de queso fresco sin lactosa", ing:["calabacín (para crema)","70 g queso fresco sin lactosa"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el calabacín y ponlo en el vaso con un vaso de agua: 15 min/100°/vel 1.","Cuela el exceso de agua si hace falta, añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.","Sirve con el queso fresco desmenuzado por encima."]},tradicional:{steps:["Trocea el calabacín y cuécelo en agua con sal 12-15 min hasta que esté tierno.","Escurre (reservando un poco del caldo si quieres ajustar la textura) y tritura con un chorrito de aceite hasta obtener una crema fina.","Sirve con el queso fresco desmenuzado por encima."]}}}
+    }
+  },
+  { name:"Viernes", date:"2026-10-16",
+    paqui:{
+      comida:{title:"Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta", ing:["100 g garbanzo cocido","espinacas","cebolla","pimentón","30 g feta"], recipe:{servings:"1 ración",thermomix:{steps:["Pon la cebolla en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.","Añade las espinacas y el pimentón, cocina 3 min/100°/vel 1, giro a la izquierda.","Incorpora el garbanzo cocido y mezcla: 3 min/100°/vel cuchara, giro a la izquierda.","Sirve con el feta desmenuzado por encima."]},tradicional:{steps:["Pica la cebolla y sofríela en una sartén con un chorrito de aceite 4-5 min.","Añade las espinacas y el pimentón, cocina 2-3 min hasta que las espinacas reduzcan.","Incorpora el garbanzo cocido, mezcla bien y cocina 3-4 min más a fuego medio.","Sirve con el feta desmenuzado por encima."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
+    },
+    sole:{
+      comida:{title:"Espinacas salteadas con pimentón + merluza a la plancha (130g)", ing:["espinacas","pimentón","130 g merluza"], recipe:{servings:"1 ración",thermomix:{steps:["Pon las espinacas en el vaso con la mariposa puesta, el aceite y el pimentón: 5 min/100°/vel 1.","Mientras, cocina la merluza a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas salteadas."]},tradicional:{steps:["Saltea las espinacas en una sartén con un chorrito de aceite y el pimentón 3-4 min, hasta que reduzcan.","Salpimienta la merluza y cocínala a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
+    }
+  },
+  { name:"Sábado", date:"2026-10-17",
+    paqui:{
+      comida:{title:"Pollo (120g) con calabaza asada, rúcula y rabanitos", ing:["120 g pollo","calabaza","rúcula","rabanitos"]},
+      cena:{title:"Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry", ing:["1 lata de melva","brócoli","cebolla roja","tomatitos cherry"]}
+    },
+    sole:{
+      comida:{title:"Pollo (120g) salteado con espárragos y espinacas", ing:["120 g pollo","espárragos","espinacas"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade los espárragos troceados y las espinacas: 5 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en una sartén o wok con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En la misma sartén saltea los espárragos troceados 3-4 min, añade las espinacas y saltea 2 min más hasta que reduzcan.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa", ing:["canónigos","remolacha","80 g queso fresco sin lactosa"]}
+    }
+  },
+  { name:"Domingo", date:"2026-10-18",
+    paqui:{
+      comida:{title:"Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno", ing:["120 g bacalao","cebolla roja","perejil","tomate"]},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","100 g pollo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y el pollo troceado: 15 min/100°/vel 1."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y el pollo troceado; cuece 20-25 min a fuego medio hasta que las verduras y el pollo estén tiernos."]}}}
+    },
+    sole:{
+      comida:{title:"Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno", ing:["120 g bacalao","cebolla roja","perejil","tomate"]},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","100 g pollo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y el pollo troceado: 15 min/100°/vel 1."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y el pollo troceado; cuece 20-25 min a fuego medio hasta que las verduras y el pollo estén tiernos."]}}}
+    }
+  },
+  { name:"Lunes", date:"2026-10-19",
+    paqui:{
+      comida:{title:"Wok de pollo (120g) con brócoli, coliflor y calabacín", ing:["120 g pollo","brócoli","coliflor","calabacín"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade el brócoli, la coliflor y el calabacín troceados: 6 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en un wok o sartén grande con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En el mismo wok saltea el brócoli y la coliflor troceados 4-5 min, añade el calabacín y saltea 3 min más.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca o menta y palmitos", ing:["mejillones","tomate natural","albahaca o menta","palmitos"]}
+    },
+    sole:{
+      comida:{title:"Judías verdes hervidas + 1 huevo, 1 lata de atún reducido en sal, tomatitos cherry", ing:["judías verdes","1 huevo","1 lata de atún reducido en sal","tomatitos cherry"]},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca o menta y palmitos", ing:["mejillones","tomate natural","albahaca o menta","palmitos"]}
+    }
+  },
+  { name:"Martes", date:"2026-10-20",
+    paqui:{
+      comida:{title:"Filete de dorada (120g) + ensalada de tomates, palmito y perejil", ing:["120 g dorada","tomate","palmito","perejil"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas", ing:["1 huevo","120 g claras de huevo","ajos tiernos"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+    },
+    sole:{
+      comida:{title:"Filete de dorada (120g) + ensalada de tomates, palmito y perejil", ing:["120 g dorada","tomate","palmito","perejil"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120g de claras)", ing:["1 huevo","120 g claras de huevo","ajos tiernos"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+    }
+  },
+  { name:"Miércoles", date:"2026-10-21",
+    paqui:{
+      comida:{title:"Pollo al horno (120g) + pimiento al horno", ing:["120 g pollo","pimiento"]},
+      cena:{title:"Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas", ing:["1 huevo","120 g claras de huevo","calabacín","tomate"], recipe:{servings:"1 ración",thermomix:{steps:["Pon el calabacín troceado en el vaso: 3 seg/vel 4.","Coloca la mariposa, añade el aceite y sofríe: 6 min/120°/vel 1.","Bate el huevo con las claras y una pizca de sal, mezcla con el calabacín y cuaja la tortilla en una sartén aparte, vuelta y vuelta."]},tradicional:{steps:["Corta el calabacín en dados pequeños o láminas finas y saltéalo en una sartén con unas gotas de aceite y una pizca de sal 5-6 min hasta que esté tierno.","Bate el huevo con las claras y una pizca de sal y mézclalo con el calabacín salteado.","Vierte de nuevo en la sartén a fuego medio-bajo y cuaja la tortilla por ambos lados.","Sirve con el tomate en rodajas aparte."]}}}
+    },
+    sole:{
+      comida:{title:"Pollo al horno (120g) + berenjena al horno y canónigos", ing:["120 g pollo","berenjena","canónigos"]},
+      cena:{title:"Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas", ing:["1 huevo","120 g claras de huevo","espárragos","tomate"], recipe:{servings:"1 ración",thermomix:{steps:["Pon los espárragos troceados en el vaso: 3 seg/vel 4.","Coloca la mariposa, añade el aceite y sofríe: 5 min/120°/vel 1.","Bate el huevo con las claras y una pizca de sal, mezcla con los espárragos y cuaja la tortilla en una sartén aparte, vuelta y vuelta."]},tradicional:{steps:["Corta los espárragos en trozos pequeños y saltéalos en una sartén con unas gotas de aceite 4-5 min hasta que estén tiernos.","Bate el huevo con las claras y una pizca de sal y mézclalo con los espárragos salteados.","Vierte de nuevo en la sartén a fuego medio-bajo y cuaja la tortilla por ambos lados.","Sirve con el tomate en rodajas aparte."]}}}
+    }
+  },
+  { name:"Jueves", date:"2026-10-22",
+    paqui:{
+      comida:{title:"Lubina (120g) al horno con calabaza y calabacín", ing:["120 g lubina","calabaza","calabacín"]},
+      cena:{title:"Yogur proteico natural + kiwi + 1 c/s de semillas de chía o lino molidas", ing:["yogur proteico natural","kiwi","1 c/s semillas de chía o lino molidas"]}
+    },
+    sole:{
+      comida:{title:"Lubina (120g) al horno con canónigos y remolacha", ing:["120 g lubina","canónigos","remolacha"]},
+      cena:{title:"Crema de calabacín + 70g de queso fresco sin lactosa", ing:["calabacín (para crema)","70 g queso fresco sin lactosa"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el calabacín y ponlo en el vaso con un vaso de agua: 15 min/100°/vel 1.","Cuela el exceso de agua si hace falta, añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.","Sirve con el queso fresco desmenuzado por encima."]},tradicional:{steps:["Trocea el calabacín y cuécelo en agua con sal 12-15 min hasta que esté tierno.","Escurre (reservando un poco del caldo si quieres ajustar la textura) y tritura con un chorrito de aceite hasta obtener una crema fina.","Sirve con el queso fresco desmenuzado por encima."]}}}
+    }
+  },
+  { name:"Viernes", date:"2026-10-23",
+    paqui:{
+      comida:{title:"Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta", ing:["100 g garbanzo cocido","espinacas","cebolla","pimentón","30 g feta"], recipe:{servings:"1 ración",thermomix:{steps:["Pon la cebolla en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.","Añade las espinacas y el pimentón, cocina 3 min/100°/vel 1, giro a la izquierda.","Incorpora el garbanzo cocido y mezcla: 3 min/100°/vel cuchara, giro a la izquierda.","Sirve con el feta desmenuzado por encima."]},tradicional:{steps:["Pica la cebolla y sofríela en una sartén con un chorrito de aceite 4-5 min.","Añade las espinacas y el pimentón, cocina 2-3 min hasta que las espinacas reduzcan.","Incorpora el garbanzo cocido, mezcla bien y cocina 3-4 min más a fuego medio.","Sirve con el feta desmenuzado por encima."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
+    },
+    sole:{
+      comida:{title:"Espinacas salteadas con pimentón + merluza a la plancha (130g)", ing:["espinacas","pimentón","130 g merluza"], recipe:{servings:"1 ración",thermomix:{steps:["Pon las espinacas en el vaso con la mariposa puesta, el aceite y el pimentón: 5 min/100°/vel 1.","Mientras, cocina la merluza a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas salteadas."]},tradicional:{steps:["Saltea las espinacas en una sartén con un chorrito de aceite y el pimentón 3-4 min, hasta que reduzcan.","Salpimienta la merluza y cocínala a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
+    }
+  },
+  { name:"Sábado", date:"2026-10-24",
+    paqui:{
+      comida:{title:"Pollo (120g) con calabaza asada, rúcula y rabanitos", ing:["120 g pollo","calabaza","rúcula","rabanitos"]},
+      cena:{title:"Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry", ing:["1 lata de melva","brócoli","cebolla roja","tomatitos cherry"]}
+    },
+    sole:{
+      comida:{title:"Pollo (120g) salteado con espárragos y espinacas", ing:["120 g pollo","espárragos","espinacas"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade los espárragos troceados y las espinacas: 5 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en una sartén o wok con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En la misma sartén saltea los espárragos troceados 3-4 min, añade las espinacas y saltea 2 min más hasta que reduzcan.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa", ing:["canónigos","remolacha","80 g queso fresco sin lactosa"]}
+    }
+  },
+  { name:"Domingo", date:"2026-10-25",
+    paqui:{
+      comida:{title:"Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno", ing:["120 g bacalao","cebolla roja","perejil","tomate"]},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","100 g pollo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y el pollo troceado: 15 min/100°/vel 1."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y el pollo troceado; cuece 20-25 min a fuego medio hasta que las verduras y el pollo estén tiernos."]}}}
+    },
+    sole:{
+      comida:{title:"Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno", ing:["120 g bacalao","cebolla roja","perejil","tomate"]},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","100 g pollo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y el pollo troceado: 15 min/100°/vel 1."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y el pollo troceado; cuece 20-25 min a fuego medio hasta que las verduras y el pollo estén tiernos."]}}}
+    }
+  },
+  { name:"Lunes", date:"2026-10-26",
+    paqui:{
+      comida:{title:"Wok de pollo (120g) con brócoli, coliflor y calabacín", ing:["120 g pollo","brócoli","coliflor","calabacín"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade el brócoli, la coliflor y el calabacín troceados: 6 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en un wok o sartén grande con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En el mismo wok saltea el brócoli y la coliflor troceados 4-5 min, añade el calabacín y saltea 3 min más.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca o menta y palmitos", ing:["mejillones","tomate natural","albahaca o menta","palmitos"]}
+    },
+    sole:{
+      comida:{title:"Judías verdes hervidas + 1 huevo, 1 lata de atún reducido en sal, tomatitos cherry", ing:["judías verdes","1 huevo","1 lata de atún reducido en sal","tomatitos cherry"]},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca o menta y palmitos", ing:["mejillones","tomate natural","albahaca o menta","palmitos"]}
+    }
+  },
+  { name:"Martes", date:"2026-10-27",
+    paqui:{
+      comida:{title:"Filete de dorada (120g) + ensalada de tomates, palmito y perejil", ing:["120 g dorada","tomate","palmito","perejil"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas", ing:["1 huevo","120 g claras de huevo","ajos tiernos"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+    },
+    sole:{
+      comida:{title:"Filete de dorada (120g) + ensalada de tomates, palmito y perejil", ing:["120 g dorada","tomate","palmito","perejil"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120g de claras)", ing:["1 huevo","120 g claras de huevo","ajos tiernos"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+    }
+  },
+  { name:"Miércoles", date:"2026-10-28",
+    paqui:{
+      comida:{title:"Pollo al horno (120g) + pimiento al horno", ing:["120 g pollo","pimiento"]},
+      cena:{title:"Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas", ing:["1 huevo","120 g claras de huevo","calabacín","tomate"], recipe:{servings:"1 ración",thermomix:{steps:["Pon el calabacín troceado en el vaso: 3 seg/vel 4.","Coloca la mariposa, añade el aceite y sofríe: 6 min/120°/vel 1.","Bate el huevo con las claras y una pizca de sal, mezcla con el calabacín y cuaja la tortilla en una sartén aparte, vuelta y vuelta."]},tradicional:{steps:["Corta el calabacín en dados pequeños o láminas finas y saltéalo en una sartén con unas gotas de aceite y una pizca de sal 5-6 min hasta que esté tierno.","Bate el huevo con las claras y una pizca de sal y mézclalo con el calabacín salteado.","Vierte de nuevo en la sartén a fuego medio-bajo y cuaja la tortilla por ambos lados.","Sirve con el tomate en rodajas aparte."]}}}
+    },
+    sole:{
+      comida:{title:"Pollo al horno (120g) + berenjena al horno y canónigos", ing:["120 g pollo","berenjena","canónigos"]},
+      cena:{title:"Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas", ing:["1 huevo","120 g claras de huevo","espárragos","tomate"], recipe:{servings:"1 ración",thermomix:{steps:["Pon los espárragos troceados en el vaso: 3 seg/vel 4.","Coloca la mariposa, añade el aceite y sofríe: 5 min/120°/vel 1.","Bate el huevo con las claras y una pizca de sal, mezcla con los espárragos y cuaja la tortilla en una sartén aparte, vuelta y vuelta."]},tradicional:{steps:["Corta los espárragos en trozos pequeños y saltéalos en una sartén con unas gotas de aceite 4-5 min hasta que estén tiernos.","Bate el huevo con las claras y una pizca de sal y mézclalo con los espárragos salteados.","Vierte de nuevo en la sartén a fuego medio-bajo y cuaja la tortilla por ambos lados.","Sirve con el tomate en rodajas aparte."]}}}
+    }
+  },
+  { name:"Jueves", date:"2026-10-29",
+    paqui:{
+      comida:{title:"Lubina (120g) al horno con calabaza y calabacín", ing:["120 g lubina","calabaza","calabacín"]},
+      cena:{title:"Yogur proteico natural + kiwi + 1 c/s de semillas de chía o lino molidas", ing:["yogur proteico natural","kiwi","1 c/s semillas de chía o lino molidas"]}
+    },
+    sole:{
+      comida:{title:"Lubina (120g) al horno con canónigos y remolacha", ing:["120 g lubina","canónigos","remolacha"]},
+      cena:{title:"Crema de calabacín + 70g de queso fresco sin lactosa", ing:["calabacín (para crema)","70 g queso fresco sin lactosa"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el calabacín y ponlo en el vaso con un vaso de agua: 15 min/100°/vel 1.","Cuela el exceso de agua si hace falta, añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.","Sirve con el queso fresco desmenuzado por encima."]},tradicional:{steps:["Trocea el calabacín y cuécelo en agua con sal 12-15 min hasta que esté tierno.","Escurre (reservando un poco del caldo si quieres ajustar la textura) y tritura con un chorrito de aceite hasta obtener una crema fina.","Sirve con el queso fresco desmenuzado por encima."]}}}
+    }
+  },
+  { name:"Viernes", date:"2026-10-30",
+    paqui:{
+      comida:{title:"Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta", ing:["100 g garbanzo cocido","espinacas","cebolla","pimentón","30 g feta"], recipe:{servings:"1 ración",thermomix:{steps:["Pon la cebolla en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.","Añade las espinacas y el pimentón, cocina 3 min/100°/vel 1, giro a la izquierda.","Incorpora el garbanzo cocido y mezcla: 3 min/100°/vel cuchara, giro a la izquierda.","Sirve con el feta desmenuzado por encima."]},tradicional:{steps:["Pica la cebolla y sofríela en una sartén con un chorrito de aceite 4-5 min.","Añade las espinacas y el pimentón, cocina 2-3 min hasta que las espinacas reduzcan.","Incorpora el garbanzo cocido, mezcla bien y cocina 3-4 min más a fuego medio.","Sirve con el feta desmenuzado por encima."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
+    },
+    sole:{
+      comida:{title:"Espinacas salteadas con pimentón + merluza a la plancha (130g)", ing:["espinacas","pimentón","130 g merluza"], recipe:{servings:"1 ración",thermomix:{steps:["Pon las espinacas en el vaso con la mariposa puesta, el aceite y el pimentón: 5 min/100°/vel 1.","Mientras, cocina la merluza a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas salteadas."]},tradicional:{steps:["Saltea las espinacas en una sartén con un chorrito de aceite y el pimentón 3-4 min, hasta que reduzcan.","Salpimienta la merluza y cocínala a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
+    }
+  },
+  { name:"Sábado", date:"2026-10-31",
+    paqui:{
+      comida:{title:"Pollo (120g) con calabaza asada, rúcula y rabanitos", ing:["120 g pollo","calabaza","rúcula","rabanitos"]},
+      cena:{title:"Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry", ing:["1 lata de melva","brócoli","cebolla roja","tomatitos cherry"]}
+    },
+    sole:{
+      comida:{title:"Pollo (120g) salteado con espárragos y espinacas", ing:["120 g pollo","espárragos","espinacas"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade los espárragos troceados y las espinacas: 5 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en una sartén o wok con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En la misma sartén saltea los espárragos troceados 3-4 min, añade las espinacas y saltea 2 min más hasta que reduzcan.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa", ing:["canónigos","remolacha","80 g queso fresco sin lactosa"]}
+    }
+  },
+  { name:"Domingo", date:"2026-11-01",
+    paqui:{
+      comida:{title:"Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno", ing:["120 g bacalao","cebolla roja","perejil","tomate"]},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","100 g pollo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y el pollo troceado: 15 min/100°/vel 1."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y el pollo troceado; cuece 20-25 min a fuego medio hasta que las verduras y el pollo estén tiernos."]}}}
+    },
+    sole:{
+      comida:{title:"Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno", ing:["120 g bacalao","cebolla roja","perejil","tomate"]},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","100 g pollo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y el pollo troceado: 15 min/100°/vel 1."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y el pollo troceado; cuece 20-25 min a fuego medio hasta que las verduras y el pollo estén tiernos."]}}}
+    }
+  },
+  { name:"Lunes", date:"2026-11-02",
+    paqui:{
+      comida:{title:"Wok de pollo (120g) con brócoli, coliflor y calabacín", ing:["120 g pollo","brócoli","coliflor","calabacín"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade el brócoli, la coliflor y el calabacín troceados: 6 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en un wok o sartén grande con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En el mismo wok saltea el brócoli y la coliflor troceados 4-5 min, añade el calabacín y saltea 3 min más.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca o menta y palmitos", ing:["mejillones","tomate natural","albahaca o menta","palmitos"]}
+    },
+    sole:{
+      comida:{title:"Judías verdes hervidas + 1 huevo, 1 lata de atún reducido en sal, tomatitos cherry", ing:["judías verdes","1 huevo","1 lata de atún reducido en sal","tomatitos cherry"]},
+      cena:{title:"Mejillones al vapor + tomate natural con albahaca o menta y palmitos", ing:["mejillones","tomate natural","albahaca o menta","palmitos"]}
+    }
+  },
+  { name:"Martes", date:"2026-11-03",
+    paqui:{
+      comida:{title:"Filete de dorada (120g) + ensalada de tomates, palmito y perejil", ing:["120 g dorada","tomate","palmito","perejil"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas", ing:["1 huevo","120 g claras de huevo","ajos tiernos"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+    },
+    sole:{
+      comida:{title:"Filete de dorada (120g) + ensalada de tomates, palmito y perejil", ing:["120 g dorada","tomate","palmito","perejil"]},
+      cena:{title:"Revuelto de ajos tiernos (1 huevo, 120g de claras)", ing:["1 huevo","120 g claras de huevo","ajos tiernos"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea los ajos tiernos y ponlos en el vaso con la mariposa y un chorrito de aceite: 5 min/100°/vel 1.","Retira, mezcla con el huevo y las claras batidas con una pizca de sal, y cuaja en una sartén aparte removiendo con una espátula."]},tradicional:{steps:["Limpia los ajos tiernos y córtalos en trozos de 2-3 cm.","Saltéalos en una sartén con un chorrito de aceite 4-5 min hasta que estén tiernos y algo dorados.","Bate el huevo junto con las claras y una pizca de sal, añade a la sartén y cuaja a fuego medio-bajo removiendo con una espátula."]}}}
+    }
+  },
+  { name:"Miércoles", date:"2026-11-04",
+    paqui:{
+      comida:{title:"Pollo al horno (120g) + pimiento al horno", ing:["120 g pollo","pimiento"]},
+      cena:{title:"Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas", ing:["1 huevo","120 g claras de huevo","calabacín","tomate"], recipe:{servings:"1 ración",thermomix:{steps:["Pon el calabacín troceado en el vaso: 3 seg/vel 4.","Coloca la mariposa, añade el aceite y sofríe: 6 min/120°/vel 1.","Bate el huevo con las claras y una pizca de sal, mezcla con el calabacín y cuaja la tortilla en una sartén aparte, vuelta y vuelta."]},tradicional:{steps:["Corta el calabacín en dados pequeños o láminas finas y saltéalo en una sartén con unas gotas de aceite y una pizca de sal 5-6 min hasta que esté tierno.","Bate el huevo con las claras y una pizca de sal y mézclalo con el calabacín salteado.","Vierte de nuevo en la sartén a fuego medio-bajo y cuaja la tortilla por ambos lados.","Sirve con el tomate en rodajas aparte."]}}}
+    },
+    sole:{
+      comida:{title:"Pollo al horno (120g) + berenjena al horno y canónigos", ing:["120 g pollo","berenjena","canónigos"]},
+      cena:{title:"Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas", ing:["1 huevo","120 g claras de huevo","espárragos","tomate"], recipe:{servings:"1 ración",thermomix:{steps:["Pon los espárragos troceados en el vaso: 3 seg/vel 4.","Coloca la mariposa, añade el aceite y sofríe: 5 min/120°/vel 1.","Bate el huevo con las claras y una pizca de sal, mezcla con los espárragos y cuaja la tortilla en una sartén aparte, vuelta y vuelta."]},tradicional:{steps:["Corta los espárragos en trozos pequeños y saltéalos en una sartén con unas gotas de aceite 4-5 min hasta que estén tiernos.","Bate el huevo con las claras y una pizca de sal y mézclalo con los espárragos salteados.","Vierte de nuevo en la sartén a fuego medio-bajo y cuaja la tortilla por ambos lados.","Sirve con el tomate en rodajas aparte."]}}}
+    }
+  },
+  { name:"Jueves", date:"2026-11-05",
+    paqui:{
+      comida:{title:"Lubina (120g) al horno con calabaza y calabacín", ing:["120 g lubina","calabaza","calabacín"]},
+      cena:{title:"Yogur proteico natural + kiwi + 1 c/s de semillas de chía o lino molidas", ing:["yogur proteico natural","kiwi","1 c/s semillas de chía o lino molidas"]}
+    },
+    sole:{
+      comida:{title:"Lubina (120g) al horno con canónigos y remolacha", ing:["120 g lubina","canónigos","remolacha"]},
+      cena:{title:"Crema de calabacín + 70g de queso fresco sin lactosa", ing:["calabacín (para crema)","70 g queso fresco sin lactosa"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el calabacín y ponlo en el vaso con un vaso de agua: 15 min/100°/vel 1.","Cuela el exceso de agua si hace falta, añade un chorrito de aceite y tritura: 1 min/vel 5-10 en progresivo.","Sirve con el queso fresco desmenuzado por encima."]},tradicional:{steps:["Trocea el calabacín y cuécelo en agua con sal 12-15 min hasta que esté tierno.","Escurre (reservando un poco del caldo si quieres ajustar la textura) y tritura con un chorrito de aceite hasta obtener una crema fina.","Sirve con el queso fresco desmenuzado por encima."]}}}
+    }
+  },
+  { name:"Viernes", date:"2026-11-06",
+    paqui:{
+      comida:{title:"Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta", ing:["100 g garbanzo cocido","espinacas","cebolla","pimentón","30 g feta"], recipe:{servings:"1 ración",thermomix:{steps:["Pon la cebolla en el vaso: 4 seg/vel 5. Añade el aceite y sofríe: 5 min/120°/vel 1.","Añade las espinacas y el pimentón, cocina 3 min/100°/vel 1, giro a la izquierda.","Incorpora el garbanzo cocido y mezcla: 3 min/100°/vel cuchara, giro a la izquierda.","Sirve con el feta desmenuzado por encima."]},tradicional:{steps:["Pica la cebolla y sofríela en una sartén con un chorrito de aceite 4-5 min.","Añade las espinacas y el pimentón, cocina 2-3 min hasta que las espinacas reduzcan.","Incorpora el garbanzo cocido, mezcla bien y cocina 3-4 min más a fuego medio.","Sirve con el feta desmenuzado por encima."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
+    },
+    sole:{
+      comida:{title:"Espinacas salteadas con pimentón + merluza a la plancha (130g)", ing:["espinacas","pimentón","130 g merluza"], recipe:{servings:"1 ración",thermomix:{steps:["Pon las espinacas en el vaso con la mariposa puesta, el aceite y el pimentón: 5 min/100°/vel 1.","Mientras, cocina la merluza a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas salteadas."]},tradicional:{steps:["Saltea las espinacas en una sartén con un chorrito de aceite y el pimentón 3-4 min, hasta que reduzcan.","Salpimienta la merluza y cocínala a la plancha 2-3 min por cada lado.","Sirve la merluza sobre las espinacas."]}}},
+      cena:{title:"Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras", ing:["caldo de pollo o agua","pimiento","puerro","apio","zanahoria","calabacín","1 huevo","opcional: claras de huevo"], recipe:{servings:"1 ración",thermomix:{steps:["Trocea el puerro, el apio, la zanahoria, el pimiento y el calabacín: 4 seg/vel 5.","Añade el caldo (o agua) y cuece: 15 min/100°/vel 1.","Casca el huevo directamente en la sopa caliente (o añade las claras) y deja cuajar 2-3 min sin triturar más."]},tradicional:{steps:["Pica el puerro, el apio, la zanahoria, el pimiento y el calabacín en trozos pequeños.","Ponlos en una cazuela con el caldo o agua y cuece 20-25 min a fuego medio hasta que las verduras estén tiernas.","Casca el huevo directamente en la sopa caliente (o añade las claras batidas) y cuécelo 2-3 min sin dejar de remover suavemente."]}}}
+    }
+  },
+  { name:"Sábado", date:"2026-11-07",
+    paqui:{
+      comida:{title:"Pollo (120g) con calabaza asada, rúcula y rabanitos", ing:["120 g pollo","calabaza","rúcula","rabanitos"]},
+      cena:{title:"Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry", ing:["1 lata de melva","brócoli","cebolla roja","tomatitos cherry"]}
+    },
+    sole:{
+      comida:{title:"Pollo (120g) salteado con espárragos y espinacas", ing:["120 g pollo","espárragos","espinacas"], recipe:{servings:"1 ración",thermomix:{steps:["Corta el pollo en tiras y salpiméntalo. Pon la mariposa, añade el aceite y dora el pollo: 5 min/120°/vel 1, giro a la izquierda.","Añade los espárragos troceados y las espinacas: 5 min/100°/vel 1, giro a la izquierda."]},tradicional:{steps:["Corta el pollo en tiras y salpiméntalo. Dóralo en una sartén o wok con un chorrito de aceite a fuego fuerte 4-5 min; retira y reserva.","En la misma sartén saltea los espárragos troceados 3-4 min, añade las espinacas y saltea 2 min más hasta que reduzcan.","Vuelve a añadir el pollo, mezcla bien y sirve caliente."]}}},
+      cena:{title:"Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa", ing:["canónigos","remolacha","80 g queso fresco sin lactosa"]}
     }
   }
 ];
