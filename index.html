@@ -505,6 +505,11 @@
     color:#fff;font-size:.56rem;font-weight:700;padding:2px 5px;border-radius:999px;line-height:1.3;z-index:2;}
   .mes-celda-nota-preview{width:100%;font-size:.6rem;color:var(--ink);background:rgba(255,255,255,.55);
     border-radius:4px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;}
+  /* Franja del calendario laboral (verde/amarillo/azul/violeta/rojo, igual que en el PDF del
+     cuadrante): una barra fina pegada arriba de la celda, suficiente para distinguir el tipo de
+     día de un vistazo sin competir con el número ni los chips de debajo. */
+  .mes-celda-franja{position:absolute;top:0;left:4px;right:4px;height:4px;border-radius:0 0 3px 3px;background:var(--franja-color);}
+  html.vista-tablet .mes-celda-franja{height:5px;}
 
   .cal-semana{display:flex;flex-direction:column;gap:14px;}
   .cal-dia-card{background:linear-gradient(165deg, var(--accent-soft), var(--card) 55%);border:1px solid var(--line);border-radius:18px;padding:14px;}
@@ -517,6 +522,11 @@
   .cal-nota-badge{position:absolute;top:-10px;left:-8px;background:var(--accent-btn, var(--accent));
     color:#fff;font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:999px;
     box-shadow:var(--shadow-2);z-index:2;display:flex;align-items:center;gap:3px;}
+  /* Misma franja que en la vista Mes, pero aquí con su nombre al lado (hay sitio de sobra en la
+     ficha del día) — se repite una por persona con calendario laboral ese día, debajo de la fecha
+     y antes de las tarjetas de menú, para que se vea aunque ese día no tenga menú registrado. */
+  .cal-franja-laboral{display:flex;align-items:center;gap:7px;font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:8px;}
+  .cal-franja-barra{display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--franja-color);flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);}
   .cal-persona-card{background:var(--card);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
   .cal-comida{font-size:.8rem;margin-top:3px;}
   .cal-comida b{color:var(--muted);font-weight:700;margin-right:4px;}
@@ -741,7 +751,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.23.1";
+const APP_VERSION = "v2.24.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -749,6 +759,7 @@ const APP_VERSION = "v2.23.1";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-13", texto:"En Calendario, los días de Nuria llevan ahora una franja de color (verde, amarillo, azul, violeta...) igual que en el cuadrante de su empresa: de un vistazo se ve si es libranza, festivo o vacaciones." },
   { fecha:"2026-10-09", texto:"Corregido el día del menú de Paqui y Sole: el Día 1 de la nutricionista siempre es el lunes, así que hoy toca el día que corresponde según el calendario." },
   { fecha:"2026-10-09", texto:"Nuevo menú de la nutricionista para Paqui y Sole, en vigor hasta el 7 de noviembre." },
   { fecha:"2026-10-08", texto:"En Calendario → Mes, cada día con notas muestra ya el texto de la primera directamente en la celda, con un globito si hay más de una — antes solo se veía el icono." },
@@ -842,6 +853,57 @@ const PERSONAS = {
   eva:{ nombre:"Eva" },
   marta:{ nombre:"Marta" }
 };
+
+/* Calendario laboral: cuadrante anual de turnos (festivos, vacaciones, libranzas...) que la
+   empresa entrega en PDF, con cada día coloreado según su tipo. Por ahora solo se usa para Nuria
+   (cuadrante de BALLESTER SEGARRA,CARMEN(SUSTITUTA), vareser/metrovalencia, año 2026), pero la
+   clave es el personId — no "Nuria" a secas — para que si algún día otra persona cubre su puesto
+   con su propio id, baste con añadir su entrada aquí sin tocar nada del resto de la app. Los
+   colores son los mismos del PDF (paleta Office: verde/amarillo/azul/violeta/rojo) para que una
+   mirada rápida al calendario baste para identificar el tipo de día, igual que en el PDF original. */
+const ESTADOS_LABORALES = {
+  libranza_semanal:           { nombre:"Libranza semanal",                            color:"#70AD47" },
+  festivo:                    { nombre:"Festivo",                                     color:"#FFD400" },
+  vacaciones:                 { nombre:"Vacaciones",                                  color:"#5B9BD5" },
+  libranza_festivo_trabajado: { nombre:"Libranza por festivo trabajado/descansado",   color:"#7030A0" },
+  dias_compensados:           { nombre:"Día compensado por exceso de horas",          color:"#A42C37" },
+};
+const CALENDARIO_LABORAL = {
+  nuria: {
+    "2026-01-02":"libranza_semanal", "2026-01-03":"libranza_semanal", "2026-01-06":"festivo", "2026-01-10":"libranza_semanal", "2026-01-11":"libranza_semanal", "2026-01-12":"libranza_festivo_trabajado",
+    "2026-01-16":"libranza_semanal", "2026-01-17":"libranza_semanal", "2026-01-24":"libranza_semanal", "2026-01-25":"libranza_semanal", "2026-01-30":"libranza_semanal", "2026-01-31":"libranza_semanal",
+    "2026-02-06":"libranza_festivo_trabajado", "2026-02-07":"libranza_semanal", "2026-02-08":"libranza_semanal", "2026-02-13":"libranza_semanal", "2026-02-14":"libranza_semanal", "2026-02-21":"libranza_semanal",
+    "2026-02-22":"libranza_semanal", "2026-02-27":"libranza_semanal", "2026-02-28":"libranza_semanal", "2026-03-06":"libranza_festivo_trabajado", "2026-03-07":"libranza_semanal", "2026-03-08":"libranza_semanal",
+    "2026-03-13":"libranza_semanal", "2026-03-14":"libranza_semanal", "2026-03-21":"libranza_semanal", "2026-03-22":"libranza_semanal", "2026-03-27":"libranza_semanal", "2026-03-28":"libranza_semanal",
+    "2026-04-04":"libranza_semanal", "2026-04-05":"libranza_semanal", "2026-04-06":"festivo", "2026-04-10":"libranza_semanal", "2026-04-11":"libranza_semanal", "2026-04-13":"festivo",
+    "2026-04-18":"libranza_semanal", "2026-04-19":"libranza_semanal", "2026-04-20":"libranza_festivo_trabajado", "2026-04-24":"libranza_semanal", "2026-04-25":"libranza_semanal", "2026-05-02":"libranza_semanal",
+    "2026-05-03":"libranza_semanal", "2026-05-08":"libranza_semanal", "2026-05-09":"libranza_semanal", "2026-05-16":"libranza_semanal", "2026-05-17":"libranza_semanal", "2026-05-22":"libranza_semanal",
+    "2026-05-23":"libranza_semanal", "2026-05-30":"libranza_semanal", "2026-05-31":"libranza_semanal", "2026-06-01":"libranza_festivo_trabajado", "2026-06-05":"libranza_semanal", "2026-06-06":"libranza_semanal",
+    "2026-06-13":"libranza_semanal", "2026-06-14":"libranza_semanal", "2026-06-19":"libranza_semanal", "2026-06-20":"libranza_semanal", "2026-06-24":"festivo", "2026-06-27":"libranza_semanal",
+    "2026-06-28":"libranza_semanal", "2026-07-03":"libranza_semanal", "2026-07-04":"libranza_semanal", "2026-07-11":"libranza_semanal", "2026-07-12":"libranza_semanal", "2026-07-17":"libranza_semanal",
+    "2026-07-18":"libranza_semanal", "2026-07-25":"libranza_semanal", "2026-07-26":"libranza_semanal", "2026-07-31":"libranza_semanal", "2026-08-01":"libranza_semanal", "2026-08-08":"libranza_semanal",
+    "2026-08-09":"libranza_semanal", "2026-08-13":"libranza_festivo_trabajado", "2026-08-14":"libranza_semanal", "2026-08-15":"libranza_semanal", "2026-08-22":"libranza_semanal", "2026-08-23":"libranza_semanal",
+    "2026-08-28":"libranza_semanal", "2026-08-29":"libranza_semanal", "2026-09-01":"vacaciones", "2026-09-02":"vacaciones", "2026-09-03":"vacaciones", "2026-09-04":"vacaciones",
+    "2026-09-05":"vacaciones", "2026-09-06":"vacaciones", "2026-09-07":"vacaciones", "2026-09-08":"vacaciones", "2026-09-09":"vacaciones", "2026-09-10":"vacaciones",
+    "2026-09-11":"vacaciones", "2026-09-12":"vacaciones", "2026-09-13":"vacaciones", "2026-09-14":"vacaciones", "2026-09-15":"vacaciones", "2026-09-16":"vacaciones",
+    "2026-09-17":"vacaciones", "2026-09-18":"vacaciones", "2026-09-19":"vacaciones", "2026-09-20":"vacaciones", "2026-09-21":"vacaciones", "2026-09-22":"vacaciones",
+    "2026-09-23":"vacaciones", "2026-09-24":"vacaciones", "2026-09-25":"vacaciones", "2026-09-26":"vacaciones", "2026-09-27":"vacaciones", "2026-09-28":"vacaciones",
+    "2026-09-29":"vacaciones", "2026-09-30":"vacaciones", "2026-10-01":"vacaciones", "2026-10-03":"libranza_semanal", "2026-10-04":"libranza_semanal", "2026-10-08":"libranza_festivo_trabajado",
+    "2026-10-09":"libranza_semanal", "2026-10-10":"libranza_semanal", "2026-10-17":"libranza_semanal", "2026-10-18":"libranza_semanal", "2026-10-22":"libranza_festivo_trabajado", "2026-10-23":"libranza_semanal",
+    "2026-10-24":"libranza_semanal", "2026-10-31":"libranza_semanal", "2026-11-01":"libranza_semanal", "2026-11-06":"libranza_semanal", "2026-11-07":"libranza_semanal", "2026-11-14":"libranza_semanal",
+    "2026-11-15":"libranza_semanal", "2026-11-20":"libranza_semanal", "2026-11-21":"libranza_semanal", "2026-11-28":"libranza_semanal", "2026-11-29":"libranza_semanal", "2026-12-03":"libranza_festivo_trabajado",
+    "2026-12-04":"libranza_semanal", "2026-12-05":"libranza_semanal", "2026-12-12":"libranza_semanal", "2026-12-13":"libranza_semanal", "2026-12-18":"libranza_semanal", "2026-12-19":"libranza_semanal",
+    "2026-12-25":"festivo", "2026-12-26":"libranza_semanal", "2026-12-27":"libranza_semanal"
+  }
+};
+/* Devuelve el estado laboral del día para quien tenga calendario (hoy solo Nuria), o null si ese
+   día es un día de trabajo normal, no hay dato, o la persona está oculta (botón de visibilidad). */
+function estadoLaboralDelDia(iso, personaId){
+  if(!personasVisibles.has(personaId)) return null;
+  const cal = CALENDARIO_LABORAL[personaId];
+  const estado = cal && cal[iso];
+  return estado ? ESTADOS_LABORALES[estado] : null;
+}
 
 /* Ciclo de dieta por persona (independientes entre sí). Lo actualiza la skill /nuevo-menu en
    cada visita a la nutricionista. Cualquier campo a null no se muestra en el recordatorio. */
@@ -2667,7 +2729,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'corregido el día del menú de Paqui y Sole, ahora el lunes es el día 1 como toca 🥗🍽️';
+let avisoNovedadTexto = 'en Calendario, los días de Nuria llevan una franja de color como en su cuadrante: fiesta, vacaciones o libranza, de un vistazo 🎨📅';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -3728,11 +3790,18 @@ function diaDetalleHtml(iso, opts){
       <div class="cal-comida"><b>Cena</b> ${m.cena.title}</div>
     </div>`;
   };
+  // Franja del calendario laboral (de momento solo Nuria): se muestra siempre que haya dato ese
+  // día, tenga o no menú registrado — las vacaciones y festivos son justo los días en que es más
+  // probable que no haya menú apuntado, y son los que más interesa ver de un vistazo.
+  const franjasLaborales = Object.keys(CALENDARIO_LABORAL)
+    .map(id => ({ id, info: estadoLaboralDelDia(iso, id) }))
+    .filter(x => x.info);
   const numNotas = notasDelDia(iso).length;
   return `${opts.modal ? `<button type="button" class="video-modal-close dia-modal-close">✕</button>` : ''}
     <div class="dia-detalle${opts.modal?' dia-detalle-modal':''}">
       ${numNotas ? `<div class="cal-nota-badge" title="${numNotas} nota${numNotas>1?'s':''} este día">📝 ${numNotas}</div>` : ''}
       <div class="dia-detalle-fecha">${formatoFechaLarga(iso)}</div>
+      ${franjasLaborales.map(({id,info})=>`<div class="cal-franja-laboral" style="--franja-color:${info.color}"><span class="cal-franja-barra"></span>${PERSONAS[id].nombre}: ${info.nombre}</div>`).join('')}
       ${visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Sin menú registrado este día.</div>`}
       <div class="section-title">Notas</div>
       ${notasListHtml(iso)}
@@ -3849,11 +3918,18 @@ function renderMesHtml(){
     const personasConMenu = diaWeek ? visibles.filter(id=>diaWeek[id]) : [];
     const notas = notasDelDia(iso).slice().sort((a,b)=>a.creada.localeCompare(b.creada));
     const primeraNota = notas[0];
+    // Franja de color del calendario laboral (de momento solo Nuria, ver estadoLaboralDelDia):
+    // de un vistazo al mes entero se ve qué días son libranza, festivo, vacaciones... igual que en
+    // el PDF del cuadrante. Si en el futuro hay varias personas con calendario laboral el mismo
+    // día, se queda con la primera (caso que hoy no se da) para no amontonar franjas en una celda
+    // tan pequeña — la ficha del día (al tocar la celda) sí las lista todas.
+    const franjaLaboral = Object.keys(CALENDARIO_LABORAL).map(id=>estadoLaboralDelDia(iso, id)).find(Boolean);
     // Antes solo se veía el icono del tipo de nota en la celda, había que tocar el día para leerla
     // (issue "notas en vista mes"). Ahora un vistazo rápido ya enseña de qué va (la primera, por
     // hora) y un globito con el total cuando hay más de una — el resto se ve completo al tocar la
     // celda (modal con la lista entera, ya con cabecera y hora propias).
-    return `<button type="button" class="mes-celda${iso===hoy?' mes-celda-hoy':''}" data-fecha="${iso}">
+    return `<button type="button" class="mes-celda${iso===hoy?' mes-celda-hoy':''}" data-fecha="${iso}"${franjaLaboral?` style="--franja-color:${franjaLaboral.color}"`:''}>
+      ${franjaLaboral ? `<span class="mes-celda-franja" title="${franjaLaboral.nombre}"></span>` : ''}
       ${notas.length ? `<span class="mes-celda-badge">${(TIPOS_NOTA[primeraNota.tipo]||TIPOS_NOTA.otro).icono}${notas.length>1?' '+notas.length:''}</span>` : ''}
       <span class="mes-celda-num">${dia}</span>
       <span class="mes-celda-chips">${personasConMenu.map(id=>`<span class="mes-chip ${id}" title="${PERSONAS[id].nombre}">${PERSONAS[id].nombre.slice(0,2)}</span>`).join('')}</span>
