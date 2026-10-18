@@ -2729,9 +2729,17 @@ const WEEK = [
    Única declaración de la Master Key en todo el fichero (no se repite en ningún otro sitio) — si
    Pedro la regenera en jsonbin.io, esta es la única línea que hay que tocar. Vive en el HTML
    porque esto es una app 100% cliente sin servidor propio; asumido conscientemente desde el
-   principio del proyecto (ver update.md), no hay forma de evitarlo sin añadir un backend. */
-const JSONBIN_ID = "6a301b19f5f4af5e29f5ec66";
-const JSONBIN_KEY = "$2a$10$ae8zVDaihoiqifi4pxm7Ruc/pKCRtiFC/pxKOv7OA0OsE7oySGfKe";
+   principio del proyecto (ver update.md), no hay forma de evitarlo sin añadir un backend.
+   Cuenta anterior agotó su cuota gratuita el 2026-10-18 ("Requests exhausted") y se migró a una
+   cuenta nueva ese mismo día, con el contenido íntegro del bin viejo copiado al nuevo (incluye
+   datos de otra app de Pedro que comparte este mismo bin, el planificador del viaje a Marrakech —
+   no tocar esas claves de nivel superior). El bin viejo NO se ha borrado y sigue teniendo los
+   mismos datos a fecha de la migración, por si hiciera falta volver atrás rápido una vez más:
+     JSONBIN_ID_ANTERIOR = "6a301b19f5f4af5e29f5ec66"
+     JSONBIN_KEY_ANTERIOR = "$2a$10$ae8zVDaihoiqifi4pxm7Ruc/pKCRtiFC/pxKOv7OA0OsE7oySGfKe"
+   (puede estar desactualizado respecto al nuevo si para entonces ya se ha guardado algo en este). */
+const JSONBIN_ID = "6ad541ceac6210605a3d220e";
+const JSONBIN_KEY = "$2a$10$lusBVzzg9qDT.PsJbFJV6uQi/hU4k7FxPnOJfbNzQTn00rBspfhyW";
 const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
 
 /* ---------- NOTAS POR SIRI (Panel NOOVES, fase 2) ----------
