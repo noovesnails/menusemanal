@@ -431,6 +431,9 @@
      solo si el navegador soporta la Battery Status API (Chromium/WebView de Android sí, Safari y
      Firefox no la tienen, así que en el móvil de cada uno simplemente no aparece, sin dar error). */
   .bateria-indicador{display:none;}
+  /* Botón del asistente de voz del panel (issue "asistente sin IA"): como .nav-info, solo existe
+     de verdad en modo tablet (ver html.vista-tablet más abajo) — en móvil no aparece. */
+  .panel-voz-btn{display:none;}
   nav button .ic{font-size:1.15rem;}
   nav button.active{color:#fff;font-weight:700;}
 
@@ -652,6 +655,25 @@
 
   .dia-modal .dia-detalle-modal{background:var(--card);border-radius:22px;padding:20px;max-width:420px;width:92vw;max-height:84vh;overflow-y:auto;box-shadow:var(--shadow-3);}
 
+  /* Modal del asistente de voz sin IA (issue "asistente sin IA"): el listado de comandos es la
+     única "ayuda" real que existe — fuera de esas frases el cotejo de palabras clave no entiende
+     nada, así que se enseña siempre, no es un adorno. */
+  .voz-modal-body{background:var(--card);border-radius:22px;padding:24px 20px;max-width:440px;width:92vw;max-height:84vh;overflow-y:auto;box-shadow:var(--shadow-3);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;}
+  .voz-estado{font-size:.88rem;font-weight:600;color:var(--muted);min-height:1.3em;}
+  .voz-mic-btn{width:76px;height:76px;border-radius:50%;border:none;background:var(--accent-btn, var(--accent));color:#fff;font-size:2rem;cursor:pointer;box-shadow:var(--shadow-2);}
+  .voz-mic-btn:disabled{opacity:.6;}
+  .voz-mic-btn.escuchando{animation:vozPulso 1.1s ease-in-out infinite;}
+  @keyframes vozPulso{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.08);opacity:.85;}}
+  .voz-transcript{font-size:.82rem;font-style:italic;color:var(--muted);min-height:1.2em;}
+  .voz-respuesta{font-size:.92rem;font-weight:600;border-radius:12px;padding:10px 14px;width:100%;box-sizing:border-box;}
+  .voz-respuesta:empty{display:none;}
+  .voz-respuesta.voz-ok{background:oklch(85% 0.1 150 / 25%);color:var(--ink);}
+  .voz-respuesta.voz-fail{background:oklch(80% 0.12 30 / 20%);color:var(--ink);}
+  .voz-ejemplos{width:100%;border-top:1px solid var(--line);margin-top:6px;padding-top:14px;text-align:left;}
+  .voz-ejemplos-titulo{font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px;}
+  .voz-ejemplo{font-size:.78rem;line-height:1.5;color:var(--ink);padding:4px 0;}
+  .voz-ejemplo::before{content:"🎙️ ";}
+
   /* ---------- MODO TABLET (nevera) ----------
      Pensado para una tablet de ~10" apaisada montada en la nevera, a pantalla completa, controlada
      con los dedos. Se activa por tamaño real de pantalla O a mano desde un interruptor en Yo — las
@@ -720,6 +742,11 @@
      se queda con el resaltado simple de siempre (arriba) en vez de intentar adaptar la física del
      muelle a un eje vertical. */
   html.vista-tablet .liquido{display:none;}
+
+  /* Botón del asistente de voz (issue "asistente sin IA"): mismo tamaño que los .tab, con un
+     acento propio para distinguirlo (no es una pestaña, abre un modal) y un pelín de aire respecto
+     a Yo, el último tab real. */
+  html.vista-tablet .panel-voz-btn{display:flex; margin-top:10px; background:var(--accent-soft); color:var(--accent); font-weight:700;}
 
   html.vista-tablet h1,
   html.vista-tablet .sub,
@@ -939,6 +966,12 @@
   <button class="tab" data-tab="compra"><span class="ic">🛒</span>Compra</button>
   <button class="tab" data-tab="peso"><span class="ic">⚖️</span>Peso</button>
   <button class="tab" data-tab="yo"><span class="ic">🙋</span>Yo</button>
+  <!-- Botón de voz del panel (issue "asistente sin IA"): solo visible en tablet (ver CSS
+       .panel-voz-btn), abre #vozModal con el listado de comandos y el micro. No es una pestaña —
+       no cambia de vista, por eso vive fuera de los .tab aunque esté en la misma barra. -->
+  <button type="button" id="panelVozBtn" class="panel-voz-btn" aria-label="Pregúntale al panel">
+    <span class="ic">🎙️</span>Pregunta
+  </button>
   <div class="nav-info" id="navInfo"></div>
 </nav>
 
@@ -960,6 +993,9 @@
 <div id="videoModal" class="video-modal" style="display:none"></div>
 <div id="imageModal" class="video-modal" style="display:none"></div>
 <div id="diaModal" class="video-modal dia-modal" style="display:none"></div>
+<!-- Modal del asistente de voz sin IA (issue "asistente sin IA"), contenido generado por
+     abrirPanelVoz() — ver JS. -->
+<div id="vozModal" class="video-modal voz-modal" style="display:none"></div>
 
 <script>
 /* ---------- DATOS DE LA SEMANA ----------
@@ -969,7 +1005,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.28.1";
+const APP_VERSION = "v2.29.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -977,6 +1013,7 @@ const APP_VERSION = "v2.28.1";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-25", texto:"Nuevo botón \"Pregunta\" en el panel de tablet: pulsa el micro y pide cosas como \"añade una nota médica: dentista a las 10\", \"qué hay de cena hoy\", \"qué queda por comprar\" o \"cuándo es mi próxima cita con la nutricionista\". No lleva IA detrás, reconoce frases concretas (siempre visibles en la lista del propio botón) y contesta por texto y por voz." },
   { fecha:"2026-10-25", texto:"En el panel de tablet: los tiles de \"Por comprar hoy\" y \"Notas próximas\" ahora son acceso directo a su pestaña (Compra y Calendario), junto al tiempo aparece una pastilla con el día de la semana que se está viendo, y el tile de notas muestra de un vistazo cuál es la próxima apuntada." },
   { fecha:"2026-10-25", texto:"El panel de tablet se pone serio de verdad: fondo azul marino, letras blancas, tipografía Inter en vez de la redondeada de antes. Dos widgets nuevos en el Menú: un resumen con cuántos ingredientes quedan por comprar hoy y cuántas notas hay próximas, y una tarjeta de Agenda familiar con los próximos avisos del calendario (médico, cumpleaños, cole...) ordenados por fecha." },
   { fecha:"2026-10-25", texto:"Corregido: en Calendario → Mes (vista tablet), el mes se recortaba por abajo desde que se añadió la franja de tiempo. Y en cualquier vista, cuando un día tenía 2 notas, la segunda quedaba escondida detrás del globito de aviso — ahora se ven las dos. De paso, 5 iconos de nota nuevos: cumpleaños, colegio, deporte, viaje y pago." },
@@ -3049,7 +3086,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'en el panel de la cocina, los tiles de arriba ya son acceso directo (tocas y vas a Compra o Calendario), y junto al tiempo sale el día que estás viendo 👆🗓️';
+let avisoNovedadTexto = 'nuevo botón de "Pregunta" en el panel de la cocina: pulsa el micro y pídele que apunte una nota, qué hay de cena o qué queda por comprar 🎙️';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -4427,6 +4464,173 @@ function dictarEnTextarea(btn){
   rec.onend = () => { btn.textContent = iconoOriginal; btn.disabled = false; };
   rec.start();
 }
+
+/* ---- Asistente de voz del panel, SOLO en tablet (issue "asistente sin IA") ----
+   Importante: esto NO es un asistente con IA. No hay ningún modelo de lenguaje detrás — es un
+   cotejo de palabras clave sobre el texto que devuelve el reconocimiento de voz del navegador
+   (el mismo motor que ya dicta notas, ver dictarEnTextarea arriba). Por eso el modal enseña
+   SIEMPRE la lista de frases que entiende (COMANDOS_VOZ): fuera de esas frases exactas, no hay
+   "inteligencia" que rescate la petición, solo "si el texto contiene X, haz Y". Si algún día hace
+   falta entender cualquier forma de pedirlo, habría que mandar el texto a un modelo de verdad (una
+   pieza nueva: clave de API + servidor que la esconda) — eso es otra conversación, no esto. */
+const COMANDOS_VOZ = [
+  'Añade una nota [médica / de cumpleaños / de colegio / de deporte / de viaje / de pago / de recordatorio]: [lo que sea]',
+  'Qué hay de comida / cena hoy',
+  'Qué queda por comprar',
+  'Cuándo es mi próxima cita con la nutricionista',
+];
+
+const TIPO_NOTA_POR_PALABRA = [
+  [/médic/i, 'medico'],
+  [/cumpleañ/i, 'cumpleanos'],
+  [/colegio|\bcole\b/i, 'colegio'],
+  [/deporte/i, 'deporte'],
+  [/viaje/i, 'viaje'],
+  [/pago|factura/i, 'pago'],
+  [/recordatorio/i, 'recordatorio'],
+  [/fecha señalada/i, 'fecha'],
+  [/asistencia/i, 'asistencia'],
+];
+
+function formatearFechaVoz(iso){
+  const [fecha, hora] = iso.split('T');
+  const d = new Date(fecha+"T00:00:00");
+  let txt = `el ${NOMBRES_DIA_SEMANA[d.getDay()].toLowerCase()} ${d.getDate()} de ${MESES[d.getMonth()]}`;
+  if(hora) txt += ` a las ${hora.slice(0,5)}`;
+  return txt;
+}
+
+/* Devuelve {ok, respuesta}. ok=false tanto si no se ha entendido la frase como si se ha entendido
+   pero no hay dato que contestar (p.ej. sin cita apuntada) — respuesta siempre trae un texto para
+   leer/mostrar en los dos casos. */
+function interpretarComandoVoz(textoOriginal){
+  const texto = (textoOriginal || '').trim();
+  const low = texto.toLowerCase();
+  if(!texto) return { ok:false, respuesta:'No he oído nada. Inténtalo otra vez.' };
+
+  // 1) Añadir una nota al calendario de hoy.
+  if(/\bnota\b/.test(low) && /añad|apunta|\bpon\b|crea/.test(low)){
+    let tipo = 'otro';
+    for(const [re, t] of TIPO_NOTA_POR_PALABRA){ if(re.test(low)){ tipo = t; break; } }
+    let cuerpo;
+    if(texto.includes(':')){
+      cuerpo = texto.slice(texto.indexOf(':')+1).trim();
+    } else {
+      cuerpo = texto.replace(/^(añade|apunta|pon|crea)\s+(una\s+)?nota\s*(médica|de\s+cumpleaños|de\s+colegio|de\s+deporte|de\s+viaje|de\s+pago|de\s+recordatorio|de\s+fecha\s+señalada|de\s+asistencia)?\s*(que|de)?\s*/i, '').trim();
+    }
+    if(!cuerpo) return { ok:false, respuesta:'No he pillado el texto de la nota. Dilo después de los dos puntos, por ejemplo: "Añade una nota médica: dentista a las 10".' };
+    if(!miUsuario) return { ok:false, respuesta:'Antes elige quién eres en la pestaña Yo, para saber a nombre de quién apunto la nota.' };
+    const iso = todayISOReal();
+    const id = Date.now()+'_'+Math.random().toString(36).slice(2,8);
+    if(!notasCalendario[iso]) notasCalendario[iso] = [];
+    notasCalendario[iso].push({ id, autor: miUsuario, texto: cuerpo, tipo, creada: new Date().toISOString() });
+    scheduleSave();
+    render();
+    return { ok:true, respuesta:`Nota añadida para hoy: "${cuerpo}".` };
+  }
+
+  // 2) Qué hay de comida/cena hoy.
+  if(/qué hay (de|para)|menú de hoy|qué toca (de )?comer/.test(low)){
+    if(!miUsuario) return { ok:false, respuesta:'Antes elige quién eres en la pestaña Yo.' };
+    const day = WEEK[currentDay];
+    if(!day || !day[miUsuario]) return { ok:false, respuesta:'No tengo tu menú de hoy a mano.' };
+    const quiereComida = /comida|almuerzo/.test(low);
+    const quiereCena = /cena/.test(low);
+    const partes = [];
+    if(quiereComida || !quiereCena) partes.push(`De comida: ${day[miUsuario].comida.title}.`);
+    if(quiereCena || !quiereComida) partes.push(`De cena: ${day[miUsuario].cena.title}.`);
+    return { ok:true, respuesta: partes.join(' ') };
+  }
+
+  // 3) Qué queda por comprar.
+  if(/queda(n)? por comprar|falta(n)? por comprar|lista de la compra/.test(low)){
+    const day = WEEK[currentDay];
+    const todosHoy = fridgeItems(day);
+    const dayChecks = checks[day.date] || {};
+    const dayComprado = comprado[day.date] || {};
+    const pendientes = todosHoy.filter(({key})=>!dayChecks[key] && !dayComprado[key]);
+    if(!pendientes.length) return { ok:true, respuesta:'No queda nada por comprar hoy.' };
+    const nombres = pendientes.map(p=>p.item);
+    const lista = nombres.length > 6 ? nombres.slice(0,6).join(', ') + '...' : nombres.join(', ');
+    return { ok:true, respuesta:`Quedan ${pendientes.length} cosas por comprar: ${lista}.` };
+  }
+
+  // 4) Próxima cita con la nutricionista.
+  if(/próxima cita|próxima visita|cuándo.*nutri/.test(low)){
+    if(!miUsuario || !NUTRI[miUsuario]) return { ok:false, respuesta:'Antes elige quién eres en la pestaña Yo.' };
+    const n = efectivoNutri(miUsuario);
+    if(!n.proximaVisita) return { ok:true, respuesta:'No tienes ninguna cita con la nutricionista apuntada.' };
+    return { ok:true, respuesta:`Tu próxima cita con la nutricionista es ${formatearFechaVoz(n.proximaVisita)}.` };
+  }
+
+  return { ok:false, respuesta:'No he entendido esa frase. Prueba con una de la lista de aquí abajo, tal cual.' };
+}
+
+function hablar(texto){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(texto);
+  u.lang = 'es-ES';
+  speechSynthesis.speak(u);
+}
+
+function escucharComandoVoz(){
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micBtn = document.getElementById('vozMicBtn');
+  const estado = document.getElementById('vozEstado');
+  const transcriptEl = document.getElementById('vozTranscript');
+  const respuestaEl = document.getElementById('vozRespuesta');
+  if(!micBtn || !estado || !transcriptEl || !respuestaEl) return;
+  if(!SpeechRec){ estado.textContent = 'Este navegador no permite escuchar aquí.'; return; }
+  respuestaEl.textContent = '';
+  respuestaEl.className = 'voz-respuesta';
+  transcriptEl.textContent = '';
+  const rec = new SpeechRec();
+  rec.lang = 'es-ES';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  estado.textContent = 'Escuchando...';
+  micBtn.classList.add('escuchando');
+  micBtn.disabled = true;
+  rec.onresult = (e) => {
+    const texto = e.results[0][0].transcript;
+    transcriptEl.textContent = `"${texto}"`;
+    const resultado = interpretarComandoVoz(texto);
+    respuestaEl.textContent = resultado.respuesta;
+    respuestaEl.className = 'voz-respuesta ' + (resultado.ok ? 'voz-ok' : 'voz-fail');
+    hablar(resultado.respuesta);
+  };
+  rec.onerror = () => { estado.textContent = 'No se ha podido escuchar. Inténtalo otra vez.'; };
+  rec.onend = () => { estado.textContent = 'Pulsa el micro y pregunta'; micBtn.classList.remove('escuchando'); micBtn.disabled = false; };
+  rec.start();
+}
+
+function abrirPanelVoz(){
+  const modal = document.getElementById('vozModal');
+  if(!modal) return;
+  modal.innerHTML = `
+    <button type="button" class="video-modal-close voz-modal-close">✕</button>
+    <div class="voz-modal-body">
+      <div class="voz-estado" id="vozEstado">Pulsa el micro y pregunta</div>
+      <button type="button" class="voz-mic-btn" id="vozMicBtn" aria-label="Escuchar">🎙️</button>
+      <div class="voz-transcript" id="vozTranscript"></div>
+      <div class="voz-respuesta" id="vozRespuesta"></div>
+      <div class="voz-ejemplos">
+        <div class="voz-ejemplos-titulo">Cosas que le puedes pedir</div>
+        ${COMANDOS_VOZ.map(c=>`<div class="voz-ejemplo">${escapeHtml(c)}</div>`).join('')}
+      </div>
+    </div>`;
+  modal.style.display = 'flex';
+  modal.querySelector('.voz-modal-close').addEventListener('click', ()=>{
+    modal.style.display = 'none';
+    modal.innerHTML = '';
+    if(window.speechSynthesis) speechSynthesis.cancel();
+  });
+  document.getElementById('vozMicBtn').addEventListener('click', escucharComandoVoz);
+}
+
+const panelVozBtnEl = document.getElementById('panelVozBtn');
+if(panelVozBtnEl) panelVozBtnEl.addEventListener('click', abrirPanelVoz);
 
 /* Wiring compartido por Día/Semana/Mes(modal): puede haber varios compositores/listas de notas a
    la vez en el mismo contenedor (Semana tiene 7), cada uno sabe su fecha por data-fecha. */
