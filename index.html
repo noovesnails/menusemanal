@@ -252,6 +252,13 @@
   .dot.paqui{background:var(--paqui);} .dot.sole{background:var(--sole);} .dot.eva{background:var(--eva);} .dot.marta{background:var(--marta);}
   .meal{margin-bottom:10px;}
   .meal:last-child{margin-bottom:0;}
+  /* .meal-icon y .persona-ciudad solo existen de verdad en modo tablet (tarjetas estilo Home
+     Assistant, ver más abajo); en móvil no se ven y .meal-text-wrap es transparente a la
+     maquetación (display:contents) para que .meal-label y .meal-body sigan siendo hijos directos
+     de .meal tal cual estaban antes — cero cambio visual en móvil. */
+  .meal-icon{display:none;}
+  .meal-text-wrap{display:contents;}
+  .persona-ciudad{display:none;}
   .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
   .meal-body{display:flex;align-items:center;gap:10px;}
   .meal-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
@@ -661,6 +668,20 @@
     font-size:.85rem; font-weight:700; color:var(--ink); background:var(--card); border:1px solid var(--line);
     border-radius:999px; padding:6px 14px; box-shadow:var(--shadow-1);}
 
+  /* Franja de tiempo (issue "panel tipo Home Assistant"): oculta de serie (también en modo tablet
+     si aún no ha llegado ningún dato, ver renderTiempo), visible y en fila solo cuando tiene algo
+     que enseñar. Mismo ancho máximo y márgenes que <main> para quedar alineada con el contenido. */
+  .tiempo-tiras{display:none;}
+  html.vista-tablet .tiempo-tiras:not(:empty){display:flex; gap:10px; flex-wrap:wrap;
+    padding:10px 32px 0; max-width:1180px; margin-left:auto; margin-right:auto;}
+  .weather-pill{display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid var(--line);
+    border-radius:16px; padding:8px 16px 8px 12px; box-shadow:var(--shadow-1); min-width:150px;}
+  .weather-pill .wicon{font-size:1.5rem; line-height:1;}
+  .weather-pill .wtext{display:flex; flex-direction:column; gap:1px; min-width:0;}
+  .weather-pill .wplace{font-size:.64rem; letter-spacing:.04em; text-transform:uppercase; color:var(--muted);}
+  .weather-pill .wtemp{font-weight:700; font-size:1.15rem; display:flex; align-items:baseline; gap:6px; font-variant-numeric:tabular-nums;}
+  .weather-pill .wtemp .wrange{font-size:.68rem; font-weight:500; color:var(--muted);}
+
   /* Con la cabecera oculta ya no hace falta tanto aire arriba del todo; y con menos margen entre
      filas (ver también abajo) queda más sitio para el calendario. */
   html.vista-tablet main{padding:8px 32px 20px; max-width:1180px; margin-left:auto; margin-right:auto;}
@@ -674,6 +695,24 @@
   html.vista-tablet .menu-cards::-webkit-scrollbar{display:none;}
   html.vista-tablet .menu-cards .card{flex:0 0 auto; width:min(420px, 86vw); scroll-snap-align:start; margin-bottom:0;}
   html.vista-tablet .menu-cards .empty{width:100%;}
+
+  /* Tarjetas de persona estilo Home Assistant (issue "panel tipo Home Assistant"): cada plato pasa
+     de un bloque de texto corrido a una fila icono + etiqueta/valor, como una fila de entidad de
+     HA — más ordenado y más fácil de leer de lejos en la tablet de la cocina. Reutiliza el mismo
+     HTML que el móvil (meal-icon/meal-text-wrap ya existen siempre, ver CSS base), solo cambia
+     cómo se maquetan aquí. */
+  html.vista-tablet .person{gap:10px;}
+  html.vista-tablet .persona-ciudad{display:inline-block; font-size:.62rem; letter-spacing:.03em;
+    text-transform:uppercase; color:var(--muted); background:var(--line); padding:2px 8px; border-radius:999px;}
+  html.vista-tablet .meal{display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap;
+    margin-bottom:0; padding:12px 0; border-top:1px solid var(--line);}
+  html.vista-tablet .meal:first-of-type{border-top:none; padding-top:2px;}
+  html.vista-tablet .meal-icon{display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+    width:36px; height:36px; border-radius:10px; background:var(--accent-soft); font-size:1.05rem;}
+  html.vista-tablet .meal-text-wrap{display:block; flex:1; min-width:0;}
+  html.vista-tablet .meal-label{margin-bottom:1px;}
+  html.vista-tablet .meal-title{font-size:.92rem;}
+  html.vista-tablet .meal .recipe{flex-basis:100%; margin-left:48px;}
 
   /* Calendario → Semana: mismo criterio, los 7 días uno al lado del otro con el dedo en vez de en
      lista vertical. Mes ya es una cuadrícula y Día es uno solo, ninguno de los dos lo necesita. */
@@ -754,6 +793,11 @@
 
 <div class="daypicker" id="dayPicker"></div>
 
+<!-- Franja de tiempo, solo visible en modo tablet (ver CSS html.vista-tablet #tiempoTiras):
+     vive fuera de los <main> de cada pestaña para quedarse visible se mire Menú, Calendario,
+     Nevera, Compra, Peso o Yo — igual que un panel de verdad, no solo la vista de comidas. -->
+<div class="tiempo-tiras" id="tiempoTiras"></div>
+
 <main id="viewMenu"></main>
 <main id="viewCalendario" style="display:none"></main>
 <main id="viewNevera" style="display:none"></main>
@@ -802,7 +846,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.26.0";
+const APP_VERSION = "v2.27.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -810,6 +854,7 @@ const APP_VERSION = "v2.26.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-25", texto:"En tablet, el Menú semanal se rediseña al estilo de un panel doméstico: cada plato lleva su icono, las tarjetas de persona muestran su ciudad, y arriba del todo hay una franja con el tiempo en directo de Alboraya y Valencia (actualizado cada 30 minutos). En móvil no cambia nada." },
   { fecha:"2026-10-25", texto:"El calendario laboral de Nuria se simplifica: ahora libra viernes, sábado y domingo cada semana (franja verde), sin depender ya del cuadrante anual de la empresa." },
   { fecha:"2026-10-25", texto:"Corregido: en una tablet que se queda encendida días enteros sin recargar, la app ya avanza sola al día actual al pasar la medianoche, en vez de quedarse clavada en el día de ayer hasta que alguien lo cambiaba a mano." },
   { fecha:"2026-10-18", texto:"Nueva pestaña Peso: composición corporal con un maniquí interactivo (cintura y cadera en verde o rojo según suban o bajen) y gráficas de masa muscular, masa grasa, agua, grasa visceral y edad metabólica, por ahora con los datos de Eva." },
@@ -908,7 +953,20 @@ const PERSONAS = {
   paqui:{ nombre:"Paqui" },
   sole:{ nombre:"Sole" },
   eva:{ nombre:"Eva" },
-  marta:{ nombre:"Marta" }
+  marta:{ nombre:"Marta" },
+};
+
+/* Ciudad de cada persona, para la franja de tiempo de la vista tablet (issue "panel tipo Home
+   Assistant"): Pedro, Nuria y Rocío están en Alboraya; el resto, en Valencia capital. Coordenadas
+   para Open-Meteo (sin API key, pensado para pedirse directo desde el navegador). */
+const UBICACION_PERSONA = {
+  pedro:{ ciudad:"Alboraya", lat:39.4453, lon:-0.3573 },
+  nuria:{ ciudad:"Alboraya", lat:39.4453, lon:-0.3573 },
+  rocio:{ ciudad:"Alboraya", lat:39.4453, lon:-0.3573 },
+  paqui:{ ciudad:"Valencia", lat:39.4699, lon:-0.3763 },
+  sole:{ ciudad:"Valencia", lat:39.4699, lon:-0.3763 },
+  eva:{ ciudad:"Valencia", lat:39.4699, lon:-0.3763 },
+  marta:{ ciudad:"Valencia", lat:39.4699, lon:-0.3763 }
 };
 
 /* Calendario laboral: antes era un cuadrante anual con fechas sueltas (festivos, vacaciones,
@@ -2865,7 +2923,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'arreglado que la tablet de la cocina se quedara en el día de ayer si pasaba la noche encendida, y el calendario de Nuria ahora libra viernes, sábado y domingo en verde, más sencillo 🗓️✅';
+let avisoNovedadTexto = 'la tablet de la cocina estrena panel: iconos en cada plato, ciudad en cada tarjeta y el tiempo de Alboraya y Valencia en directo arriba del todo 🌤️🍽️';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -3235,6 +3293,81 @@ function actualizarVistaTablet(){
 actualizarVistaTablet();
 window.addEventListener('resize', actualizarVistaTablet);
 
+/* ---------- TIEMPO (franja de la vista tablet, estilo Home Assistant) ----------
+   Open-Meteo: sin API key, pensado para pedirse directo desde el navegador (CORS abierto) — no
+   hace falta backend propio, encaja con el resto de la app. Solo hay 2 ciudades en juego (ver
+   UBICACION_PERSONA), así que se piden una vez cada una y se cachean en memoria + localStorage
+   (con su hora) para no perder el dato si se recarga la página, y se refrescan cada 30 min — el
+   tiempo no cambia tan rápido como para pedirlo más a menudo, y esto vive en una tablet encendida
+   todo el día. Si falla (sin conexión, Open-Meteo caído) se enseña el último dato bueno en caché;
+   si no hay ni eso, la pastilla de esa ciudad simplemente no se pinta, nunca un hueco roto. */
+let tiempoCache = {};
+try{ tiempoCache = JSON.parse(localStorage.getItem('menuSemanalTiempoCache') || '{}'); }catch(_){ tiempoCache = {}; }
+
+const TIEMPO_ICONOS = [
+  [[0], '☀️'], [[1,2], '⛅'], [[3], '☁️'], [[45,48], '🌫️'],
+  [[51,53,55,56,57], '🌦️'], [[61,63,65,66,67,80,81,82], '🌧️'],
+  [[71,73,75,77,85,86], '❄️'], [[95,96,99], '⛈️'],
+];
+function iconoTiempo(codigo){
+  const hit = TIEMPO_ICONOS.find(([codigos]) => codigos.includes(codigo));
+  return hit ? hit[1] : '🌡️';
+}
+
+async function cargarTiempoCiudad(ciudad, lat, lon){
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
+      + `&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min`
+      + `&timezone=Europe%2FMadrid&forecast_days=1`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    tiempoCache[ciudad] = {
+      actual: Math.round(data.current.temperature_2m),
+      max: Math.round(data.daily.temperature_2m_max[0]),
+      min: Math.round(data.daily.temperature_2m_min[0]),
+      codigo: data.current.weather_code,
+      actualizado: Date.now(),
+    };
+    localStorage.setItem('menuSemanalTiempoCache', JSON.stringify(tiempoCache));
+    renderTiempo();
+  }catch(e){
+    console.warn('No se pudo cargar el tiempo de ' + ciudad, e);
+  }
+}
+
+function cargarTiempoSiToca(){
+  const TREINTA_MIN = 30 * 60 * 1000;
+  const ciudades = new Map();
+  Object.values(UBICACION_PERSONA).forEach(u => { if(!ciudades.has(u.ciudad)) ciudades.set(u.ciudad, u); });
+  ciudades.forEach((u, ciudad) => {
+    const cache = tiempoCache[ciudad];
+    if(!cache || (Date.now() - cache.actualizado) > TREINTA_MIN) cargarTiempoCiudad(ciudad, u.lat, u.lon);
+  });
+}
+
+function renderTiempo(){
+  const el = document.getElementById('tiempoTiras');
+  if(!el) return;
+  const ciudades = new Map();
+  Object.values(UBICACION_PERSONA).forEach(u => { if(!ciudades.has(u.ciudad)) ciudades.set(u.ciudad, u); });
+  el.innerHTML = Array.from(ciudades.keys()).map(ciudad => {
+    const c = tiempoCache[ciudad];
+    if(!c) return '';
+    return `<div class="weather-pill">
+      <span class="wicon">${iconoTiempo(c.codigo)}</span>
+      <span class="wtext">
+        <span class="wplace">${ciudad}</span>
+        <span class="wtemp">${c.actual}° <span class="wrange">${c.min}° / ${c.max}°</span></span>
+      </span>
+    </div>`;
+  }).join('');
+}
+
+renderTiempo(); // pinta de entrada lo que hubiera en caché, antes de que responda la red
+cargarTiempoSiToca();
+setInterval(cargarTiempoSiToca, 30 * 60 * 1000);
+
 /* Indicador de batería (solo visible en modo tablet, vía CSS — ver html.vista-tablet
    .bateria-indicador). La Battery Status API solo existe en navegadores Chromium (incluido el
    WebView de Android que monta la tablet); Safari y Firefox no la tienen, así que en el móvil de
@@ -3455,13 +3588,22 @@ const ICONOS_INGREDIENTE = [
   [/queso|yogur|leche|kéfir/i, "🧀"],
   [/arroz|pasta|quinoa|pan\b/i, "🌾"],
   [/aceite|vinagre|sal\b|perejil|especias|ajo/i, "🫒"],
-  [/zanahoria|puerro|calabaz|brócoli|espinaca|tomate|pimiento|cebolla|patata|boniato|champiñ|aceituna|calabacín|calabacin|verdura/i, "🥕"],
+  [/zanahoria|puerro|calabaz|brócoli|espinaca|tomate|pimiento|cebolla|patata|boniato|champiñ|aceituna|calabacín|calabacin|berenjena|verdura/i, "🥕"],
   [/almendra|nuez|nueces|semilla|frutos secos/i, "🥜"],
   [/manzana|pera|plátano|fruta|kiwi|naranja/i, "🍎"]
 ];
 function iconoIngrediente(nombre){
   const hit = ICONOS_INGREDIENTE.find(([re]) => re.test(nombre));
   return hit ? hit[1] : "🛒";
+}
+/* Mismo truco que iconoIngrediente, pero para el título de un plato entero en vez de un
+   ingrediente suelto (vista tablet, tarjetas estilo Home Assistant): el título de un plato suele
+   mencionar su ingrediente principal ("Pollo al horno...", "Merluza al vapor..."), así que la
+   misma tabla de patrones funciona igual de bien ahí. Cuando no reconoce nada, un plato de comida
+   no es "🛒" (eso solo tiene sentido en la lista de la compra) — cae en el plato genérico. */
+function iconoPlato(titulo){
+  const icono = iconoIngrediente(titulo);
+  return icono === "🛒" ? "🍽️" : icono;
 }
 
 /* Productos con marca y tienda que puso la nutri en el PDF (de momento solo Eva): en vez del
@@ -3751,10 +3893,13 @@ function renderMenu(){
           : `<button type="button" class="media-add-btn" data-clave="${claveAttr}" title="Añadir foto o vídeo">📷</button>`);
     return `
     <div class="meal">
-      <div class="meal-label">${label}</div>
-      <div class="meal-body">
-        ${mediaHtml}
-        <div class="meal-title">${m.title}</div>
+      <span class="meal-icon" aria-hidden="true">${iconoPlato(m.title)}</span>
+      <div class="meal-text-wrap">
+        <div class="meal-label">${label}</div>
+        <div class="meal-body">
+          ${mediaHtml}
+          <div class="meal-title">${m.title}</div>
+        </div>
       </div>
       ${m.recipe ? (()=>{
         const r = resolverReceta(m.recipe, modoReceta);
@@ -3828,13 +3973,16 @@ function renderMenu(){
       </div>`;
     }).join('');
   };
-  const block = (who) => `
+  const block = (who) => {
+    const ubicacion = UBICACION_PERSONA[who];
+    return `
     <div class="card">
-      <div class="person"><span class="dot ${who}"></span>${PERSONAS[who].nombre}</div>
+      <div class="person"><span class="dot ${who}"></span>${PERSONAS[who].nombre}${ubicacion ? `<span class="persona-ciudad">${ubicacion.ciudad}</span>` : ''}</div>
       ${meal(day[who].comida,'Comida')}
       ${meal(day[who].cena,'Cena')}
       ${opciones(who)}
     </div>`;
+  };
   const visibles = Object.keys(PERSONAS).filter(id=>day[id] && personasVisibles.has(id));
   // Las tarjetas van envueltas en .menu-cards para poder convertirlas en una fila de
   // desplazamiento horizontal en modo tablet sin que el interruptor Menú/Calendario de arriba
