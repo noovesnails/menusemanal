@@ -13,6 +13,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Menú semanal">
+<!-- Inter: tipografía del panel en modo tablet (issue "panel tipo Home Assistant", 2ª vuelta —
+     "cambia el tipo de letra, más serio"). Solo se ve en tablet (ver html.vista-tablet body en el
+     CSS de abajo), pero se carga siempre porque no hay forma de cargar una hoja de Google Fonts
+     condicionalmente sin JS bloqueante; es una descarga pequeña y no afecta al aspecto en móvil. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
   /* Sistema de 5 temas elegibles desde Yo (issue de cambio de look + accesibilidad), aplicados vía
      [data-tema] en <html> y guardados solo en localStorage (preferencia de dispositivo, como
@@ -259,6 +265,12 @@
   .meal-icon{display:none;}
   .meal-text-wrap{display:contents;}
   .persona-ciudad{display:none;}
+  /* Resumen (tiles) y Agenda familiar (issue "panel tipo Home Assistant", 2ª vuelta): widgets
+     nuevos, solo tienen sentido con sitio de sobra, así que de serie van ocultos y .menu-layout es
+     un bloque normal (la tarjeta de menú sigue ocupando todo el ancho, como siempre). En tablet se
+     revelan como columna lateral (ver html.vista-tablet más abajo). */
+  .resumen-tiles{display:none;}
+  .agenda-familiar{display:none;}
   .meal-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px;}
   .meal-body{display:flex;align-items:center;gap:10px;}
   .meal-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
@@ -660,7 +672,43 @@
      ocupan arriba la franja de tiempo u otros bloques — si algún día crece (p. ej. más ciudades
      en el tiempo), este cálculo se ajusta solo. El resto de pestañas (Nevera, Compra...) no llevan
      flex:1 así que siguen con su alto natural y el scroll de siempre si no caben enteras. */
-  html.vista-tablet body{padding-bottom:0; padding-left:104px; display:flex; flex-direction:column; min-height:100vh;}
+  /* Tema propio de la tablet de cocina (issue "panel tipo Home Assistant", 2ª vuelta: "necesito
+     algo más profesional, azul oscuro, letras blancas"): redefine los mismos tokens de color que
+     ya usa toda la app, así que CADA componente existente (tarjetas, botones, calendario...)
+     adopta el look nuevo sin tener que reescribir su CSS — es la misma mecánica que ya usan los 5
+     temas elegibles en "Yo" (:root[data-tema=...]), solo que este se aplica siempre en tablet, sin
+     depender de qué tema tenga elegido ese dispositivo (el panel de la cocina es un mueble de la
+     casa, no la preferencia de una persona). :root.vista-tablet empata en especificidad con
+     :root[data-tema="x"] (dos selectores de clase/atributo cada uno) y gana por ir declarado
+     después en la hoja de estilos — por eso este bloque tiene que seguir viviendo aquí abajo, no
+     subirlo junto a los temas de arriba. Los 7 colores de persona conservan el mismo tono (hue) que
+     ya tenían en el resto de la app — pedro=143, nuria=58.7, rocio=252.4, paqui=315.7, sole=4.4,
+     eva=189.7, marta=75.4 — solo re-tonados en luminosidad para leerse bien sobre azul marino, así
+     que cada quien sigue siendo "su color" de siempre. */
+  :root.vista-tablet{
+    --bg:radial-gradient(1100px 620px at 14% -10%, oklch(34% 0.08 235 / 45%), transparent 60%), linear-gradient(180deg, oklch(15% 0.05 260), oklch(19% 0.045 255) 480px);
+    --card:oklch(26% 0.045 255 / 97%); --ink:oklch(97% 0.008 255); --muted:oklch(74% 0.02 255 / 82%);
+    --accent:oklch(74% 0.14 235); --accent-soft:oklch(74% 0.14 235 / 18%); --accent-btn:oklch(58% 0.14 235);
+    --line:oklch(100% 0 0 / 10%);
+    --pedro:oklch(76% 0.1 143.2); --pedro-soft:oklch(76% 0.1 143.2 / 20%);
+    --nuria:oklch(78% 0.11 58.7); --nuria-soft:oklch(78% 0.11 58.7 / 20%);
+    --rocio:oklch(76% 0.1 252.4); --rocio-soft:oklch(76% 0.1 252.4 / 20%);
+    --paqui:oklch(78% 0.11 315.7); --paqui-soft:oklch(78% 0.11 315.7 / 20%);
+    --sole:oklch(76% 0.12 4.4); --sole-soft:oklch(76% 0.12 4.4 / 20%);
+    --eva:oklch(78% 0.09 189.7); --eva-soft:oklch(78% 0.09 189.7 / 20%);
+    --marta:oklch(80% 0.1 75.4); --marta-soft:oklch(80% 0.1 75.4 / 20%);
+    --ok:oklch(74% 0.14 155); --bad:oklch(70% 0.16 25); --serie2:oklch(74% 0.12 230);
+    --shadow-1:0 1px 0 oklch(100% 0 0 / 5%) inset, 0 8px 18px oklch(0% 0 0 / 35%);
+    --shadow-2:0 1px 0 oklch(100% 0 0 / 6%) inset, 0 12px 26px oklch(0% 0 0 / 40%);
+    --shadow-3:0 1px 0 oklch(100% 0 0 / 7%) inset, 0 18px 36px oklch(0% 0 0 / 48%);
+    color-scheme:dark;
+  }
+  /* "cristal" es el único tema con backdrop-filter en .card (ver [data-tema="cristal"] .card más
+     arriba): sobre fondo oscuro ese cristal esmerilado deja de leerse bien, así que en tablet se
+     desactiva siempre, tenga el dispositivo el tema que tenga guardado. */
+  html.vista-tablet .card,html.vista-tablet nav{backdrop-filter:none; -webkit-backdrop-filter:none;}
+  html.vista-tablet body{padding-bottom:0; padding-left:104px; display:flex; flex-direction:column; min-height:100vh;
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 
   html.vista-tablet nav{position:fixed; top:0; bottom:0; left:0; right:auto; width:104px; height:100%;
     flex-direction:column; justify-content:flex-start; gap:6px; padding:16px 10px;
@@ -730,6 +778,40 @@
   html.vista-tablet .meal-label{margin-bottom:1px;}
   html.vista-tablet .meal-title{font-size:.92rem;}
   html.vista-tablet .meal .recipe{flex-basis:100%; margin-left:48px;}
+
+  /* Resumen (tiles) + Agenda familiar (issue "panel tipo Home Assistant", 2ª vuelta): dos ideas
+     tomadas de los dashboards de HA — un "tile card" (icono + número grande + etiqueta) para un
+     vistazo rápido, y una tarjeta de agenda que combina calendario + avisos en una tira, en vez de
+     tener que entrar a Calendario para ver qué toca. La agenda vive al lado de las tarjetas de
+     menú en vez de arriba del todo (como el tiempo) porque es información del día a día de la
+     familia, no algo que tenga sentido ver desde Nevera o Peso. */
+  html.vista-tablet .resumen-tiles{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+  html.vista-tablet .tile{display:flex; align-items:center; gap:12px; background:var(--card);
+    border:1px solid var(--line); border-radius:16px; padding:12px 16px; box-shadow:var(--shadow-1); min-width:168px;}
+  html.vista-tablet .tile-icon{width:36px; height:36px; border-radius:11px; background:var(--accent-soft);
+    color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:1.05rem; flex:0 0 auto;}
+  html.vista-tablet .tile-icon-nota{background:var(--nuria-soft); color:var(--nuria);}
+  html.vista-tablet .tile-num{font-weight:800; font-size:1.3rem; line-height:1; font-variant-numeric:tabular-nums;}
+  html.vista-tablet .tile-label{font-size:.66rem; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-top:2px;}
+
+  html.vista-tablet .menu-layout{display:grid; grid-template-columns:1fr minmax(260px, 320px); gap:18px; align-items:start;}
+  html.vista-tablet .agenda-familiar{display:flex; flex-direction:column; background:var(--card);
+    border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow-1); padding:16px 0 8px;}
+  html.vista-tablet .agenda-cabecera{display:flex; align-items:center; gap:10px; padding:0 18px 12px;
+    font-weight:700; font-size:.98rem;}
+  html.vista-tablet .agenda-icono{font-size:1.1rem;}
+  html.vista-tablet .agenda-empty{padding:4px 18px 14px; font-size:.82rem; color:var(--muted);}
+  html.vista-tablet .arow{display:flex; align-items:flex-start; gap:12px; padding:10px 18px; border-top:1px solid var(--line);}
+  html.vista-tablet .arow:first-of-type{border-top:none;}
+  html.vista-tablet .arow-icon{width:30px; height:30px; border-radius:9px; background:var(--accent-soft);
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:.92rem; margin-top:1px;}
+  html.vista-tablet .arow-text{min-width:0; flex:1;}
+  html.vista-tablet .arow-day{font-size:.64rem; letter-spacing:.04em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:1px;}
+  html.vista-tablet .arow-desc{font-size:.82rem; line-height:1.3;}
+  html.vista-tablet .arow-who{font-size:.68rem; color:var(--muted); margin-top:2px;}
+  @media (max-width:980px){
+    html.vista-tablet .menu-layout{grid-template-columns:1fr;}
+  }
 
   /* Calendario → Semana: mismo criterio, los 7 días uno al lado del otro con el dedo en vez de en
      lista vertical. Mes ya es una cuadrícula y Día es uno solo, ninguno de los dos lo necesita. */
@@ -872,7 +954,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.27.1";
+const APP_VERSION = "v2.28.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -880,6 +962,7 @@ const APP_VERSION = "v2.27.1";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-25", texto:"El panel de tablet se pone serio de verdad: fondo azul marino, letras blancas, tipografía Inter en vez de la redondeada de antes. Dos widgets nuevos en el Menú: un resumen con cuántos ingredientes quedan por comprar hoy y cuántas notas hay próximas, y una tarjeta de Agenda familiar con los próximos avisos del calendario (médico, cumpleaños, cole...) ordenados por fecha." },
   { fecha:"2026-10-25", texto:"Corregido: en Calendario → Mes (vista tablet), el mes se recortaba por abajo desde que se añadió la franja de tiempo. Y en cualquier vista, cuando un día tenía 2 notas, la segunda quedaba escondida detrás del globito de aviso — ahora se ven las dos. De paso, 5 iconos de nota nuevos: cumpleaños, colegio, deporte, viaje y pago." },
   { fecha:"2026-10-25", texto:"En tablet, el Menú semanal se rediseña al estilo de un panel doméstico: cada plato lleva su icono, las tarjetas de persona muestran su ciudad, y arriba del todo hay una franja con el tiempo en directo de Alboraya y Valencia (actualizado cada 30 minutos). En móvil no cambia nada." },
   { fecha:"2026-10-25", texto:"El calendario laboral de Nuria se simplifica: ahora libra viernes, sábado y domingo cada semana (franja verde), sin depender ya del cuadrante anual de la empresa." },
@@ -2950,7 +3033,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'arreglado que el mes del calendario se recortara por abajo en la tablet, y que la segunda nota de un día se quedara escondida — ya se ven las dos, y hay 5 iconos de nota nuevos 📝✅';
+let avisoNovedadTexto = 'el panel de la cocina estrena look serio: azul marino, letras blancas, y una Agenda familiar con lo próximo del calendario de un vistazo 🌙🗓️';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -3906,6 +3989,71 @@ function cambiarVistaMenu(v){
   if(vistaMenu === 'calendario') renderCalendario(); else renderMenu();
 }
 
+/* Cuántos ingredientes del menú de hoy siguen sin tacharse en Nevera y sin marcar "comprado" en
+   Compra (issue "panel tipo Home Assistant": tile de resumen arriba del Menú, en tablet). */
+function cuentaCompraPendienteHoy(){
+  const day = WEEK[currentDay];
+  const todosHoy = fridgeItems(day);
+  const dayChecks = checks[day.date] || {};
+  const dayComprado = comprado[day.date] || {};
+  return todosHoy.filter(({key}) => !dayChecks[key] && !dayComprado[key]).length;
+}
+
+/* Notas del calendario de hoy en adelante, de todas las fechas que tengan alguna (propias +
+   Siri), fusionadas vía notasDelDia (igual que hace la ficha de un día) y ordenadas por fecha y
+   hora — alimenta la tarjeta "Agenda familiar" del Menú en tablet (issue "panel tipo Home
+   Assistant": sugerencia de un widget de agenda/to-do, concepto que toma prestado de Home
+   Assistant, donde un dashboard así suele combinar calendario + tareas en una sola tira). */
+function agendaProximasNotas(limite){
+  limite = limite || 5;
+  const hoy = todayISOReal();
+  const fechas = new Set([...Object.keys(notasCalendario), ...notasPanel.map(n=>n.fecha)]);
+  const resultado = [];
+  fechas.forEach(iso=>{
+    if(iso < hoy) return;
+    notasDelDia(iso).forEach(n => resultado.push(Object.assign({fecha:iso}, n)));
+  });
+  resultado.sort((a,b)=> (a.fecha+a.creada).localeCompare(b.fecha+b.creada));
+  return resultado.slice(0, limite);
+}
+function etiquetaFechaAgenda(iso){
+  const hoy = todayISOReal();
+  if(iso === hoy) return 'Hoy';
+  const manana = new Date(hoy+"T00:00:00");
+  manana.setDate(manana.getDate()+1);
+  if(iso === manana.toISOString().slice(0,10)) return 'Mañana';
+  const d = new Date(iso+"T00:00:00");
+  return `${NOMBRES_DIA_SEMANA[d.getDay()]} ${d.getDate()}`;
+}
+function resumenTilesHtml(){
+  const pendientes = cuentaCompraPendienteHoy();
+  const notasProximas = agendaProximasNotas(99).length;
+  return `
+  <div class="tile">
+    <span class="tile-icon">🛒</span>
+    <div><div class="tile-num">${pendientes}</div><div class="tile-label">Por comprar hoy</div></div>
+  </div>
+  <div class="tile">
+    <span class="tile-icon tile-icon-nota">🗓️</span>
+    <div><div class="tile-num">${notasProximas}</div><div class="tile-label">Notas próximas</div></div>
+  </div>`;
+}
+function agendaFamiliarHtml(){
+  const notas = agendaProximasNotas(5);
+  if(!notas.length) return `<div class="agenda-empty">Sin notas próximas en el calendario.</div>`;
+  return notas.map(n=>{
+    const tipo = TIPOS_NOTA[n.tipo] || TIPOS_NOTA.otro;
+    return `<div class="arow">
+      <span class="arow-icon">${tipo.icono}</span>
+      <div class="arow-text">
+        <div class="arow-day">${etiquetaFechaAgenda(n.fecha)}${n.fecha===todayISOReal()?' · '+fmtHora(n.creada):''}</div>
+        <div class="arow-desc">${escapeHtml(n.texto)}</div>
+        <div class="arow-who">${autorNotaHtml(n)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function renderMenu(){
   const day = WEEK[currentDay];
   const el = document.getElementById('viewMenu');
@@ -4019,9 +4167,20 @@ function renderMenu(){
   // Las tarjetas van envueltas en .menu-cards para poder convertirlas en una fila de
   // desplazamiento horizontal en modo tablet sin que el interruptor Menú/Calendario de arriba
   // se vea arrastrado a la misma fila (issue "vista tablet: tarjetas y calendario").
-  el.innerHTML = vistaMenuToggleHtml() + `<div class="menu-cards">` + (visibles.length
-    ? visibles.map(block).join('')
-    : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) + `</div>`;
+  // .resumen-tiles y .agenda-familiar son nuevos (issue "panel tipo Home Assistant", 2ª vuelta):
+  // en móvil quedan ocultos por CSS (ver base .tile/.agenda-familiar{display:none}), en tablet
+  // .menu-layout los coloca como columna de agenda a la derecha de las tarjetas.
+  el.innerHTML = vistaMenuToggleHtml() +
+    `<div class="resumen-tiles">${resumenTilesHtml()}</div>` +
+    `<div class="menu-layout">` +
+      `<div class="menu-cards">` + (visibles.length
+        ? visibles.map(block).join('')
+        : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) + `</div>` +
+      `<div class="agenda-familiar">
+        <div class="agenda-cabecera"><span class="agenda-icono">🗓️</span> Agenda familiar</div>
+        ${agendaFamiliarHtml()}
+      </div>` +
+    `</div>`;
   wireVistaMenuToggle(el);
 
   el.querySelectorAll('.opcion-card').forEach(card=>{
