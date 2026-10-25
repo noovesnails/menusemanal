@@ -802,7 +802,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.25.0";
+const APP_VERSION = "v2.26.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -810,6 +810,8 @@ const APP_VERSION = "v2.25.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-25", texto:"El calendario laboral de Nuria se simplifica: ahora libra viernes, sábado y domingo cada semana (franja verde), sin depender ya del cuadrante anual de la empresa." },
+  { fecha:"2026-10-25", texto:"Corregido: en una tablet que se queda encendida días enteros sin recargar, la app ya avanza sola al día actual al pasar la medianoche, en vez de quedarse clavada en el día de ayer hasta que alguien lo cambiaba a mano." },
   { fecha:"2026-10-18", texto:"Nueva pestaña Peso: composición corporal con un maniquí interactivo (cintura y cadera en verde o rojo según suban o bajen) y gráficas de masa muscular, masa grasa, agua, grasa visceral y edad metabólica, por ahora con los datos de Eva." },
   { fecha:"2026-10-18", texto:"En Nevera y Compra, los ingredientes con marca y tienda recomendada por la nutricionista muestran ahora su foto en vez del icono genérico." },
   { fecha:"2026-10-18", texto:"Las opciones de desayuno y almuerzo pueden llevar ya fotos de ejemplo de la nutricionista, además de la foto propia que cada persona puede añadir." },
@@ -909,55 +911,26 @@ const PERSONAS = {
   marta:{ nombre:"Marta" }
 };
 
-/* Calendario laboral: cuadrante anual de turnos (festivos, vacaciones, libranzas...) que la
-   empresa entrega en PDF, con cada día coloreado según su tipo. Por ahora solo se usa para Nuria
-   (cuadrante de BALLESTER SEGARRA,CARMEN(SUSTITUTA), vareser/metrovalencia, año 2026), pero la
-   clave es el personId — no "Nuria" a secas — para que si algún día otra persona cubre su puesto
-   con su propio id, baste con añadir su entrada aquí sin tocar nada del resto de la app. Los
-   colores son los mismos del PDF (paleta Office: verde/amarillo/azul/violeta/rojo) para que una
-   mirada rápida al calendario baste para identificar el tipo de día, igual que en el PDF original. */
+/* Calendario laboral: antes era un cuadrante anual con fechas sueltas (festivos, vacaciones,
+   libranzas...) sacado de un PDF de la empresa de Nuria. A partir de ahora es más simple y ya no
+   depende de ningún PDF: Nuria libra viernes, sábado y domingo, cada semana, sin excepciones — así
+   que en vez de una tabla de fechas, es una regla fija por día de la semana (0=domingo...6=sábado,
+   igual que Date.getDay()). La clave es el personId — no "Nuria" a secas — para que si algún día
+   otra persona cubre su puesto con su propia regla, baste con añadir su entrada aquí. */
 const ESTADOS_LABORALES = {
-  libranza_semanal:           { nombre:"Libranza semanal",                            color:"#70AD47" },
-  festivo:                    { nombre:"Festivo",                                     color:"#FFD400" },
-  vacaciones:                 { nombre:"Vacaciones",                                  color:"#5B9BD5" },
-  libranza_festivo_trabajado: { nombre:"Libranza por festivo trabajado/descansado",   color:"#7030A0" },
-  dias_compensados:           { nombre:"Día compensado por exceso de horas",          color:"#A42C37" },
+  libranza_semanal: { nombre:"Libranza semanal", color:"#70AD47" },
 };
-const CALENDARIO_LABORAL = {
-  nuria: {
-    "2026-01-02":"libranza_semanal", "2026-01-03":"libranza_semanal", "2026-01-06":"festivo", "2026-01-10":"libranza_semanal", "2026-01-11":"libranza_semanal", "2026-01-12":"libranza_festivo_trabajado",
-    "2026-01-16":"libranza_semanal", "2026-01-17":"libranza_semanal", "2026-01-24":"libranza_semanal", "2026-01-25":"libranza_semanal", "2026-01-30":"libranza_semanal", "2026-01-31":"libranza_semanal",
-    "2026-02-06":"libranza_festivo_trabajado", "2026-02-07":"libranza_semanal", "2026-02-08":"libranza_semanal", "2026-02-13":"libranza_semanal", "2026-02-14":"libranza_semanal", "2026-02-21":"libranza_semanal",
-    "2026-02-22":"libranza_semanal", "2026-02-27":"libranza_semanal", "2026-02-28":"libranza_semanal", "2026-03-06":"libranza_festivo_trabajado", "2026-03-07":"libranza_semanal", "2026-03-08":"libranza_semanal",
-    "2026-03-13":"libranza_semanal", "2026-03-14":"libranza_semanal", "2026-03-21":"libranza_semanal", "2026-03-22":"libranza_semanal", "2026-03-27":"libranza_semanal", "2026-03-28":"libranza_semanal",
-    "2026-04-04":"libranza_semanal", "2026-04-05":"libranza_semanal", "2026-04-06":"festivo", "2026-04-10":"libranza_semanal", "2026-04-11":"libranza_semanal", "2026-04-13":"festivo",
-    "2026-04-18":"libranza_semanal", "2026-04-19":"libranza_semanal", "2026-04-20":"libranza_festivo_trabajado", "2026-04-24":"libranza_semanal", "2026-04-25":"libranza_semanal", "2026-05-02":"libranza_semanal",
-    "2026-05-03":"libranza_semanal", "2026-05-08":"libranza_semanal", "2026-05-09":"libranza_semanal", "2026-05-16":"libranza_semanal", "2026-05-17":"libranza_semanal", "2026-05-22":"libranza_semanal",
-    "2026-05-23":"libranza_semanal", "2026-05-30":"libranza_semanal", "2026-05-31":"libranza_semanal", "2026-06-01":"libranza_festivo_trabajado", "2026-06-05":"libranza_semanal", "2026-06-06":"libranza_semanal",
-    "2026-06-13":"libranza_semanal", "2026-06-14":"libranza_semanal", "2026-06-19":"libranza_semanal", "2026-06-20":"libranza_semanal", "2026-06-24":"festivo", "2026-06-27":"libranza_semanal",
-    "2026-06-28":"libranza_semanal", "2026-07-03":"libranza_semanal", "2026-07-04":"libranza_semanal", "2026-07-11":"libranza_semanal", "2026-07-12":"libranza_semanal", "2026-07-17":"libranza_semanal",
-    "2026-07-18":"libranza_semanal", "2026-07-25":"libranza_semanal", "2026-07-26":"libranza_semanal", "2026-07-31":"libranza_semanal", "2026-08-01":"libranza_semanal", "2026-08-08":"libranza_semanal",
-    "2026-08-09":"libranza_semanal", "2026-08-13":"libranza_festivo_trabajado", "2026-08-14":"libranza_semanal", "2026-08-15":"libranza_semanal", "2026-08-22":"libranza_semanal", "2026-08-23":"libranza_semanal",
-    "2026-08-28":"libranza_semanal", "2026-08-29":"libranza_semanal", "2026-09-01":"vacaciones", "2026-09-02":"vacaciones", "2026-09-03":"vacaciones", "2026-09-04":"vacaciones",
-    "2026-09-05":"vacaciones", "2026-09-06":"vacaciones", "2026-09-07":"vacaciones", "2026-09-08":"vacaciones", "2026-09-09":"vacaciones", "2026-09-10":"vacaciones",
-    "2026-09-11":"vacaciones", "2026-09-12":"vacaciones", "2026-09-13":"vacaciones", "2026-09-14":"vacaciones", "2026-09-15":"vacaciones", "2026-09-16":"vacaciones",
-    "2026-09-17":"vacaciones", "2026-09-18":"vacaciones", "2026-09-19":"vacaciones", "2026-09-20":"vacaciones", "2026-09-21":"vacaciones", "2026-09-22":"vacaciones",
-    "2026-09-23":"vacaciones", "2026-09-24":"vacaciones", "2026-09-25":"vacaciones", "2026-09-26":"vacaciones", "2026-09-27":"vacaciones", "2026-09-28":"vacaciones",
-    "2026-09-29":"vacaciones", "2026-09-30":"vacaciones", "2026-10-01":"vacaciones", "2026-10-03":"libranza_semanal", "2026-10-04":"libranza_semanal", "2026-10-08":"libranza_festivo_trabajado",
-    "2026-10-09":"libranza_semanal", "2026-10-10":"libranza_semanal", "2026-10-17":"libranza_semanal", "2026-10-18":"libranza_semanal", "2026-10-22":"libranza_festivo_trabajado", "2026-10-23":"libranza_semanal",
-    "2026-10-24":"libranza_semanal", "2026-10-31":"libranza_semanal", "2026-11-01":"libranza_semanal", "2026-11-06":"libranza_semanal", "2026-11-07":"libranza_semanal", "2026-11-14":"libranza_semanal",
-    "2026-11-15":"libranza_semanal", "2026-11-20":"libranza_semanal", "2026-11-21":"libranza_semanal", "2026-11-28":"libranza_semanal", "2026-11-29":"libranza_semanal", "2026-12-03":"libranza_festivo_trabajado",
-    "2026-12-04":"libranza_semanal", "2026-12-05":"libranza_semanal", "2026-12-12":"libranza_semanal", "2026-12-13":"libranza_semanal", "2026-12-18":"libranza_semanal", "2026-12-19":"libranza_semanal",
-    "2026-12-25":"festivo", "2026-12-26":"libranza_semanal", "2026-12-27":"libranza_semanal"
-  }
+const REGLA_SEMANAL_LABORAL = {
+  nuria: { dias:[5,6,0], estado:"libranza_semanal" }, // viernes, sábado, domingo
 };
-/* Devuelve el estado laboral del día para quien tenga calendario (hoy solo Nuria), o null si ese
-   día es un día de trabajo normal, no hay dato, o la persona está oculta (botón de visibilidad). */
+/* Devuelve el estado laboral del día para quien tenga regla (hoy solo Nuria), o null si ese día
+   no está marcado, no hay regla para esa persona, o la persona está oculta (botón de visibilidad). */
 function estadoLaboralDelDia(iso, personaId){
   if(!personasVisibles.has(personaId)) return null;
-  const cal = CALENDARIO_LABORAL[personaId];
-  const estado = cal && cal[iso];
-  return estado ? ESTADOS_LABORALES[estado] : null;
+  const regla = REGLA_SEMANAL_LABORAL[personaId];
+  if(!regla) return null;
+  const diaSemana = new Date(iso+"T00:00:00").getDay();
+  return regla.dias.includes(diaSemana) ? ESTADOS_LABORALES[regla.estado] : null;
 }
 
 /* Ciclo de dieta por persona (independientes entre sí). Lo actualiza la skill /nuevo-menu en
@@ -2892,7 +2865,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'menú nuevo de Eva con fotos de los platos, las marcas que recomienda la nutri ya salen con foto en Nevera y Compra, y en Peso hay un maniquí interactivo que enseña cómo va la composición corporal 📸🧍‍♀️📊';
+let avisoNovedadTexto = 'arreglado que la tablet de la cocina se quedara en el día de ayer si pasaba la noche encendida, y el calendario de Nuria ahora libra viernes, sábado y domingo en verde, más sencillo 🗓️✅';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -4014,9 +3987,9 @@ function diaDetalleHtml(iso, opts){
     </div>`;
   };
   // Franja del calendario laboral (de momento solo Nuria): se muestra siempre que haya dato ese
-  // día, tenga o no menú registrado — las vacaciones y festivos son justo los días en que es más
-  // probable que no haya menú apuntado, y son los que más interesa ver de un vistazo.
-  const franjasLaborales = Object.keys(CALENDARIO_LABORAL)
+  // día, tenga o no menú registrado — los días de libranza son justo los que más interesa ver de
+  // un vistazo, tengan o no menú apuntado.
+  const franjasLaborales = Object.keys(REGLA_SEMANAL_LABORAL)
     .map(id => ({ id, info: estadoLaboralDelDia(iso, id) }))
     .filter(x => x.info);
   const numNotas = notasDelDia(iso).length;
@@ -4141,12 +4114,11 @@ function renderMesHtml(){
     const personasConMenu = diaWeek ? visibles.filter(id=>diaWeek[id]) : [];
     const notas = notasDelDia(iso).slice().sort((a,b)=>a.creada.localeCompare(b.creada));
     const primeraNota = notas[0];
-    // Franja de color del calendario laboral (de momento solo Nuria, ver estadoLaboralDelDia):
-    // de un vistazo al mes entero se ve qué días son libranza, festivo, vacaciones... igual que en
-    // el PDF del cuadrante. Si en el futuro hay varias personas con calendario laboral el mismo
-    // día, se queda con la primera (caso que hoy no se da) para no amontonar franjas en una celda
-    // tan pequeña — la ficha del día (al tocar la celda) sí las lista todas.
-    const franjaLaboral = Object.keys(CALENDARIO_LABORAL).map(id=>estadoLaboralDelDia(iso, id)).find(Boolean);
+    // Franja de color del calendario laboral (de momento solo Nuria, ver estadoLaboralDelDia): de
+    // un vistazo al mes entero se ve qué días libra. Si en el futuro hay varias personas con regla
+    // laboral el mismo día, se queda con la primera (caso que hoy no se da) para no amontonar
+    // franjas en una celda tan pequeña — la ficha del día (al tocar la celda) sí las lista todas.
+    const franjaLaboral = Object.keys(REGLA_SEMANAL_LABORAL).map(id=>estadoLaboralDelDia(iso, id)).find(Boolean);
     // Antes solo se veía el icono del tipo de nota en la celda, había que tocar el día para leerla
     // (issue "notas en vista mes"). Ahora un vistazo rápido ya enseña de qué va (la primera, por
     // hora) y un globito con el total cuando hay más de una — el resto se ve completo al tocar la
@@ -5159,11 +5131,27 @@ document.getElementById('refreshBtn').addEventListener('click', async ()=>{
   location.href = location.pathname + '?v=' + Date.now();
 });
 
+/* La tablet de la cocina se queda encendida días enteros sin recargar nunca la página (issue
+   "no aparece el día actual solo en tablet, hay que seleccionarlo a mano"): currentDay se calcula
+   una vez al cargar y se queda clavado ahí, así que al pasar la medianoche la app sigue mostrando
+   el día de ayer hasta que alguien lo cambia a mano en el selector. Solo se corrige hacia delante
+   (si el día mostrado quedó en el pasado): si currentDay es HOY o un día futuro al que alguien ha
+   navegado a propósito (p.ej. para mirar el menú de mañana), no se toca — así esto nunca pisa una
+   navegación manual, solo arregla el caso de quedarse atascado en un día que ya pasó. */
+function avanzarDiaSiToca(){
+  const hoy = todayISOReal();
+  if(WEEK[currentDay] && WEEK[currentDay].date < hoy){
+    currentDay = todayIndex();
+    render();
+  }
+}
+
 /* Si el móvil se queda sin conexión justo tras un cambio, o se cambia de pestaña antes de que
    pasen los 700ms del debounce, esto evita perder ese cambio; y al volver a la app se repasa
    JSONBin por si el otro móvil ha actualizado algo mientras tanto. */
 document.addEventListener('visibilitychange', ()=>{
   if(document.hidden){ flushPendingSave(); return; }
+  avanzarDiaSiToca();
   checkAppVersion();
   autoPullIfIdle();
 });
@@ -5172,9 +5160,12 @@ window.addEventListener('pagehide', flushPendingSave);
 // cada 30s de por vida es un gasto de datos/batería innecesario en una tablet siempre encendida.
 // Solo hace falta comprobarlo al arrancar/retomar la app (visibilitychange de arriba) o al pulsar
 // "Actualizar" (que ya recarga la página entera igualmente). El bucle de 30s se queda solo con el
-// repaso de datos (menú/notas compartidas), que sí interesa que esté siempre al día.
+// repaso de datos (menú/notas compartidas) y el chequeo de medianoche, que sí interesa que estén
+// siempre al día en una tablet que puede llevar encendida y visible toda la noche sin pasar nunca
+// por visibilitychange.
 setInterval(()=>{
   if(document.visibilityState !== 'visible') return;
+  avanzarDiaSiToca();
   autoPullIfIdle();
 }, 30000);
 setTimeout(checkAppVersion, 3000);
