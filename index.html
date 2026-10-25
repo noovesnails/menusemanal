@@ -216,7 +216,7 @@
   [data-tema="oscuro-grande"][data-acento="magenta"]{ --accent:oklch(82% 0.156 330); --accent-soft:oklch(25% 0.07 330); --accent-btn:oklch(45% 0.193 330); }
 
   *{box-sizing:border-box;}
-  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:76px;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:76px;}
 
   /* Micro-interacciones baratas (solo transform/opacity, nada de blur ni sombras animadas en bucle)
      para que tocar algo se sienta con respuesta, incluso en hardware limitado. */
@@ -561,8 +561,15 @@
      suspensivos si no entra. El resto de notas del día se ven completas al tocar la celda (modal). */
   .mes-celda-badge{position:absolute;top:2px;right:2px;background:var(--accent-btn, var(--accent));
     color:#fff;font-size:.56rem;font-weight:700;padding:2px 5px;border-radius:999px;line-height:1.3;z-index:2;}
+  /* Dos variantes del globito, una visible según el modo (ver celdaHtml): en móvil la celda es un
+     cuadrado diminuto y solo cabe 1 línea de nota, así que el globito lleva el TOTAL de notas del
+     día; en tablet caben 2 líneas, así que el globito solo hace falta si sobra alguna más (+N). */
+  .mes-celda-badge-mas{display:none;}
   .mes-celda-nota-preview{width:100%;font-size:.6rem;color:var(--ink);background:rgba(255,255,255,.55);
     border-radius:4px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;}
+  /* Solo la 1ª línea de nota en móvil — la 2ª se revela en tablet (ver html.vista-tablet más abajo),
+     donde la celda ya no es cuadrada y sobra alto de sobra para las dos. */
+  .mes-celda-nota-preview ~ .mes-celda-nota-preview{display:none;}
   /* Franja del calendario laboral (verde/amarillo/azul/violeta/rojo, igual que en el PDF del
      cuadrante): una barra fina pegada arriba de la celda, suficiente para distinguir el tipo de
      día de un vistazo sin competir con el número ni los chips de debajo. */
@@ -601,6 +608,11 @@
   .cal-nota-recordatorio .cal-nota-sticker{background:#fff3c4;}
   .cal-nota-fecha .cal-nota-sticker{background:#e3d9fb;}
   .cal-nota-asistencia .cal-nota-sticker{background:#d7f5e3;}
+  .cal-nota-cumpleanos .cal-nota-sticker{background:#ffdfb3;}
+  .cal-nota-colegio .cal-nota-sticker{background:#bfe9f0;}
+  .cal-nota-deporte .cal-nota-sticker{background:#d1f2b3;}
+  .cal-nota-viaje .cal-nota-sticker{background:#e6c9f7;}
+  .cal-nota-pago .cal-nota-sticker{background:#dcdcdc;}
   .cal-nota-otro .cal-nota-sticker{background:#fde2e4;}
   .cal-nota-cuerpo{flex:1;min-width:0;}
   /* Tipo + hora van siempre arriba del todo de la nota, antes del texto — así quedan a la vista
@@ -643,7 +655,12 @@
      estado de sincronización sí se necesitan a mano, así que no desaparecen: se mudan de sitio DE
      VERDAD (con JS, ver colocarInfoNav()) al fondo del menú lateral, a modo informativo — el botón
      actualizar se queda pulsable ahí mismo. */
-  html.vista-tablet body{padding-bottom:0; padding-left:104px;}
+  /* display:flex column + min-height:100vh (no height fija) para que #viewCalendario pueda
+     repartirse "lo que sobra de pantalla" con flex:1 más abajo, sin tener que adivinar cuánto
+     ocupan arriba la franja de tiempo u otros bloques — si algún día crece (p. ej. más ciudades
+     en el tiempo), este cálculo se ajusta solo. El resto de pestañas (Nevera, Compra...) no llevan
+     flex:1 así que siguen con su alto natural y el scroll de siempre si no caben enteras. */
+  html.vista-tablet body{padding-bottom:0; padding-left:104px; display:flex; flex-direction:column; min-height:100vh;}
 
   html.vista-tablet nav{position:fixed; top:0; bottom:0; left:0; right:auto; width:104px; height:100%;
     flex-direction:column; justify-content:flex-start; gap:6px; padding:16px 10px;
@@ -730,22 +747,31 @@
 
   /* Calendario → Mes: para que el mes quepa SIEMPRE entero sin depender de adivinar la altura
      real de cada tablet (ya nos quedamos cortos una vez calculando a ojo), la cuadrícula ya no
-     tiene una altura fija en px: #viewCalendario ocupa exactamente la pantalla (100vh, con el
-     padding de main ya descontado por box-sizing:border-box) y .mes-grid se queda con todo lo que
-     sobra tras el resto de filas (toggles, cabecera del mes, nombres de los días) — las celdas
-     dejan de ser cuadradas (aspect-ratio) y se reparten esa altura a partes iguales entre sí,
-     tantas filas como tenga el mes, más grandes y usando también los laterales. Solo afecta a la
-     vista Mes (:has(.cal-vista-mes)) — Semana y Día siguen con su alto natural y scroll normal. */
-  html.vista-tablet #viewCalendario:has(.cal-vista-mes){height:100vh; display:flex; flex-direction:column; overflow:hidden;}
+     tiene una altura fija en px: #viewCalendario se hace flex:1 dentro del body en columna de
+     arriba, así se queda automáticamente con "lo que sobra" de pantalla tras la franja de tiempo
+     y el resto de bloques (sin hardcodear su altura, que puede cambiar) y .mes-grid se queda con
+     todo lo que sobra tras el resto de filas (toggles, cabecera del mes, nombres de los días) —
+     las celdas dejan de ser cuadradas (aspect-ratio) y se reparten esa altura a partes iguales
+     entre sí, tantas filas como tenga el mes, más grandes y usando también los laterales. Solo
+     afecta a la vista Mes (:has(.cal-vista-mes)) — Semana y Día siguen con su alto natural y
+     scroll normal. */
+  html.vista-tablet #viewCalendario:has(.cal-vista-mes){flex:1 1 auto; min-height:0; display:flex; flex-direction:column; overflow:hidden;}
   html.vista-tablet #viewCalendario:has(.cal-vista-mes) .cal-contenido{flex:1; min-height:0; display:flex; flex-direction:column;}
   html.vista-tablet .mes-cabecera{margin-bottom:6px; flex:0 0 auto;}
   html.vista-tablet .mes-dias-semana{margin-bottom:4px; flex:0 0 auto;}
   html.vista-tablet .mes-dias-semana span{font-size:.72rem;}
-  html.vista-tablet .mes-grid{flex:1; min-height:0; grid-auto-rows:1fr;}
+  /* minmax(0,1fr) y no solo 1fr: sin el 0, cada fila no puede bajar de la altura "natural" de su
+     contenido (notas, chips...), así que si hay poco alto disponible (franja de tiempo arriba) el
+     grid entero se desborda un pelín por debajo aunque el padre tenga overflow:hidden. Con el 0,
+     la fila sí puede encogerse hasta donde haga falta para caber siempre entera. */
+  html.vista-tablet .mes-grid{flex:1; min-height:0; grid-auto-rows:minmax(0,1fr);}
   html.vista-tablet .mes-celda{aspect-ratio:auto; padding:6px 6px;}
   html.vista-tablet .mes-celda-num{font-size:.85rem;}
   html.vista-tablet .mes-celda-badge{font-size:.66rem; padding:3px 7px;}
   html.vista-tablet .mes-celda-nota-preview{font-size:.7rem; padding:2px 5px;}
+  html.vista-tablet .mes-celda-nota-preview ~ .mes-celda-nota-preview{display:block;}
+  html.vista-tablet .mes-celda-badge-total{display:none;}
+  html.vista-tablet .mes-celda-badge-mas{display:inline-block;}
 
   /* Nevera/Compra/Peso/Yo: listas de lectura, mejor con un ancho de línea cómodo que estiradas
      de punta a punta de la pantalla. */
@@ -846,7 +872,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.27.0";
+const APP_VERSION = "v2.27.1";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -854,6 +880,7 @@ const APP_VERSION = "v2.27.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-25", texto:"Corregido: en Calendario → Mes (vista tablet), el mes se recortaba por abajo desde que se añadió la franja de tiempo. Y en cualquier vista, cuando un día tenía 2 notas, la segunda quedaba escondida detrás del globito de aviso — ahora se ven las dos. De paso, 5 iconos de nota nuevos: cumpleaños, colegio, deporte, viaje y pago." },
   { fecha:"2026-10-25", texto:"En tablet, el Menú semanal se rediseña al estilo de un panel doméstico: cada plato lleva su icono, las tarjetas de persona muestran su ciudad, y arriba del todo hay una franja con el tiempo en directo de Alboraya y Valencia (actualizado cada 30 minutos). En móvil no cambia nada." },
   { fecha:"2026-10-25", texto:"El calendario laboral de Nuria se simplifica: ahora libra viernes, sábado y domingo cada semana (franja verde), sin depender ya del cuadrante anual de la empresa." },
   { fecha:"2026-10-25", texto:"Corregido: en una tablet que se queda encendida días enteros sin recargar, la app ya avanza sola al día actual al pasar la medianoche, en vez de quedarse clavada en el día de ayer hasta que alguien lo cambiaba a mano." },
@@ -2923,7 +2950,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'la tablet de la cocina estrena panel: iconos en cada plato, ciudad en cada tarjeta y el tiempo de Alboraya y Valencia en directo arriba del todo 🌤️🍽️';
+let avisoNovedadTexto = 'arreglado que el mes del calendario se recortara por abajo en la tablet, y que la segunda nota de un día se quedara escondida — ya se ven las dos, y hay 5 iconos de nota nuevos 📝✅';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -3136,6 +3163,11 @@ const TIPOS_NOTA = {
   recordatorio: { icono:'⏰', nombre:'Recordatorio' },
   fecha:        { icono:'🎉', nombre:'Fecha señalada' },
   asistencia:   { icono:'📋', nombre:'Asistencia' },
+  cumpleanos:   { icono:'🎂', nombre:'Cumpleaños' },
+  colegio:      { icono:'🎒', nombre:'Colegio' },
+  deporte:      { icono:'⚽', nombre:'Deporte' },
+  viaje:        { icono:'✈️', nombre:'Viaje' },
+  pago:         { icono:'💳', nombre:'Pago/factura' },
   otro:         { icono:'📝', nombre:'Nota' },
 };
 
@@ -4261,22 +4293,30 @@ function renderMesHtml(){
     const diaWeek = WEEK.find(d=>d.date===iso);
     const personasConMenu = diaWeek ? visibles.filter(id=>diaWeek[id]) : [];
     const notas = notasDelDia(iso).slice().sort((a,b)=>a.creada.localeCompare(b.creada));
-    const primeraNota = notas[0];
     // Franja de color del calendario laboral (de momento solo Nuria, ver estadoLaboralDelDia): de
     // un vistazo al mes entero se ve qué días libra. Si en el futuro hay varias personas con regla
     // laboral el mismo día, se queda con la primera (caso que hoy no se da) para no amontonar
     // franjas en una celda tan pequeña — la ficha del día (al tocar la celda) sí las lista todas.
     const franjaLaboral = Object.keys(REGLA_SEMANAL_LABORAL).map(id=>estadoLaboralDelDia(iso, id)).find(Boolean);
     // Antes solo se veía el icono del tipo de nota en la celda, había que tocar el día para leerla
-    // (issue "notas en vista mes"). Ahora un vistazo rápido ya enseña de qué va (la primera, por
-    // hora) y un globito con el total cuando hay más de una — el resto se ve completo al tocar la
-    // celda (modal con la lista entera, ya con cabecera y hora propias).
+    // (issue "notas en vista mes"). Ahora un vistazo rápido ya enseña de qué va — hasta 2 notas con
+    // su propia línea (issue "la segunda nota no se ve": con 2 notas, antes solo la primera tenía
+    // línea propia y la segunda se quedaba escondida detrás del globito "📝 2"). En tablet la celda
+    // tiene alto de sobra y se ven hasta 2 notas con su línea propia; en móvil la celda es un
+    // cuadrado minúsculo (aspect-ratio:1) donde una 2ª línea de texto no cabe y se recortaba sin
+    // avisar, así que ahí se mantiene 1 sola línea + el globito de siempre con el total (ver CSS
+    // .mes-celda-badge-total / .mes-celda-badge-mas, uno u otro según html.vista-tablet). El resto
+    // de notas se ve completo al tocar la celda (modal con la lista entera).
+    const primeraNota = notas[0];
+    const notasPreview = notas.slice(0, 2);
+    const notasRestantesTablet = notas.length - notasPreview.length;
     return `<button type="button" class="mes-celda${iso===hoy?' mes-celda-hoy':''}" data-fecha="${iso}"${franjaLaboral?` style="--franja-color:${franjaLaboral.color}"`:''}>
       ${franjaLaboral ? `<span class="mes-celda-franja" title="${franjaLaboral.nombre}"></span>` : ''}
-      ${notas.length ? `<span class="mes-celda-badge">${(TIPOS_NOTA[primeraNota.tipo]||TIPOS_NOTA.otro).icono}${notas.length>1?' '+notas.length:''}</span>` : ''}
+      ${notas.length ? `<span class="mes-celda-badge mes-celda-badge-total">${(TIPOS_NOTA[primeraNota.tipo]||TIPOS_NOTA.otro).icono}${notas.length>1?' '+notas.length:''}</span>` : ''}
+      ${notasRestantesTablet>0 ? `<span class="mes-celda-badge mes-celda-badge-mas">+${notasRestantesTablet}</span>` : ''}
       <span class="mes-celda-num">${dia}</span>
       <span class="mes-celda-chips">${personasConMenu.map(id=>`<span class="mes-chip ${id}" title="${PERSONAS[id].nombre}">${PERSONAS[id].nombre.slice(0,2)}</span>`).join('')}</span>
-      ${primeraNota ? `<span class="mes-celda-nota-preview" title="${escapeHtml(primeraNota.texto)}">${escapeHtml(primeraNota.texto)}</span>` : ''}
+      ${notasPreview.map(n=>`<span class="mes-celda-nota-preview" title="${escapeHtml(n.texto)}">${(TIPOS_NOTA[n.tipo]||TIPOS_NOTA.otro).icono} ${escapeHtml(n.texto)}</span>`).join('')}
     </button>`;
   };
   const nombreMes = MESES[m].charAt(0).toUpperCase() + MESES[m].slice(1);
