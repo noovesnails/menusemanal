@@ -746,6 +746,10 @@
   .weather-pill .wplace{font-size:.64rem; letter-spacing:.04em; text-transform:uppercase; color:var(--muted);}
   .weather-pill .wtemp{font-weight:700; font-size:1.15rem; display:flex; align-items:baseline; gap:6px; font-variant-numeric:tabular-nums;}
   .weather-pill .wtemp .wrange{font-size:.68rem; font-weight:500; color:var(--muted);}
+  /* La pastilla del día (issue "panel tipo Home Assistant", 3ª vuelta) reutiliza el mismo estilo
+     que las de tiempo, solo con un acento de color para distinguirla a simple vista del tiempo. */
+  .day-pill .wicon{color:var(--accent);}
+  .day-pill .wtemp{color:var(--accent);}
 
   /* Con la cabecera oculta ya no hace falta tanto aire arriba del todo; y con menos margen entre
      filas (ver también abajo) queda más sitio para el calendario. */
@@ -786,13 +790,24 @@
      menú en vez de arriba del todo (como el tiempo) porque es información del día a día de la
      familia, no algo que tenga sentido ver desde Nevera o Peso. */
   html.vista-tablet .resumen-tiles{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+  /* .tile es ahora un <button> (acceso directo a su pestaña/tarjeta, issue "panel tipo Home
+     Assistant", 3ª vuelta) — reset de los estilos nativos de botón para que siga pareciendo la
+     misma tarjeta de antes, con algo de respuesta táctil al tocarla. */
   html.vista-tablet .tile{display:flex; align-items:center; gap:12px; background:var(--card);
-    border:1px solid var(--line); border-radius:16px; padding:12px 16px; box-shadow:var(--shadow-1); min-width:168px;}
+    border:1px solid var(--line); border-radius:16px; padding:12px 16px; box-shadow:var(--shadow-1);
+    min-width:168px; font:inherit; color:inherit; text-align:left; cursor:pointer;
+    -webkit-tap-highlight-color:transparent; transition:transform .12s ease;}
+  html.vista-tablet .tile:active{transform:scale(.97);}
   html.vista-tablet .tile-icon{width:36px; height:36px; border-radius:11px; background:var(--accent-soft);
     color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:1.05rem; flex:0 0 auto;}
   html.vista-tablet .tile-icon-nota{background:var(--nuria-soft); color:var(--nuria);}
   html.vista-tablet .tile-num{font-weight:800; font-size:1.3rem; line-height:1; font-variant-numeric:tabular-nums;}
   html.vista-tablet .tile-label{font-size:.66rem; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-top:2px;}
+  /* Texto de la siguiente nota apuntada, pegado al lado del tile de "Notas próximas" (issue "panel
+     tipo Home Assistant", 3ª vuelta). */
+  html.vista-tablet .tile-notas{max-width:min(420px, 60vw);}
+  html.vista-tablet .tile-next{margin-left:4px; padding-left:12px; border-left:1px solid var(--line);
+    font-size:.78rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;}
 
   html.vista-tablet .menu-layout{display:grid; grid-template-columns:1fr minmax(260px, 320px); gap:18px; align-items:start;}
   html.vista-tablet .agenda-familiar{display:flex; flex-direction:column; background:var(--card);
@@ -954,7 +969,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.28.0";
+const APP_VERSION = "v2.28.1";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -962,6 +977,7 @@ const APP_VERSION = "v2.28.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-25", texto:"En el panel de tablet: los tiles de \"Por comprar hoy\" y \"Notas próximas\" ahora son acceso directo a su pestaña (Compra y Calendario), junto al tiempo aparece una pastilla con el día de la semana que se está viendo, y el tile de notas muestra de un vistazo cuál es la próxima apuntada." },
   { fecha:"2026-10-25", texto:"El panel de tablet se pone serio de verdad: fondo azul marino, letras blancas, tipografía Inter en vez de la redondeada de antes. Dos widgets nuevos en el Menú: un resumen con cuántos ingredientes quedan por comprar hoy y cuántas notas hay próximas, y una tarjeta de Agenda familiar con los próximos avisos del calendario (médico, cumpleaños, cole...) ordenados por fecha." },
   { fecha:"2026-10-25", texto:"Corregido: en Calendario → Mes (vista tablet), el mes se recortaba por abajo desde que se añadió la franja de tiempo. Y en cualquier vista, cuando un día tenía 2 notas, la segunda quedaba escondida detrás del globito de aviso — ahora se ven las dos. De paso, 5 iconos de nota nuevos: cumpleaños, colegio, deporte, viaje y pago." },
   { fecha:"2026-10-25", texto:"En tablet, el Menú semanal se rediseña al estilo de un panel doméstico: cada plato lleva su icono, las tarjetas de persona muestran su ciudad, y arriba del todo hay una franja con el tiempo en directo de Alboraya y Valencia (actualizado cada 30 minutos). En móvil no cambia nada." },
@@ -3033,7 +3049,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'el panel de la cocina estrena look serio: azul marino, letras blancas, y una Agenda familiar con lo próximo del calendario de un vistazo 🌙🗓️';
+let avisoNovedadTexto = 'en el panel de la cocina, los tiles de arriba ya son acceso directo (tocas y vas a Compra o Calendario), y junto al tiempo sale el día que estás viendo 👆🗓️';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -3461,12 +3477,32 @@ function cargarTiempoSiToca(){
   });
 }
 
+/* Pastilla del día junto al tiempo (issue "panel tipo Home Assistant", 3ª vuelta): qué día de la
+   semana se está viendo, con el mismo estilo que las pastillas de tiempo. Usa un array propio de
+   nombres de día en vez de NOMBRES_DIA_SEMANA porque esta función se invoca más abajo (línea
+   siguiente) ANTES de que NOMBRES_DIA_SEMANA llegue a declararse más adelante en el script —
+   duplicar este array de 7 nombres es más simple y seguro que reordenar todo el arranque. */
+function diaPillHtml(){
+  const day = WEEK[currentDay];
+  if(!day) return '';
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const d = new Date(day.date+"T00:00:00");
+  const esHoy = day.date === todayISOReal();
+  return `<div class="weather-pill day-pill">
+    <span class="wicon">🗓️</span>
+    <span class="wtext">
+      <span class="wplace">${esHoy ? 'Hoy' : 'Viendo'}</span>
+      <span class="wtemp">${dias[d.getDay()]} <span class="wrange">${d.getDate()}</span></span>
+    </span>
+  </div>`;
+}
+
 function renderTiempo(){
   const el = document.getElementById('tiempoTiras');
   if(!el) return;
   const ciudades = new Map();
   Object.values(UBICACION_PERSONA).forEach(u => { if(!ciudades.has(u.ciudad)) ciudades.set(u.ciudad, u); });
-  el.innerHTML = Array.from(ciudades.keys()).map(ciudad => {
+  const pillsTiempo = Array.from(ciudades.keys()).map(ciudad => {
     const c = tiempoCache[ciudad];
     if(!c) return '';
     return `<div class="weather-pill">
@@ -3477,6 +3513,7 @@ function renderTiempo(){
       </span>
     </div>`;
   }).join('');
+  el.innerHTML = diaPillHtml() + pillsTiempo;
 }
 
 renderTiempo(); // pinta de entrada lo que hubiera en caché, antes de que responda la red
@@ -4027,16 +4064,21 @@ function etiquetaFechaAgenda(iso){
 }
 function resumenTilesHtml(){
   const pendientes = cuentaCompraPendienteHoy();
-  const notasProximas = agendaProximasNotas(99).length;
+  const proximas = agendaProximasNotas(99);
+  const siguiente = proximas[0];
+  // Acceso directo (issue "panel tipo Home Assistant", 3ª vuelta): cada tile lleva a donde está
+  // ese dato de verdad — Compra para los ingredientes, Calendario para las notas — en vez de ser
+  // solo un número decorativo. Se cablea en renderMenu() con .tile-click.
   return `
-  <div class="tile">
+  <button type="button" class="tile tile-click" data-ir-tab="compra">
     <span class="tile-icon">🛒</span>
     <div><div class="tile-num">${pendientes}</div><div class="tile-label">Por comprar hoy</div></div>
-  </div>
-  <div class="tile">
+  </button>
+  <button type="button" class="tile tile-click tile-notas" data-ir-vista="calendario">
     <span class="tile-icon tile-icon-nota">🗓️</span>
-    <div><div class="tile-num">${notasProximas}</div><div class="tile-label">Notas próximas</div></div>
-  </div>`;
+    <div><div class="tile-num">${proximas.length}</div><div class="tile-label">Notas próximas</div></div>
+    ${siguiente ? `<span class="tile-next">${(TIPOS_NOTA[siguiente.tipo]||TIPOS_NOTA.otro).icono} ${escapeHtml(siguiente.texto)}</span>` : ''}
+  </button>`;
 }
 function agendaFamiliarHtml(){
   const notas = agendaProximasNotas(5);
@@ -4182,6 +4224,15 @@ function renderMenu(){
       </div>` +
     `</div>`;
   wireVistaMenuToggle(el);
+
+  // Acceso directo de los tiles de resumen (issue "panel tipo Home Assistant", 3ª vuelta): cada
+  // uno lleva a su pestaña o tarjeta real en vez de ser solo un número decorativo.
+  el.querySelectorAll('.tile-click').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.dataset.irTab){ document.querySelector(`nav .tab[data-tab="${btn.dataset.irTab}"]`).click(); return; }
+      if(btn.dataset.irVista) cambiarVistaMenu(btn.dataset.irVista);
+    });
+  });
 
   el.querySelectorAll('.opcion-card').forEach(card=>{
     card.addEventListener('click', (e)=>{
@@ -5449,6 +5500,7 @@ let tabsPendientes = new Set(Object.keys(RENDERERS_POR_TAB));
 function render(){
   extenderMenusSegunPlan();
   renderDayPicker();
+  renderTiempo(); // la pastilla del día (dentro de renderTiempo) depende de currentDay
   Object.keys(RENDERERS_POR_TAB).forEach(tab=>{
     if(tab === currentTab){
       RENDERERS_POR_TAB[tab]();
