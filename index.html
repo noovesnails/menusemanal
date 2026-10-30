@@ -647,6 +647,15 @@
   .cal-sticker-picker{display:flex;gap:6px;flex-wrap:wrap;}
   .cal-sticker-opt{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .cal-sticker-opt.on{border-color:var(--accent);box-shadow:var(--shadow-2);transform:scale(1.08);}
+  /* Selector de "¿para quién es?" (issue "para quién es la nota"): mismo espíritu que el selector
+     de tipo de nota de arriba, con el nombre al lado del punto de color en vez de solo un icono,
+     porque aquí sí hace falta leer el nombre para elegir bien. */
+  .cal-persona-picker{margin-top:2px;}
+  .cal-persona-picker-label{font-size:.72rem;color:var(--muted);margin-bottom:6px;}
+  .cal-persona-opts{display:flex;gap:6px;flex-wrap:wrap;}
+  .cal-persona-opt{display:flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;border-radius:999px;border:2px solid var(--line);background:var(--card);font-size:.78rem;cursor:pointer;color:var(--ink);}
+  .cal-persona-opt.on{border-color:var(--accent);box-shadow:var(--shadow-2);font-weight:700;}
+  .cal-nota-para{font-size:.72rem;color:var(--ink);margin-top:3px;display:flex;align-items:center;gap:5px;font-weight:600;}
   .cal-composer-row{display:flex;gap:8px;align-items:flex-start;}
   .cal-nota-input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:.85rem;font-family:inherit;background:var(--bg);color:var(--ink);resize:vertical;}
   .cal-dictar-btn{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:none;background:var(--accent-soft);color:var(--accent);font-size:1.1rem;cursor:pointer;}
@@ -1005,7 +1014,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.29.1";
+const APP_VERSION = "v2.30.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -1013,6 +1022,7 @@ const APP_VERSION = "v2.29.1";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-10-30", texto:"Al añadir una nota en Calendario, ahora pregunta para quién es (antes solo se guardaba a nombre de quien la escribía) — así una nota se puede apuntar para cualquiera de la familia. En tablet, la tarjeta de Agenda familiar del Menú muestra el punto de color y el nombre de cada nota para identificar de un vistazo de quién es." },
   { fecha:"2026-10-30", texto:"Nuevo menú de la nutricionista para Pedro y Rocío, en vigor desde el 26 de octubre hasta el 1 de diciembre. Próxima visita de los dos: 25 de noviembre (ya apuntada también en Calendario)." },
   { fecha:"2026-10-25", texto:"Nuevo botón \"Pregunta\" en el panel de tablet: pulsa el micro y pide cosas como \"añade una nota médica: dentista a las 10\", \"qué hay de cena hoy\", \"qué queda por comprar\" o \"cuándo es mi próxima cita con la nutricionista\". No lleva IA detrás, reconoce frases concretas (siempre visibles en la lista del propio botón) y contesta por texto y por voz." },
   { fecha:"2026-10-25", texto:"En el panel de tablet: los tiles de \"Por comprar hoy\" y \"Notas próximas\" ahora son acceso directo a su pestaña (Compra y Calendario), junto al tiempo aparece una pastilla con el día de la semana que se está viendo, y el tile de notas muestra de un vistazo cuál es la próxima apuntada." },
@@ -3155,7 +3165,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'menú nuevo de la nutri para Pedro y Rocío ya cargado (hasta el 1 de diciembre), con la próxima visita el 25/11 apuntada en el Calendario 🥗📅';
+let avisoNovedadTexto = 'al apuntar una nota en el Calendario ahora te pregunta para quién es, y en la tablet la Agenda familiar enseña de quién es cada una con su color 📝👤';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -4189,6 +4199,8 @@ function resumenTilesHtml(){
 function agendaFamiliarHtml(){
   const notas = agendaProximasNotas(5);
   if(!notas.length) return `<div class="agenda-empty">Sin notas próximas en el calendario.</div>`;
+  // issue "para quién es la nota": el punto de color + nombre de paraQuienNotaHtml es justo lo que
+  // permite distinguir de un vistazo (sin leer letra pequeña) de quién es cada nota de la agenda.
   return notas.map(n=>{
     const tipo = TIPOS_NOTA[n.tipo] || TIPOS_NOTA.otro;
     return `<div class="arow">
@@ -4196,7 +4208,7 @@ function agendaFamiliarHtml(){
       <div class="arow-text">
         <div class="arow-day">${etiquetaFechaAgenda(n.fecha)}${n.fecha===todayISOReal()?' · '+fmtHora(n.creada):''}</div>
         <div class="arow-desc">${escapeHtml(n.texto)}</div>
-        <div class="arow-who">${autorNotaHtml(n)}</div>
+        <div class="arow-who">${paraQuienNotaHtml(n)}</div>
       </div>
     </div>`;
   }).join('');
@@ -4431,6 +4443,16 @@ function autorNotaHtml(n){
   return PERSONAS[n.autor] ? PERSONAS[n.autor].nombre : '🧊 Tablet';
 }
 
+/* De quién es la nota (issue "para quién es la nota"): campo paraQuien, independiente de autor
+   (quién la escribió) — una nota la puede apuntar cualquiera para cualquier otra persona de la
+   casa. Las notas de antes de este cambio no tienen paraQuien, así que se cae a autorNotaHtml
+   (comportamiento de siempre) en vez de enseñar un hueco vacío. */
+function paraQuienNotaHtml(n){
+  const persona = PERSONAS[n.paraQuien];
+  if(!persona) return autorNotaHtml(n);
+  return `<span class="dot ${n.paraQuien}"></span>${persona.nombre}`;
+}
+
 function notasListHtml(iso){
   const notas = notasDelDia(iso);
   if(!notas.length) return `<div class="empty cal-notas-vacio">Sin notas todavía.</div>`;
@@ -4445,7 +4467,8 @@ function notasListHtml(iso){
           <span class="cal-nota-hora">${fmtHora(n.creada)}</span>
         </div>
         <div class="cal-nota-texto">${escapeHtml(n.texto)}</div>
-        <div class="cal-nota-autor">${autorNotaHtml(n)}</div>
+        <div class="cal-nota-para">${paraQuienNotaHtml(n)}</div>
+        ${n.paraQuien && n.autor && n.paraQuien!==n.autor ? `<div class="cal-nota-autor">Apuntada por ${autorNotaHtml(n)}</div>` : ''}
       </div>
       ${esPanel ? '' : `<button type="button" class="cal-nota-del" data-nota-id="${n.id}" data-nota-fecha="${iso}" title="Borrar nota">🗑</button>`}
     </div>`;
@@ -4458,6 +4481,12 @@ function composerNotaHtml(iso){
     <div class="cal-composer-form" data-fecha="${iso}">
       <div class="cal-sticker-picker">
         ${Object.keys(TIPOS_NOTA).map((t,i)=>`<button type="button" class="cal-sticker-opt${i===0?' on':''}" data-tipo="${t}" title="${TIPOS_NOTA[t].nombre}">${TIPOS_NOTA[t].icono}</button>`).join('')}
+      </div>
+      <div class="cal-persona-picker">
+        <div class="cal-persona-picker-label">¿Para quién es?</div>
+        <div class="cal-persona-opts">
+          ${Object.keys(PERSONAS).map(id=>`<button type="button" class="cal-persona-opt${id===miUsuario?' on':''}" data-persona="${id}"><span class="dot ${id}"></span>${PERSONAS[id].nombre}</button>`).join('')}
+        </div>
       </div>
       <div class="cal-composer-row">
         <textarea class="cal-nota-input" rows="2" placeholder="Escribe la nota, o dicta pulsando el micro..."></textarea>
@@ -4592,7 +4621,7 @@ function interpretarComandoVoz(textoOriginal){
     const iso = todayISOReal();
     const id = Date.now()+'_'+Math.random().toString(36).slice(2,8);
     if(!notasCalendario[iso]) notasCalendario[iso] = [];
-    notasCalendario[iso].push({ id, autor: miUsuario, texto: cuerpo, tipo, creada: new Date().toISOString() });
+    notasCalendario[iso].push({ id, autor: miUsuario, paraQuien: miUsuario, texto: cuerpo, tipo, creada: new Date().toISOString() });
     scheduleSave();
     render();
     return { ok:true, respuesta:`Nota añadida para hoy: "${cuerpo}".` };
@@ -4709,6 +4738,11 @@ function wireNotasCalendario(container){
       btn.parentElement.querySelectorAll('.cal-sticker-opt').forEach(b=>b.classList.toggle('on', b===btn));
     });
   });
+  container.querySelectorAll('.cal-persona-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      btn.parentElement.querySelectorAll('.cal-persona-opt').forEach(b=>b.classList.toggle('on', b===btn));
+    });
+  });
   container.querySelectorAll('.cal-dictar-btn').forEach(btn=>{
     btn.addEventListener('click', ()=> dictarEnTextarea(btn));
   });
@@ -4721,9 +4755,11 @@ function wireNotasCalendario(container){
       if(!texto) return;
       const tipoBtn = form.querySelector('.cal-sticker-opt.on');
       const tipo = tipoBtn ? tipoBtn.dataset.tipo : 'otro';
+      const personaBtn = form.querySelector('.cal-persona-opt.on');
+      const paraQuien = personaBtn ? personaBtn.dataset.persona : miUsuario;
       if(!notasCalendario[iso]) notasCalendario[iso] = [];
       const id = Date.now()+'_'+Math.random().toString(36).slice(2,8);
-      notasCalendario[iso].push({ id, autor: miUsuario, texto, tipo, creada: new Date().toISOString() });
+      notasCalendario[iso].push({ id, autor: miUsuario, paraQuien, texto, tipo, creada: new Date().toISOString() });
       scheduleSave();
       if(btn.closest('#diaModal')) abrirDiaModal(iso); else renderCalendario();
       // Solo la nota recién creada "aparece" con gesto de chincheta — las demás no se vuelven a
