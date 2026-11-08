@@ -1014,7 +1014,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.34.0";
+const APP_VERSION = "v2.35.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -5950,6 +5950,7 @@ function mostrarRecuperacionLocal(continuar){
     if(v && v !== '{}' && v !== '[]' && v !== '' && v !== null) conDatos++;
   });
   const texto = JSON.stringify(bundle, null, 2);
+  const mensajeWhatsapp = 'Copia de seguridad de menusemanal (' + (bundle._usuario) + '):\n\n' + texto;
   // Capa superpuesta, no se toca document.body.innerHTML: la app normal (nav, syncDot, etc.) sigue
   // debajo intacta, lista para pintarse en cuanto se quite esta capa al pulsar "Continuar".
   const capa = document.createElement('div');
@@ -5959,14 +5960,25 @@ function mostrarRecuperacionLocal(continuar){
     '<div style="max-width:700px;margin:20px auto;padding:0 16px;">' +
     '<h2>Copia de seguridad de este dispositivo</h2>' +
     '<p>' + conDatos + ' de ' + claves.length + ' categorías tienen datos guardados aquí.</p>' +
-    '<p><b>Pulsa Copiar y pega el texto donde se lo vayas a mandar a Pedro antes de pulsar Continuar.</b></p>' +
-    '<button id="btnCopiarRecuperacion" style="font-size:16px;padding:10px 20px;margin-bottom:10px;">Copiar</button> ' +
-    '<button id="btnContinuarRecuperacion" style="font-size:16px;padding:10px 20px;margin-bottom:10px;">Continuar a la app</button>' +
+    '<p><b>Pulsa el botón de WhatsApp y elige a quién mandárselo</b> (mejor a Pedro directamente que al grupo, puede llevar datos de peso). Si no tienes WhatsApp en este dispositivo, usa "Compartir" o "Copiar".</p>' +
+    '<button id="btnWhatsappRecuperacion" style="font-size:16px;padding:12px 20px;margin-bottom:10px;background:#25D366;color:#fff;border:none;border-radius:8px;font-weight:bold;">📲 Enviar por WhatsApp</button><br>' +
+    '<button id="btnCompartirRecuperacion" style="font-size:14px;padding:8px 16px;margin-top:6px;margin-bottom:6px;display:none;">Compartir con otra app</button> ' +
+    '<button id="btnCopiarRecuperacion" style="font-size:14px;padding:8px 16px;margin-top:6px;margin-bottom:6px;">Copiar</button> ' +
+    '<button id="btnContinuarRecuperacion" style="font-size:14px;padding:8px 16px;margin-top:6px;margin-bottom:6px;">Continuar a la app</button>' +
     ' <span id="copiadoOkRecuperacion" style="display:none;color:#1a7f37;">Copiado</span>' +
-    '<textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;box-sizing:border-box;">' +
+    '<textarea readonly style="width:100%;height:260px;font-family:monospace;font-size:12px;box-sizing:border-box;">' +
     texto.replace(/</g,'&lt;') + '</textarea>' +
     '</div>';
   document.body.appendChild(capa);
+  capa.querySelector('#btnWhatsappRecuperacion').onclick = ()=>{
+    window.open('https://wa.me/?text=' + encodeURIComponent(mensajeWhatsapp), '_blank');
+  };
+  if(navigator.share){
+    capa.querySelector('#btnCompartirRecuperacion').style.display = 'inline-block';
+    capa.querySelector('#btnCompartirRecuperacion').onclick = ()=>{
+      navigator.share({ text: mensajeWhatsapp }).catch(()=>{});
+    };
+  }
   capa.querySelector('#btnCopiarRecuperacion').onclick = async ()=>{
     try{ await navigator.clipboard.writeText(texto); }
     catch(_){ const ta = capa.querySelector('textarea'); ta.focus(); ta.select(); document.execCommand('copy'); }
