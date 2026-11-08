@@ -1014,7 +1014,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.31.0";
+const APP_VERSION = "v2.32.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -1022,6 +1022,7 @@ const APP_VERSION = "v2.31.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-11-08", texto:"La cuota de JSONBin se agotó del todo (ya iba cada 3 minutos, pero la cuenta llevaba semanas al límite) y no se pudo leer ni para copiar los datos antes de cambiar de cuenta — así que los checks de Nevera/Compra, el peso y las notas de calendario que hubiera guardados se han perdido y hay que volver a marcarlos. Los menús de cada persona no se ven afectados, esos viven en el código. Migrado a una cuenta de JSONBin nueva." },
   { fecha:"2026-11-08", texto:"Corregido el aviso de \"no se actualiza en el móvil\": la app repasaba JSONBin cada 30 segundos en cada móvil y tablet abiertos, y eso agotaba la cuota gratuita de peticiones en un par de semanas de uso familiar — ya nos había pasado dos veces. Ahora el repaso de fondo es cada 3 minutos (al volver a la app se sigue actualizando al instante, como siempre), así la cuota dura bastante más." },
   { fecha:"2026-10-30", texto:"Al añadir una nota en Calendario, ahora pregunta para quién es (antes solo se guardaba a nombre de quien la escribía) — así una nota se puede apuntar para cualquiera de la familia. En tablet, la tarjeta de Agenda familiar del Menú muestra el punto de color y el nombre de cada nota para identificar de un vistazo de quién es." },
   { fecha:"2026-10-30", texto:"Nuevo menú de la nutricionista para Pedro y Rocío, en vigor desde el 26 de octubre hasta el 1 de diciembre. Próxima visita de los dos: 25 de noviembre (ya apuntada también en Calendario)." },
@@ -2956,16 +2957,19 @@ const WEEK = [
    Pedro la regenera en jsonbin.io, esta es la única línea que hay que tocar. Vive en el HTML
    porque esto es una app 100% cliente sin servidor propio; asumido conscientemente desde el
    principio del proyecto (ver update.md), no hay forma de evitarlo sin añadir un backend.
-   Cuenta anterior agotó su cuota gratuita el 2026-10-18 ("Requests exhausted") y se migró a una
-   cuenta nueva ese mismo día, con el contenido íntegro del bin viejo copiado al nuevo (incluye
-   datos de otra app de Pedro que comparte este mismo bin, el planificador del viaje a Marrakech —
-   no tocar esas claves de nivel superior). El bin viejo NO se ha borrado y sigue teniendo los
-   mismos datos a fecha de la migración, por si hiciera falta volver atrás rápido una vez más:
-     JSONBIN_ID_ANTERIOR = "6a301b19f5f4af5e29f5ec66"
-     JSONBIN_KEY_ANTERIOR = "$2a$10$ae8zVDaihoiqifi4pxm7Ruc/pKCRtiFC/pxKOv7OA0OsE7oySGfKe"
-   (puede estar desactualizado respecto al nuevo si para entonces ya se ha guardado algo en este). */
-const JSONBIN_ID = "6ad541ceac6210605a3d220e";
-const JSONBIN_KEY = "$2a$10$lusBVzzg9qDT.PsJbFJV6uQi/hU4k7FxPnOJfbNzQTn00rBspfhyW";
+   Cuenta de 2026-10-18 agotó su cuota gratuita de nuevo el 2026-11-08 ("Requests exhausted"),
+   esta vez sin margen para copiar el contenido del bin viejo al nuevo antes de migrar (devolvía
+   403 también en lectura) — por eso este bin arranca con menuSemanal vacío: los checks de
+   Nevera/Compra, peso, composición y notas de calendario que hubiera guardados se han perdido,
+   pero nada de eso vive en este fichero (WEEK/OPCIONES/NUTRI), así que los menús en sí no se ven
+   afectados. El bin viejo NO se ha borrado por si otra app de Pedro (el planificador del viaje a
+   Marrakech) sigue usándolo con sus propias claves de nivel superior — eso es cosa suya, no se ha
+   tocado ni migrado aquí:
+     JSONBIN_ID_ANTERIOR = "6ad541ceac6210605a3d220e"
+     JSONBIN_KEY_ANTERIOR = "$2a$10$lusBVzzg9qDT.PsJbFJV6uQi/hU4k7FxPnOJfbNzQTn00rBspfhyW"
+   (agotado en el momento de escribir esto; puede que recupere cuota con el reseteo mensual). */
+const JSONBIN_ID = "6af09f91ffd5d16053b14e45";
+const JSONBIN_KEY = "$2a$10$eAhsGjsM9MSTi4igoKl0g.h.UCyT5eCMknXrYaUknkH8wy.9AoDXK";
 const JSONBIN_BASE = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
 
 /* ---------- NOTAS POR SIRI (Panel NOOVES, fase 2) ----------
@@ -3118,7 +3122,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'arreglado lo de que no se actualizaba en el móvil: la app pedía datos a JSONBin cada 30 segundos y se agotaba la cuota gratis en un par de semanas. Ahora es cada 3 minutos, así que debería durar mucho más 📱🔄';
+let avisoNovedadTexto = 'se ha agotado del todo la cuota de JSONBin y no se pudo rescatar lo guardado, así que los checks de Nevera/Compra, el peso y las notas de calendario se han reseteado, hay que volver a marcarlos 🙈 ya está migrado a una cuenta nueva';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
