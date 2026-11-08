@@ -1014,7 +1014,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.30.0";
+const APP_VERSION = "v2.31.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -1022,6 +1022,7 @@ const APP_VERSION = "v2.30.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-11-08", texto:"Corregido el aviso de \"no se actualiza en el móvil\": la app repasaba JSONBin cada 30 segundos en cada móvil y tablet abiertos, y eso agotaba la cuota gratuita de peticiones en un par de semanas de uso familiar — ya nos había pasado dos veces. Ahora el repaso de fondo es cada 3 minutos (al volver a la app se sigue actualizando al instante, como siempre), así la cuota dura bastante más." },
   { fecha:"2026-10-30", texto:"Al añadir una nota en Calendario, ahora pregunta para quién es (antes solo se guardaba a nombre de quien la escribía) — así una nota se puede apuntar para cualquiera de la familia. En tablet, la tarjeta de Agenda familiar del Menú muestra el punto de color y el nombre de cada nota para identificar de un vistazo de quién es." },
   { fecha:"2026-10-30", texto:"Nuevo menú de la nutricionista para Pedro y Rocío, en vigor desde el 26 de octubre hasta el 1 de diciembre. Próxima visita de los dos: 25 de noviembre (ya apuntada también en Calendario)." },
   { fecha:"2026-10-25", texto:"Nuevo botón \"Pregunta\" en el panel de tablet: pulsa el micro y pide cosas como \"añade una nota médica: dentista a las 10\", \"qué hay de cena hoy\", \"qué queda por comprar\" o \"cuándo es mi próxima cita con la nutricionista\". No lleva IA detrás, reconoce frases concretas (siempre visibles en la lista del propio botón) y contesta por texto y por voz." },
@@ -3117,7 +3118,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'al apuntar una nota en el Calendario ahora te pregunta para quién es, y en la tablet la Agenda familiar enseña de quién es cada una con su color 📝👤';
+let avisoNovedadTexto = 'arreglado lo de que no se actualizaba en el móvil: la app pedía datos a JSONBin cada 30 segundos y se agotaba la cuota gratis en un par de semanas. Ahora es cada 3 minutos, así que debería durar mucho más 📱🔄';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -5823,11 +5824,17 @@ window.addEventListener('pagehide', flushPendingSave);
 // repaso de datos (menú/notas compartidas) y el chequeo de medianoche, que sí interesa que estén
 // siempre al día en una tablet que puede llevar encendida y visible toda la noche sin pasar nunca
 // por visibilitychange.
+// Issue "se agota la cuota de JSONBin": repasar JSONBin cada 30s en CADA móvil/tablet abierto
+// consumía la cuota gratuita (10.000 peticiones/mes) en un par de semanas con la familia usando
+// la app a diario — ya ha pasado dos veces. Al volver a la app (visibilitychange, arriba) ya se
+// repasa al instante, así que este bucle es solo para la tablet de la cocina, que puede quedarse
+// encendida en la misma pantalla horas sin cambiar de pestaña nunca: 3 minutos sigue siendo lo
+// bastante fresco para eso y reduce el gasto de cuota x6 respecto a antes.
 setInterval(()=>{
   if(document.visibilityState !== 'visible') return;
   avanzarDiaSiToca();
   autoPullIfIdle();
-}, 30000);
+}, 3 * 60 * 1000);
 setTimeout(checkAppVersion, 3000);
 
 document.querySelectorAll('nav .tab').forEach(btn=>{
