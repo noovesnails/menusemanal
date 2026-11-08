@@ -1014,7 +1014,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.33.0";
+const APP_VERSION = "v2.34.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -5930,11 +5930,14 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
 /* Herramienta de recuperación tras el apagón de JSONBin del 8/11/2026: cada dispositivo guarda en
    localStorage, ANTES de intentar sincronizar, una copia de todo lo que normalmente vive solo en
    JSONBin (ver scheduleSave más arriba) — así que aunque el bin se quedara sin cuota, lo último
-   que se guardó en cada móvil/tablet probablemente sigue ahí. Entrando en ?recuperar (en vez de
-   cargar la app normal) se vuelca esa copia en pantalla para poder copiarla y mandármela, SIN
-   tocar ni sincronizar nada (puramente de lectura). Quitar esta función y su gancho de abajo una
-   vez recuperados todos los dispositivos que hiciera falta — no es una función de cara a la familia. */
-function mostrarRecuperacionLocal(){
+   que se guardó en cada móvil/tablet probablemente sigue ahí. Salta sola, UNA vez por dispositivo
+   (marcador RECUPERACION_FLAG), antes de la app normal — así no hace falta escribir ninguna URL a
+   mano en la tablet ni en el acceso directo del móvil, que no tienen barra de direcciones. También
+   se puede forzar a mano entrando en ?recuperar. Es de solo lectura, no toca ni sincroniza nada.
+   Quitar esta función y su gancho de abajo una vez recuperados todos los dispositivos que hiciera
+   falta — no es una función de cara a la familia. */
+const RECUPERACION_FLAG = 'recuperacionVista_20261108';
+function mostrarRecuperacionLocal(continuar){
   const claves = ['menuSemanalChecks','menuSemanalChecksSemanal','menuSemanalComprado',
     'menuSemanalCompradoSemanal','menuSemanalItemsSueltos','menuSemanalPeso','menuSemanalComposicion',
     'menuSemanalNutriEdits','menuSemanalOpcionElegida','menuSemanalMedia','menuSemanalGrupoWhatsapp',
@@ -5947,19 +5950,32 @@ function mostrarRecuperacionLocal(){
     if(v && v !== '{}' && v !== '[]' && v !== '' && v !== null) conDatos++;
   });
   const texto = JSON.stringify(bundle, null, 2);
-  document.body.style.cssText = 'font-family:system-ui,sans-serif;max-width:700px;margin:20px auto;padding:0 16px;background:#fff;color:#111;';
-  document.body.innerHTML =
+  // Capa superpuesta, no se toca document.body.innerHTML: la app normal (nav, syncDot, etc.) sigue
+  // debajo intacta, lista para pintarse en cuanto se quite esta capa al pulsar "Continuar".
+  const capa = document.createElement('div');
+  capa.id = 'capaRecuperacion';
+  capa.style.cssText = 'position:fixed;inset:0;z-index:99999;overflow:auto;background:#fff;color:#111;font-family:system-ui,sans-serif;';
+  capa.innerHTML =
+    '<div style="max-width:700px;margin:20px auto;padding:0 16px;">' +
     '<h2>Copia de seguridad de este dispositivo</h2>' +
     '<p>' + conDatos + ' de ' + claves.length + ' categorías tienen datos guardados aquí.</p>' +
-    '<p><b>No cierres ni recargues esta pantalla hasta haber copiado el texto.</b> Pégalo en el chat o mándaselo a Pedro.</p>' +
-    '<button id="btnCopiarRecuperacion" style="font-size:16px;padding:10px 20px;margin-bottom:10px;">Copiar</button>' +
+    '<p><b>Pulsa Copiar y pega el texto donde se lo vayas a mandar a Pedro antes de pulsar Continuar.</b></p>' +
+    '<button id="btnCopiarRecuperacion" style="font-size:16px;padding:10px 20px;margin-bottom:10px;">Copiar</button> ' +
+    '<button id="btnContinuarRecuperacion" style="font-size:16px;padding:10px 20px;margin-bottom:10px;">Continuar a la app</button>' +
     ' <span id="copiadoOkRecuperacion" style="display:none;color:#1a7f37;">Copiado</span>' +
     '<textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;box-sizing:border-box;">' +
-    texto.replace(/</g,'&lt;') + '</textarea>';
-  document.getElementById('btnCopiarRecuperacion').onclick = async ()=>{
+    texto.replace(/</g,'&lt;') + '</textarea>' +
+    '</div>';
+  document.body.appendChild(capa);
+  capa.querySelector('#btnCopiarRecuperacion').onclick = async ()=>{
     try{ await navigator.clipboard.writeText(texto); }
-    catch(_){ const ta = document.querySelector('textarea'); ta.focus(); ta.select(); document.execCommand('copy'); }
-    document.getElementById('copiadoOkRecuperacion').style.display = 'inline';
+    catch(_){ const ta = capa.querySelector('textarea'); ta.focus(); ta.select(); document.execCommand('copy'); }
+    capa.querySelector('#copiadoOkRecuperacion').style.display = 'inline';
+  };
+  capa.querySelector('#btnContinuarRecuperacion').onclick = ()=>{
+    localStorage.setItem(RECUPERACION_FLAG, '1');
+    capa.remove();
+    if(continuar) continuar();
   };
 }
 
@@ -5968,11 +5984,18 @@ function mostrarRecuperacionLocal(){
    tablet de la nevera — y se entra directo mostrando a toda la familia, sin pedir "¿quién eres?".
    Cualquier móvil (incluso en horizontal) tiene menos de 650px de alto y sigue yendo al
    onboarding normal. */
-if(location.search.indexOf('recuperar')!==-1 || location.hash === '#recuperar'){
-  mostrarRecuperacionLocal();
-} else if(!miUsuario && !modoNevera && window.matchMedia('(min-width:1000px) and (min-height:650px)').matches){
-  modoNevera = true;
-  localStorage.setItem('modoNevera', '1');
-  loadRemote();
-} else if(!miUsuario && !modoNevera){ mostrarOnboarding(); } else { loadRemote(); }
+function arrancarAppNormal(){
+  if(!miUsuario && !modoNevera && window.matchMedia('(min-width:1000px) and (min-height:650px)').matches){
+    modoNevera = true;
+    localStorage.setItem('modoNevera', '1');
+    loadRemote();
+  } else if(!miUsuario && !modoNevera){ mostrarOnboarding(); } else { loadRemote(); }
+}
+if(location.search.indexOf('saltarecuperar')!==-1){
+  arrancarAppNormal();
+} else if(location.search.indexOf('recuperar')!==-1 || location.hash === '#recuperar' || !localStorage.getItem(RECUPERACION_FLAG)){
+  mostrarRecuperacionLocal(arrancarAppNormal);
+} else {
+  arrancarAppNormal();
+}
 </script>
