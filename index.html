@@ -1014,7 +1014,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.35.0";
+const APP_VERSION = "v2.36.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -5951,6 +5951,13 @@ function mostrarRecuperacionLocal(continuar){
   });
   const texto = JSON.stringify(bundle, null, 2);
   const mensajeWhatsapp = 'Copia de seguridad de menusemanal (' + (bundle._usuario) + '):\n\n' + texto;
+  // El enlace wa.me tiene un límite práctico de longitud (varía por dispositivo, pero por encima de
+  // ~3000 caracteres algunos iPhone lo cortan a medias — visto en producción: con muchas fotos de
+  // platos guardadas, WhatsApp abría con solo la última URL de imagen suelta, el resto del texto
+  // se perdía por el camino). Si el mensaje es largo, ni se ofrece: mejor Copiar (sin límite de
+  // longitud) y pegarlo a mano.
+  const urlWhatsapp = 'https://wa.me/?text=' + encodeURIComponent(mensajeWhatsapp);
+  const whatsappSeguro = urlWhatsapp.length < 3000;
   // Capa superpuesta, no se toca document.body.innerHTML: la app normal (nav, syncDot, etc.) sigue
   // debajo intacta, lista para pintarse en cuanto se quite esta capa al pulsar "Continuar".
   const capa = document.createElement('div');
@@ -5960,8 +5967,11 @@ function mostrarRecuperacionLocal(continuar){
     '<div style="max-width:700px;margin:20px auto;padding:0 16px;">' +
     '<h2>Copia de seguridad de este dispositivo</h2>' +
     '<p>' + conDatos + ' de ' + claves.length + ' categorías tienen datos guardados aquí.</p>' +
-    '<p><b>Pulsa el botón de WhatsApp y elige a quién mandárselo</b> (mejor a Pedro directamente que al grupo, puede llevar datos de peso). Si no tienes WhatsApp en este dispositivo, usa "Compartir" o "Copiar".</p>' +
-    '<button id="btnWhatsappRecuperacion" style="font-size:16px;padding:12px 20px;margin-bottom:10px;background:#25D366;color:#fff;border:none;border-radius:8px;font-weight:bold;">📲 Enviar por WhatsApp</button><br>' +
+    (whatsappSeguro
+      ? '<p><b>Pulsa el botón de WhatsApp y elige a quién mandárselo</b> (mejor a Pedro directamente que al grupo, puede llevar datos de peso). Si no tienes WhatsApp en este dispositivo, usa "Compartir" o "Copiar".</p>' +
+        '<button id="btnWhatsappRecuperacion" style="font-size:16px;padding:12px 20px;margin-bottom:10px;background:#25D366;color:#fff;border:none;border-radius:8px;font-weight:bold;">📲 Enviar por WhatsApp</button><br>'
+      : '<p><b>Hay demasiados datos para enviarlo directo por WhatsApp (se corta a medias).</b> Pulsa "Copiar" abajo y pégalo tú a mano en un chat de WhatsApp (mantén pulsado el cuadro de escribir → Pegar) antes de darle a enviar.</p>'
+    ) +
     '<button id="btnCompartirRecuperacion" style="font-size:14px;padding:8px 16px;margin-top:6px;margin-bottom:6px;display:none;">Compartir con otra app</button> ' +
     '<button id="btnCopiarRecuperacion" style="font-size:14px;padding:8px 16px;margin-top:6px;margin-bottom:6px;">Copiar</button> ' +
     '<button id="btnContinuarRecuperacion" style="font-size:14px;padding:8px 16px;margin-top:6px;margin-bottom:6px;">Continuar a la app</button>' +
@@ -5970,9 +5980,11 @@ function mostrarRecuperacionLocal(continuar){
     texto.replace(/</g,'&lt;') + '</textarea>' +
     '</div>';
   document.body.appendChild(capa);
-  capa.querySelector('#btnWhatsappRecuperacion').onclick = ()=>{
-    window.open('https://wa.me/?text=' + encodeURIComponent(mensajeWhatsapp), '_blank');
-  };
+  if(whatsappSeguro){
+    capa.querySelector('#btnWhatsappRecuperacion').onclick = ()=>{
+      window.open(urlWhatsapp, '_blank');
+    };
+  }
   if(navigator.share){
     capa.querySelector('#btnCompartirRecuperacion').style.display = 'inline-block';
     capa.querySelector('#btnCompartirRecuperacion').onclick = ()=>{
