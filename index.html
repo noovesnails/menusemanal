@@ -1014,7 +1014,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.32.0";
+const APP_VERSION = "v2.33.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -5927,14 +5927,52 @@ document.querySelectorAll('nav .tab').forEach(btn=>{
   requestAnimationFrame(colocar);
 })();
 
+/* Herramienta de recuperación tras el apagón de JSONBin del 8/11/2026: cada dispositivo guarda en
+   localStorage, ANTES de intentar sincronizar, una copia de todo lo que normalmente vive solo en
+   JSONBin (ver scheduleSave más arriba) — así que aunque el bin se quedara sin cuota, lo último
+   que se guardó en cada móvil/tablet probablemente sigue ahí. Entrando en ?recuperar (en vez de
+   cargar la app normal) se vuelca esa copia en pantalla para poder copiarla y mandármela, SIN
+   tocar ni sincronizar nada (puramente de lectura). Quitar esta función y su gancho de abajo una
+   vez recuperados todos los dispositivos que hiciera falta — no es una función de cara a la familia. */
+function mostrarRecuperacionLocal(){
+  const claves = ['menuSemanalChecks','menuSemanalChecksSemanal','menuSemanalComprado',
+    'menuSemanalCompradoSemanal','menuSemanalItemsSueltos','menuSemanalPeso','menuSemanalComposicion',
+    'menuSemanalNutriEdits','menuSemanalOpcionElegida','menuSemanalMedia','menuSemanalGrupoWhatsapp',
+    'menuSemanalSugerencias','menuSemanalNotasCalendario'];
+  const bundle = { _dispositivo: navigator.userAgent, _usuario: localStorage.getItem('miUsuario')||'(nevera)', _fecha: new Date().toString() };
+  let conDatos = 0;
+  claves.forEach(k=>{
+    const v = localStorage.getItem(k);
+    bundle[k] = v;
+    if(v && v !== '{}' && v !== '[]' && v !== '' && v !== null) conDatos++;
+  });
+  const texto = JSON.stringify(bundle, null, 2);
+  document.body.style.cssText = 'font-family:system-ui,sans-serif;max-width:700px;margin:20px auto;padding:0 16px;background:#fff;color:#111;';
+  document.body.innerHTML =
+    '<h2>Copia de seguridad de este dispositivo</h2>' +
+    '<p>' + conDatos + ' de ' + claves.length + ' categorías tienen datos guardados aquí.</p>' +
+    '<p><b>No cierres ni recargues esta pantalla hasta haber copiado el texto.</b> Pégalo en el chat o mándaselo a Pedro.</p>' +
+    '<button id="btnCopiarRecuperacion" style="font-size:16px;padding:10px 20px;margin-bottom:10px;">Copiar</button>' +
+    ' <span id="copiadoOkRecuperacion" style="display:none;color:#1a7f37;">Copiado</span>' +
+    '<textarea readonly style="width:100%;height:300px;font-family:monospace;font-size:12px;box-sizing:border-box;">' +
+    texto.replace(/</g,'&lt;') + '</textarea>';
+  document.getElementById('btnCopiarRecuperacion').onclick = async ()=>{
+    try{ await navigator.clipboard.writeText(texto); }
+    catch(_){ const ta = document.querySelector('textarea'); ta.focus(); ta.select(); document.execCommand('copy'); }
+    document.getElementById('copiadoOkRecuperacion').style.display = 'inline';
+  };
+}
+
 /* Primer arranque sin identidad guardada: si la pantalla es ancha y baja (tablet apaisada de
    verdad, no un móvil grande en horizontal), se asume que es un dispositivo compartido — la
    tablet de la nevera — y se entra directo mostrando a toda la familia, sin pedir "¿quién eres?".
    Cualquier móvil (incluso en horizontal) tiene menos de 650px de alto y sigue yendo al
    onboarding normal. */
-if(!miUsuario && !modoNevera && window.matchMedia('(min-width:1000px) and (min-height:650px)').matches){
+if(location.search.indexOf('recuperar')!==-1 || location.hash === '#recuperar'){
+  mostrarRecuperacionLocal();
+} else if(!miUsuario && !modoNevera && window.matchMedia('(min-width:1000px) and (min-height:650px)').matches){
   modoNevera = true;
   localStorage.setItem('modoNevera', '1');
-}
-if(!miUsuario && !modoNevera){ mostrarOnboarding(); } else { loadRemote(); }
+  loadRemote();
+} else if(!miUsuario && !modoNevera){ mostrarOnboarding(); } else { loadRemote(); }
 </script>
