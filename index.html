@@ -1014,7 +1014,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.36.0";
+const APP_VERSION = "v2.37.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -5653,6 +5653,15 @@ function renderYo(){
       <div class="aviso-ayuda">Úsalo si estás en una tablet o un ordenador y no sale el menú en una barra lateral solo al entrar — algunas pantallas le restan tanto espacio al navegador que no llegan al tamaño mínimo que detectamos automáticamente. Solo afecta a este dispositivo.</div>
     </div>`;
 
+  // Botón para volver a sacar la pantalla de recuperación de datos locales (ver
+  // mostrarRecuperacionLocal) sin depender de que alguien escriba ?recuperar en la URL a mano —
+  // en un acceso directo de pantalla de inicio no hay barra de direcciones donde escribirlo.
+  const copiaSeguridadHtml = `<div class="section-title">Copia de seguridad de este dispositivo</div>
+    <div class="card">
+      <button type="button" id="btnVerCopiaSeguridad" class="aviso-barajar">📦 Ver copia de seguridad guardada aquí</button>
+      <div class="aviso-ayuda">Muestra los datos guardados en este móvil/tablet para copiarlos y mandárselos a Pedro si hace falta recuperar algo. No toca ni borra nada.</div>
+    </div>`;
+
   const visibles = Object.keys(PERSONAS).filter(id=>personasVisibles.has(id));
   el.innerHTML = `<div class="section-title">Quién ves</div>` +
     `<div class="personpicker" id="personPicker"></div>` +
@@ -5660,6 +5669,7 @@ function renderYo(){
     `<div class="section-title">Tema visual</div>` +
     `<div class="tema-picker">${Object.keys(TEMAS).map(temaBloqueHtml).join('')}</div>` +
     vistaTabletHtml +
+    copiaSeguridadHtml +
     avisoHtml +
     `<div class="section-title">Fechas de la nutricionista</div>` +
     (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
@@ -5687,6 +5697,11 @@ function renderYo(){
   if(forzarVistaTabletInput) forzarVistaTabletInput.addEventListener('change', ()=>{
     localStorage.setItem('forzarVistaTablet', forzarVistaTabletInput.checked ? '1' : '0');
     actualizarVistaTablet();
+  });
+
+  const btnVerCopiaSeguridad = document.getElementById('btnVerCopiaSeguridad');
+  if(btnVerCopiaSeguridad) btnVerCopiaSeguridad.addEventListener('click', ()=>{
+    mostrarRecuperacionLocal(()=>{}); // al "Continuar" aquí no hace falta rearrancar nada, la app ya está cargada
   });
 
   const grupoInput = document.getElementById('grupoWhatsappInput');
