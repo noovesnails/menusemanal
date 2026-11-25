@@ -1,0 +1,2243 @@
+{
+  "generadoEl": "2026-11-25T06:43:01.354Z",
+  "personas": {
+    "pedro": "Pedro",
+    "nuria": "Nuria",
+    "rocio": "Rocío",
+    "paqui": "Paqui",
+    "sole": "Sole",
+    "eva": "Eva",
+    "marta": "Marta",
+    "daniel": "Daniel"
+  },
+  "week": {
+    "2026-09-07": {
+      "pedro": {
+        "comida": "Morcillo guisado con hueso de caña + puré de patata",
+        "cena": "Crema de zanahoria con bacalao"
+      },
+      "nuria": {
+        "comida": "Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
+        "cena": "Puré de calabaza + hamburguesa casera de pollo 100%"
+      }
+    },
+    "2026-09-08": {
+      "pedro": {
+        "comida": "Arroz meloso de almejas, mejillones y pescado blanco",
+        "cena": "Tortilla jugosa con puré de boniato"
+      },
+      "nuria": {
+        "comida": "Dorada con espinacas y calabacín a la plancha",
+        "cena": "Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos"
+      }
+    },
+    "2026-09-09": {
+      "pedro": {
+        "comida": "Hígado de ternera con puré de patata",
+        "cena": "Lenguado con crema de calabacín"
+      },
+      "nuria": {
+        "comida": "Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        "cena": "Puré de calabaza + gallineta (150g)"
+      }
+    },
+    "2026-09-10": {
+      "pedro": {
+        "comida": "Arroz meloso con rape",
+        "cena": "Revuelto cremoso con queso + crema de puerro y patata"
+      },
+      "nuria": {
+        "comida": "½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        "cena": "Tortilla de calabacín"
+      }
+    },
+    "2026-09-11": {
+      "pedro": {
+        "comida": "Pasta con almejas",
+        "cena": "Pollo desmenuzado con crema de calabaza"
+      },
+      "nuria": {
+        "comida": "Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        "cena": "Sepia a la plancha + calabacín, zanahoria y pimientos al horno"
+      }
+    },
+    "2026-09-12": {
+      "pedro": {
+        "comida": "Carrillada guisada con patata",
+        "cena": "Tortilla francesa con queso + crema de verduras"
+      },
+      "nuria": {
+        "comida": "Pollo a la plancha o asado (140g) + escalivada",
+        "cena": "Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos"
+      }
+    },
+    "2026-09-13": {
+      "pedro": {
+        "comida": "Cocido nutritivo (morcillo, pollo, huesos, patas de pollo)",
+        "cena": "Caballa con puré de calabaza"
+      },
+      "nuria": {
+        "comida": "Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        "cena": "Tortilla de espinacas"
+      }
+    },
+    "2026-09-14": {
+      "pedro": {
+        "comida": "Merluza (160g) al vapor o papillote con calabacín/zanahoria + patata pequeña",
+        "cena": "Tortilla de calabacín (2 huevos) + 50g queso fresco"
+      },
+      "nuria": {
+        "comida": "Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
+        "cena": "Puré de calabaza + hamburguesa casera de pollo 100%"
+      },
+      "paqui": {
+        "comida": "Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        "cena": "Tortilla de calabacín (1 huevo + 120g de claras)"
+      },
+      "sole": {
+        "comida": "Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        "cena": "Tortilla de calabacín (1 huevo + 120g de claras)"
+      }
+    },
+    "2026-09-15": {
+      "pedro": {
+        "comida": "Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín",
+        "cena": "Bacalao (150g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "nuria": {
+        "comida": "Dorada con espinacas y calabacín a la plancha",
+        "cena": "Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos"
+      },
+      "paqui": {
+        "comida": "Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        "cena": "Pimiento asado + bacalao a la plancha (120g) + alcaparras opcionales"
+      },
+      "sole": {
+        "comida": "Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        "cena": "Puré de calabaza + bacalao a la plancha (120g)"
+      }
+    },
+    "2026-09-16": {
+      "pedro": {
+        "comida": "Pasta (60g) con gambas (150g peso comestible) + almejas y calabacín",
+        "cena": "Crema de calabacín + pollo (150g)"
+      },
+      "nuria": {
+        "comida": "Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        "cena": "Puré de calabaza + gallineta (150g)"
+      },
+      "paqui": {
+        "comida": "Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
+        "cena": "Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca, cebolla picadita y pepino"
+      },
+      "sole": {
+        "comida": "1 vasito de quinoa o arroz integral + canónigos, tomate, 1/3 aguacate + 80g queso fresco sin lactosa",
+        "cena": "Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca"
+      }
+    },
+    "2026-09-17": {
+      "pedro": {
+        "comida": "Albóndigas caseras (150g de carne picada de pavo) con puré de calabaza",
+        "cena": "Revuelto de 2 huevos con 100g gambas y espinacas (50-80g)"
+      },
+      "nuria": {
+        "comida": "½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        "cena": "Tortilla de calabacín"
+      },
+      "paqui": {
+        "comida": "Pechuga de pollo (120g) + espárragos a la plancha",
+        "cena": "Gazpacho + tortilla de 1 huevo + 1 lata de atún al natural, escurrido"
+      },
+      "sole": {
+        "comida": "Pechuga de pollo (120g) + espárragos a la plancha",
+        "cena": "Canónigos con remolacha en rodajas + tortilla de 1 huevo + 1 lata de atún al natural, reducido en sal, escurrido"
+      }
+    },
+    "2026-09-18": {
+      "pedro": {
+        "comida": "Salmón (150g) al horno con boniato (1 pequeño) y calabacín + limón y hierbas aromáticas",
+        "cena": "Hamburguesa casera de pollo/pavo (150g) + berenjena y tomate asados"
+      },
+      "nuria": {
+        "comida": "Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        "cena": "Sepia a la plancha + calabacín, zanahoria y pimientos al horno"
+      },
+      "paqui": {
+        "comida": "Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120-150g de claras)"
+      },
+      "sole": {
+        "comida": "Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120-150g de claras)"
+      }
+    },
+    "2026-09-19": {
+      "pedro": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        "cena": "Crema de calabaza + merluza (150g)"
+      },
+      "nuria": {
+        "comida": "Pollo a la plancha o asado (140g) + escalivada",
+        "cena": "Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos"
+      },
+      "paqui": {
+        "comida": "Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
+        "cena": "Mejillones al vapor + tomate natural con albahaca, cebolla y piparras o pepinillos"
+      },
+      "sole": {
+        "comida": "Conejo o pollo al horno (120g) + ensalada de brotes, zanahoria, tomate",
+        "cena": "Mejillones al vapor 250-300g con concha (100-120g limpios) + tomate natural con albahaca"
+      }
+    },
+    "2026-09-20": {
+      "pedro": {
+        "comida": "Solomillo de cerdo (150g) con 1 patata pequeña + pimientos y berenjena asados",
+        "cena": "Tortilla (2 huevos) de atún (1 lata de atún al natural, escurrida) + tomate pelado/cocinado o calabacín"
+      },
+      "nuria": {
+        "comida": "Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        "cena": "Tortilla de espinacas"
+      },
+      "paqui": {
+        "comida": "Filete de lubina al horno (130g) + pimiento, calabacín al horno",
+        "cena": "Hervido de brócoli + pollo a la plancha (120g)"
+      },
+      "sole": {
+        "comida": "Filete de lubina al horno (130g) + calabacín al horno + remolacha en rodajas",
+        "cena": "Puré de calabaza + pollo a la plancha (120g)"
+      }
+    },
+    "2026-09-21": {
+      "pedro": {
+        "comida": "Merluza (160g) al vapor o papillote con calabacín/zanahoria + patata pequeña",
+        "cena": "Tortilla de calabacín (2 huevos) + 50g queso fresco"
+      },
+      "nuria": {
+        "comida": "Dorada (150g) al vapor o papillote con calabacín y zanahoria",
+        "cena": "Tortilla de calabacín (2 huevos) + canónigos con tomate natural"
+      },
+      "rocio": {
+        "comida": "Merluza (160g) gratinada con bechamel y taquitos de jamón serrano (40g) + boniato o patata al airfryer",
+        "cena": "Arroz (90g peso antes de cocer) a la cubana (2 huevos)"
+      },
+      "paqui": {
+        "comida": "Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        "cena": "Tortilla de calabacín (1 huevo + 120g de claras)"
+      },
+      "sole": {
+        "comida": "Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        "cena": "Tortilla de calabacín (1 huevo + 120g de claras)"
+      },
+      "marta": {
+        "comida": "Garbanzo (140g) salteado con espinacas, ajo y pimentón + 50g de feta",
+        "cena": "Escalivada (pimiento, berenjena, cebolla) + 1 lata de bonito o caballa + 1 huevo o 1 queso tipo Burgos"
+      }
+    },
+    "2026-09-22": {
+      "pedro": {
+        "comida": "Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín",
+        "cena": "Bacalao (150g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "nuria": {
+        "comida": "Pollo al wok (140g) + calabacín, champiñones, zanahoria (salsa de soja)",
+        "cena": "Gallineta (140g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "rocio": {
+        "comida": "Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín + un chorrito de aceite de oliva",
+        "cena": "Boquerones rebozados (180g) con pisto casero"
+      },
+      "paqui": {
+        "comida": "Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        "cena": "Pimiento asado + bacalao a la plancha (120g) + alcaparras opcionales"
+      },
+      "sole": {
+        "comida": "Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        "cena": "Puré de calabaza + bacalao a la plancha (120g)"
+      },
+      "marta": {
+        "comida": "Wok de tofu (180g) con brócoli, calabacín, tomatitos cherry",
+        "cena": "Tortilla (2 huevos, claras a demanda) de espinacas + tomate en rodajas"
+      }
+    },
+    "2026-09-23": {
+      "pedro": {
+        "comida": "Pasta (60g) con gambas (150g peso comestible) + almejas y calabacín",
+        "cena": "Crema de calabacín + pollo (150g)"
+      },
+      "nuria": {
+        "comida": "Garbanzo (120g) salteado con espinacas y pimentón + 1 huevo",
+        "cena": "Crema de calabacín + pollo (130g)"
+      },
+      "rocio": {
+        "comida": "Pasta (100g) con gambas (150g peso comestible) y mascarpone",
+        "cena": "Caldo casero + arroz (70g) y albóndigas"
+      },
+      "paqui": {
+        "comida": "Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
+        "cena": "Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca, cebolla picadita y pepino"
+      },
+      "sole": {
+        "comida": "1 vasito de quinoa o arroz integral + canónigos, tomate, 1/3 aguacate + 80g queso fresco sin lactosa",
+        "cena": "Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca"
+      },
+      "marta": {
+        "comida": "Judías verdes hervidas (o de bote) + tomates cherry + 1 huevo + 1 lata de sardinillas o caballa, escurrida + 1 patata grande (mejor hervida el día anterior)",
+        "cena": "Crema de verduras (casera) + tofu a la plancha (200g)"
+      }
+    },
+    "2026-09-24": {
+      "pedro": {
+        "comida": "Albóndigas caseras (150g de carne picada de pavo) con puré de calabaza",
+        "cena": "Revuelto de 2 huevos con 100g gambas y espinacas (50-80g)"
+      },
+      "nuria": {
+        "comida": "Quinoa (1 vasito) con 1 lata de caballa, tomatitos cherry, pepino, canónigos",
+        "cena": "Revuelto de 2 huevos de espinacas"
+      },
+      "rocio": {
+        "comida": "Berenjenas rellenas (150g de carne molida, tomate triturado) + bechamel + 60g de mozzarella rallada",
+        "cena": "Tortilla (2 huevos) de queso García Baquero semi y patata"
+      },
+      "paqui": {
+        "comida": "Pechuga de pollo (120g) + espárragos a la plancha",
+        "cena": "Gazpacho + tortilla de 1 huevo + 1 lata de atún al natural, escurrido"
+      },
+      "sole": {
+        "comida": "Pechuga de pollo (120g) + espárragos a la plancha",
+        "cena": "Canónigos con remolacha en rodajas + tortilla de 1 huevo + 1 lata de atún al natural, reducido en sal, escurrido"
+      },
+      "marta": {
+        "comida": "1 vasito de quinoa + ½ aguacate, tomatitos cherry, 100g de hummus + 1 huevo duro",
+        "cena": "Lubina o dorada a la plancha + verduras al gusto (brócoli, pimientos, cherrys)"
+      }
+    },
+    "2026-09-25": {
+      "pedro": {
+        "comida": "Salmón (150g) al horno con boniato (1 pequeño) y calabacín + limón y hierbas aromáticas",
+        "cena": "Hamburguesa casera de pollo/pavo (150g) + berenjena y tomate asados"
+      },
+      "nuria": {
+        "comida": "Salmón (150g) al horno con boniato (½ pequeño) y calabacín + limón y hierbas aromáticas",
+        "cena": "Hamburguesa casera de pollo/pavo (130g) + berenjena y tomate asados"
+      },
+      "rocio": {
+        "comida": "Dorada o lubina (150g) al horno con boniato (airfryer) + guacamole (rebosante)",
+        "cena": "Crema de calabacín y patata + Hamburguesa casera de pollo/pavo (150g)"
+      },
+      "paqui": {
+        "comida": "Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120-150g de claras)"
+      },
+      "sole": {
+        "comida": "Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120-150g de claras)"
+      },
+      "marta": {
+        "comida": "Lentejas (150g, pueden ser de bote) guisadas con verduras (puerro, pimiento, tomate natural, zanahoria) + 1 huevo",
+        "cena": "Mini pizzas de berenjena + ensalada variada a demanda"
+      }
+    },
+    "2026-09-26": {
+      "pedro": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        "cena": "Crema de calabaza + merluza (150g)"
+      },
+      "nuria": {
+        "comida": "Caballa o sardinas al horno con limón (150g) + calabacín, zanahoria y champiñones",
+        "cena": "Ensalada de calabaza asada con queso fresco sin lactosa (70g), canónigos o rúcula + 1 c/s de pipas de calabaza"
+      },
+      "rocio": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        "cena": "Ñoquis cremosos con salmón, tomate y mascarpone"
+      },
+      "paqui": {
+        "comida": "Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
+        "cena": "Mejillones al vapor + tomate natural con albahaca, cebolla y piparras o pepinillos"
+      },
+      "sole": {
+        "comida": "Conejo o pollo al horno (120g) + ensalada de brotes, zanahoria, tomate",
+        "cena": "Mejillones al vapor 250-300g con concha (100-120g limpios) + tomate natural con albahaca"
+      },
+      "marta": {
+        "comida": "Berenjena o calabacín ´relleno´ de soja texturizada",
+        "cena": "Crema de verduras (casera) + sepia o calamar (180g)"
+      }
+    },
+    "2026-09-27": {
+      "pedro": {
+        "comida": "Solomillo de cerdo (150g) con 1 patata pequeña + pimientos y berenjena asados",
+        "cena": "Tortilla (2 huevos) de atún (1 lata de atún al natural, escurrida) + tomate pelado/cocinado o calabacín"
+      },
+      "nuria": {
+        "comida": "Solomillo de pavo (150g) con pimientos y berenjena asados",
+        "cena": "Crema de calabaza + mejillones o berberechos a demanda"
+      },
+      "rocio": {
+        "comida": "Hamburguesa de ternera con patatas al airfryer + pimientos asados",
+        "cena": "Bocadillo (125g) de tortilla de calabacín (2 huevos) + 50g queso García Baquero semi"
+      },
+      "paqui": {
+        "comida": "Filete de lubina al horno (130g) + pimiento, calabacín al horno",
+        "cena": "Hervido de brócoli + pollo a la plancha (120g)"
+      },
+      "sole": {
+        "comida": "Filete de lubina al horno (130g) + calabacín al horno + remolacha en rodajas",
+        "cena": "Puré de calabaza + pollo a la plancha (120g)"
+      },
+      "marta": {
+        "comida": "Dorada o lubina (150g) al horno con boniato (airfryer) + guacamole (rebosante)",
+        "cena": "Revuelto de setas (2 huevos, claras a demanda)"
+      }
+    },
+    "2026-09-28": {
+      "nuria": {
+        "comida": "Dorada (150g) al vapor o papillote con calabacín y zanahoria",
+        "cena": "Tortilla de calabacín (2 huevos) + canónigos con tomate natural"
+      },
+      "rocio": {
+        "comida": "Merluza (160g) gratinada con bechamel y taquitos de jamón serrano (40g) + boniato o patata al airfryer",
+        "cena": "Arroz (90g peso antes de cocer) a la cubana (2 huevos)"
+      },
+      "paqui": {
+        "comida": "Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        "cena": "Tortilla de calabacín (1 huevo + 120g de claras)"
+      },
+      "sole": {
+        "comida": "Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        "cena": "Tortilla de calabacín (1 huevo + 120g de claras)"
+      },
+      "eva": {
+        "comida": "Berenjena \"rellena\" (al horno con 140g de carne de pollo o pavo picada, salteada con zanahoria rallada, carne de berenjena y espinacas)",
+        "cena": "Revuelto de calabacín de 2 huevos (+ claras a demanda) con orégano"
+      },
+      "marta": {
+        "comida": "Garbanzo (140g) salteado con espinacas, ajo y pimentón + 50g de feta",
+        "cena": "Escalivada (pimiento, berenjena, cebolla) + 1 lata de bonito o caballa + 1 huevo o 1 queso tipo Burgos"
+      }
+    },
+    "2026-09-29": {
+      "nuria": {
+        "comida": "Pollo al wok (140g) + calabacín, champiñones, zanahoria (salsa de soja)",
+        "cena": "Gallineta (140g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "rocio": {
+        "comida": "Arroz (60g en crudo) guisado con pollo (150g) + zanahoria y calabacín + un chorrito de aceite de oliva",
+        "cena": "Boquerones rebozados (180g) con pisto casero"
+      },
+      "paqui": {
+        "comida": "Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        "cena": "Pimiento asado + bacalao a la plancha (120g) + alcaparras opcionales"
+      },
+      "sole": {
+        "comida": "Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        "cena": "Puré de calabaza + bacalao a la plancha (120g)"
+      },
+      "eva": {
+        "comida": "Arroz basmati (60g en crudo) mezclado con canónigos + pechuga de pavo o pollo (140g) salteada con calabacín y zanahoria",
+        "cena": "Merluza (150g) al vapor o al lekue + verduras al vapor (calabacín, zanahoria, brócoli)"
+      },
+      "marta": {
+        "comida": "Wok de tofu (180g) con brócoli, calabacín, tomatitos cherry",
+        "cena": "Tortilla (2 huevos, claras a demanda) de espinacas + tomate en rodajas"
+      }
+    },
+    "2026-09-30": {
+      "nuria": {
+        "comida": "Garbanzo (120g) salteado con espinacas y pimentón + 1 huevo",
+        "cena": "Crema de calabacín + pollo (130g)"
+      },
+      "rocio": {
+        "comida": "Pasta (100g) con gambas (150g peso comestible) y mascarpone",
+        "cena": "Caldo casero + arroz (70g) y albóndigas"
+      },
+      "paqui": {
+        "comida": "Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
+        "cena": "Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca, cebolla picadita y pepino"
+      },
+      "sole": {
+        "comida": "1 vasito de quinoa o arroz integral + canónigos, tomate, 1/3 aguacate + 80g queso fresco sin lactosa",
+        "cena": "Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca"
+      },
+      "eva": {
+        "comida": "Arroz basmati (60g en crudo) + langostinos (160g) o calamares salteados con zanahoria, judías verdes",
+        "cena": "Crema de verduras (sin quesitos, sin nata) + 2 huevos (a elección)"
+      },
+      "marta": {
+        "comida": "Judías verdes hervidas (o de bote) + tomates cherry + 1 huevo + 1 lata de sardinillas o caballa, escurrida + 1 patata grande (mejor hervida el día anterior)",
+        "cena": "Crema de verduras (casera) + tofu a la plancha (200g)"
+      }
+    },
+    "2026-10-01": {
+      "nuria": {
+        "comida": "Quinoa (1 vasito) con 1 lata de caballa, tomatitos cherry, pepino, canónigos",
+        "cena": "Revuelto de 2 huevos de espinacas"
+      },
+      "rocio": {
+        "comida": "Berenjenas rellenas (150g de carne molida, tomate triturado) + bechamel + 60g de mozzarella rallada",
+        "cena": "Tortilla (2 huevos) de queso García Baquero semi y patata"
+      },
+      "paqui": {
+        "comida": "Pechuga de pollo (120g) + espárragos a la plancha",
+        "cena": "Gazpacho + tortilla de 1 huevo + 1 lata de atún al natural, escurrido"
+      },
+      "sole": {
+        "comida": "Pechuga de pollo (120g) + espárragos a la plancha",
+        "cena": "Canónigos con remolacha en rodajas + tortilla de 1 huevo + 1 lata de atún al natural, reducido en sal, escurrido"
+      },
+      "eva": {
+        "comida": "Ensalada de patata roja (1 mediana, hervida el día anterior) + atún al natural o caballa (1 lata) + 1 huevo, puñado de rúcula + calabacín, zanahoria",
+        "cena": "Hervido de espinacas o acelgas + albóndigas caseras de pavo o pollo (sin pan)"
+      },
+      "marta": {
+        "comida": "1 vasito de quinoa + ½ aguacate, tomatitos cherry, 100g de hummus + 1 huevo duro",
+        "cena": "Lubina o dorada a la plancha + verduras al gusto (brócoli, pimientos, cherrys)"
+      }
+    },
+    "2026-10-02": {
+      "nuria": {
+        "comida": "Salmón (150g) al horno con boniato (½ pequeño) y calabacín + limón y hierbas aromáticas",
+        "cena": "Hamburguesa casera de pollo/pavo (130g) + berenjena y tomate asados"
+      },
+      "rocio": {
+        "comida": "Dorada o lubina (150g) al horno con boniato (airfryer) + guacamole (rebosante)",
+        "cena": "Crema de calabacín y patata + Hamburguesa casera de pollo/pavo (150g)"
+      },
+      "paqui": {
+        "comida": "Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120-150g de claras)"
+      },
+      "sole": {
+        "comida": "Merluza a la plancha (130g) + calabacín a la plancha + tomatitos cherry",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120-150g de claras)"
+      },
+      "eva": {
+        "comida": "Pavo estofado fácil",
+        "cena": "Crema de verduras (sin quesitos, sin nata) + lubina a la plancha (160g)"
+      },
+      "marta": {
+        "comida": "Lentejas (150g, pueden ser de bote) guisadas con verduras (puerro, pimiento, tomate natural, zanahoria) + 1 huevo",
+        "cena": "Mini pizzas de berenjena + ensalada variada a demanda"
+      }
+    },
+    "2026-10-03": {
+      "nuria": {
+        "comida": "Caballa o sardinas al horno con limón (150g) + calabacín, zanahoria y champiñones",
+        "cena": "Ensalada de calabaza asada con queso fresco sin lactosa (70g), canónigos o rúcula + 1 c/s de pipas de calabaza"
+      },
+      "rocio": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        "cena": "Ñoquis cremosos con salmón, tomate y mascarpone"
+      },
+      "paqui": {
+        "comida": "Conejo o pollo al horno (120g) + ensalada de brotes, pepino, tomate",
+        "cena": "Mejillones al vapor + tomate natural con albahaca, cebolla y piparras o pepinillos"
+      },
+      "sole": {
+        "comida": "Conejo o pollo al horno (120g) + ensalada de brotes, zanahoria, tomate",
+        "cena": "Mejillones al vapor 250-300g con concha (100-120g limpios) + tomate natural con albahaca"
+      },
+      "eva": {
+        "comida": "Hamburguesa de ternera 100% + ensalada a demanda (hojas verdes, pepino, zanahoria cruda, espárragos con precaución)",
+        "cena": "Sepia o calamar a la plancha (150g) + calabacín y berenjena al horno"
+      }
+    },
+    "2026-10-04": {
+      "nuria": {
+        "comida": "Solomillo de pavo (150g) con pimientos y berenjena asados",
+        "cena": "Crema de calabaza + mejillones o berberechos a demanda"
+      },
+      "rocio": {
+        "comida": "Hamburguesa de ternera con patatas al airfryer + pimientos asados",
+        "cena": "Bocadillo (125g) de tortilla de calabacín (2 huevos) + 50g queso García Baquero semi"
+      },
+      "paqui": {
+        "comida": "Filete de lubina al horno (130g) + pimiento, calabacín al horno",
+        "cena": "Hervido de brócoli + pollo a la plancha (120g)"
+      },
+      "sole": {
+        "comida": "Filete de lubina al horno (130g) + calabacín al horno + remolacha en rodajas",
+        "cena": "Puré de calabaza + pollo a la plancha (120g)"
+      },
+      "eva": {
+        "comida": "Dorada al horno (150g) + verduras al horno: 1 patata, berenjena, calabacín",
+        "cena": "Judías verdes salteadas con jamón serrano + 1 huevo"
+      }
+    },
+    "2026-10-05": {
+      "nuria": {
+        "comida": "Ensalada de verano (patata, tomate, atún, huevo, aceitunas)",
+        "cena": "Puré de calabaza + hamburguesa casera de pollo 100%"
+      },
+      "paqui": {
+        "comida": "Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        "cena": "Tortilla de calabacín (1 huevo + 120g de claras)"
+      },
+      "sole": {
+        "comida": "Acelgas salteadas con ajo + gallineta a la plancha (120g)",
+        "cena": "Tortilla de calabacín (1 huevo + 120g de claras)"
+      }
+    },
+    "2026-10-06": {
+      "nuria": {
+        "comida": "Dorada con espinacas y calabacín a la plancha",
+        "cena": "Solomillos de pollo o pavo (140g) + tomate, canónigos y espárragos/palmitos"
+      },
+      "paqui": {
+        "comida": "Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        "cena": "Pimiento asado + bacalao a la plancha (120g) + alcaparras opcionales"
+      },
+      "sole": {
+        "comida": "Pollo (120g) guisado con puerro, calabacín y tomate triturado",
+        "cena": "Puré de calabaza + bacalao a la plancha (120g)"
+      }
+    },
+    "2026-10-07": {
+      "nuria": {
+        "comida": "Salteado de brócoli, calabacín y champiñones + pechuga de pollo (140g)",
+        "cena": "Puré de calabaza + gallineta (150g)"
+      },
+      "paqui": {
+        "comida": "Lentejas (100g peso cocido) guisadas con verduras (zanahoria, calabacín, tomate) + 1 huevo",
+        "cena": "Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca, cebolla picadita y pepino"
+      },
+      "sole": {
+        "comida": "1 vasito de quinoa o arroz integral + canónigos, tomate, 1/3 aguacate + 80g queso fresco sin lactosa",
+        "cena": "Langostino cocido (300g sin pelar, 150g pelado) + tomate natural con albahaca"
+      }
+    },
+    "2026-10-08": {
+      "nuria": {
+        "comida": "½ boniato + calabacín y zanahoria al vapor/horno + salmón (130g)",
+        "cena": "Tortilla de calabacín"
+      },
+      "paqui": {
+        "comida": "Pechuga de pollo (120g) + espárragos a la plancha",
+        "cena": "Gazpacho + tortilla de 1 huevo + 1 lata de atún al natural, escurrido"
+      },
+      "sole": {
+        "comida": "Pechuga de pollo (120g) + espárragos a la plancha",
+        "cena": "Canónigos con remolacha en rodajas + tortilla de 1 huevo + 1 lata de atún al natural, reducido en sal, escurrido"
+      }
+    },
+    "2026-10-09": {
+      "nuria": {
+        "comida": "Ensalada de quinoa + calabaza y espinacas salteadas + huevo + semillas de calabaza",
+        "cena": "Sepia a la plancha + calabacín, zanahoria y pimientos al horno"
+      },
+      "paqui": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras)"
+      }
+    },
+    "2026-10-10": {
+      "nuria": {
+        "comida": "Pollo a la plancha o asado (140g) + escalivada",
+        "cena": "Mejillones o clochinas al vapor + tomate, canónigos y espárragos/palmitos"
+      },
+      "paqui": {
+        "comida": "Pollo al horno (120g) + pimiento al horno",
+        "cena": "Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Pollo al horno (120g) + berenjena al horno y canónigos",
+        "cena": "Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas"
+      }
+    },
+    "2026-10-11": {
+      "nuria": {
+        "comida": "Corvina al horno (140g) con tomatitos, aceitunas, perejil y ajo + ensalada verde",
+        "cena": "Tortilla de espinacas"
+      },
+      "paqui": {
+        "comida": "Lubina (120g) al horno con calabaza y calabacín",
+        "cena": "Yogur proteico natural + kiwi + 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Lubina (120g) al horno con canónigos y remolacha",
+        "cena": "Crema de calabacín + 70g de queso fresco sin lactosa"
+      }
+    },
+    "2026-10-12": {
+      "paqui": {
+        "comida": "Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta",
+        "cena": "Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras"
+      },
+      "sole": {
+        "comida": "Espinacas salteadas con pimentón + merluza a la plancha (130g)",
+        "cena": "Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras"
+      }
+    },
+    "2026-10-13": {
+      "paqui": {
+        "comida": "Pollo (120g) con calabaza asada, rúcula y rabanitos",
+        "cena": "Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry"
+      },
+      "sole": {
+        "comida": "Pollo (120g) salteado con espárragos y espinacas",
+        "cena": "Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa"
+      }
+    },
+    "2026-10-14": {
+      "paqui": {
+        "comida": "Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno",
+        "cena": "Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)"
+      },
+      "sole": {
+        "comida": "Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno",
+        "cena": "Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)"
+      }
+    },
+    "2026-10-15": {
+      "paqui": {
+        "comida": "Wok de pollo (120g) con brócoli, coliflor y calabacín",
+        "cena": "Mejillones al vapor + tomate natural con albahaca o menta y palmitos"
+      },
+      "sole": {
+        "comida": "Judías verdes hervidas + 1 huevo, 1 lata de atún reducido en sal, tomatitos cherry",
+        "cena": "Mejillones al vapor + tomate natural con albahaca o menta y palmitos"
+      }
+    },
+    "2026-10-16": {
+      "paqui": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras)"
+      }
+    },
+    "2026-10-17": {
+      "paqui": {
+        "comida": "Pollo al horno (120g) + pimiento al horno",
+        "cena": "Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Pollo al horno (120g) + berenjena al horno y canónigos",
+        "cena": "Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas"
+      }
+    },
+    "2026-10-18": {
+      "paqui": {
+        "comida": "Lubina (120g) al horno con calabaza y calabacín",
+        "cena": "Yogur proteico natural + kiwi + 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Lubina (120g) al horno con canónigos y remolacha",
+        "cena": "Crema de calabacín + 70g de queso fresco sin lactosa"
+      }
+    },
+    "2026-10-19": {
+      "paqui": {
+        "comida": "Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta",
+        "cena": "Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras"
+      },
+      "sole": {
+        "comida": "Espinacas salteadas con pimentón + merluza a la plancha (130g)",
+        "cena": "Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras"
+      },
+      "eva": {
+        "comida": "Berenjena \"rellena\" (al horno con 140g de carne de pollo o pavo picada, salteada con zanahoria rallada, carne de berenjena y espinacas)",
+        "cena": "Revuelto de calabacín de 2 huevos (+ claras a demanda) con orégano"
+      }
+    },
+    "2026-10-20": {
+      "paqui": {
+        "comida": "Pollo (120g) con calabaza asada, rúcula y rabanitos",
+        "cena": "Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry"
+      },
+      "sole": {
+        "comida": "Pollo (120g) salteado con espárragos y espinacas",
+        "cena": "Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Arroz basmati (60g en crudo) mezclado con canónigos + pechuga de pavo o pollo (140g) salteada con calabacín y zanahoria",
+        "cena": "Merluza (200g) al vapor o al lekue + verduras al vapor (calabacín, zanahoria, unos floretes de brócoli)"
+      }
+    },
+    "2026-10-21": {
+      "paqui": {
+        "comida": "Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno",
+        "cena": "Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)"
+      },
+      "sole": {
+        "comida": "Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno",
+        "cena": "Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)"
+      },
+      "eva": {
+        "comida": "Arroz basmati (60g en crudo) + langostinos (160g) o calamares salteados con zanahoria, judías verdes",
+        "cena": "Crema de calabacín y curry, sin quesitos ni nata (bol de 250 ml) + 2 huevos (a elección: hervidos, plancha, pochados o en tortilla)"
+      }
+    },
+    "2026-10-22": {
+      "paqui": {
+        "comida": "Wok de pollo (120g) con brócoli, coliflor y calabacín",
+        "cena": "Mejillones al vapor + tomate natural con albahaca o menta y palmitos"
+      },
+      "sole": {
+        "comida": "Judías verdes hervidas + 1 huevo, 1 lata de atún reducido en sal, tomatitos cherry",
+        "cena": "Mejillones al vapor + tomate natural con albahaca o menta y palmitos"
+      },
+      "eva": {
+        "comida": "Ensalada de patata roja (1 mediana, hervida el día anterior) + atún al natural o caballa (1 lata), 1 huevo, rúcula, calabacín y zanahoria",
+        "cena": "Hervido de espinacas o acelgas + albóndigas caseras de pavo o pollo (sin pan), o pollo a la plancha (170g)"
+      }
+    },
+    "2026-10-23": {
+      "paqui": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras)"
+      },
+      "eva": {
+        "comida": "Pavo estofado fácil",
+        "cena": "Crema de judías verdes y calabacín con cúrcuma, sin quesitos ni nata (bol de 250 ml) + lubina a la plancha (200g)"
+      }
+    },
+    "2026-10-24": {
+      "paqui": {
+        "comida": "Pollo al horno (120g) + pimiento al horno",
+        "cena": "Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Pollo al horno (120g) + berenjena al horno y canónigos",
+        "cena": "Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas"
+      },
+      "eva": {
+        "comida": "Hamburguesa de ternera 100% + ensalada a demanda (hojas verdes, pepino, zanahoria cruda, espárragos con precaución)",
+        "cena": "Sepia o calamar a la plancha (200g) + calabacín y berenjena al horno"
+      }
+    },
+    "2026-10-25": {
+      "paqui": {
+        "comida": "Lubina (120g) al horno con calabaza y calabacín",
+        "cena": "Yogur proteico natural + kiwi + 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Lubina (120g) al horno con canónigos y remolacha",
+        "cena": "Crema de calabacín + 70g de queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (150g) + verduras al horno: patata, berenjena y calabacín",
+        "cena": "Judías verdes salteadas con jamón serrano + 2 huevos"
+      }
+    },
+    "2026-10-26": {
+      "pedro": {
+        "comida": "Pollo al horno (180g) con calabaza, aceitunas, tomates",
+        "cena": "1 vasito de caldo casero + Revuelto de berberechos (2 huevos)"
+      },
+      "rocio": {
+        "comida": "Pollo al horno (180g) con 1 patata, aceitunas, tomates",
+        "cena": "Arroz (90g peso antes de cocer) a la cubana (2 huevos)"
+      },
+      "paqui": {
+        "comida": "Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta",
+        "cena": "Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras"
+      },
+      "sole": {
+        "comida": "Espinacas salteadas con pimentón + merluza a la plancha (130g)",
+        "cena": "Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras"
+      },
+      "eva": {
+        "comida": "Berenjena \"rellena\" (al horno con 140g de carne de pollo o pavo picada, salteada con zanahoria rallada, carne de berenjena y espinacas)",
+        "cena": "Revuelto de calabacín de 2 huevos (+ claras a demanda) con orégano"
+      }
+    },
+    "2026-10-27": {
+      "pedro": {
+        "comida": "Patata asada, judía verde hervida + bacalao a la plancha (180g)",
+        "cena": "Crema de calabacín + Hamburguesa de caballo o ternera 100%"
+      },
+      "rocio": {
+        "comida": "Boquerones rebozados (200g) + boniato al airfryer + tomate en rodajas",
+        "cena": "Crema de calabacín + Hamburguesa de ternera 100%"
+      },
+      "paqui": {
+        "comida": "Pollo (120g) con calabaza asada, rúcula y rabanitos",
+        "cena": "Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry"
+      },
+      "sole": {
+        "comida": "Pollo (120g) salteado con espárragos y espinacas",
+        "cena": "Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Arroz basmati (60g en crudo) mezclado con canónigos + pechuga de pavo o pollo (140g) salteada con calabacín y zanahoria",
+        "cena": "Merluza (200g) al vapor o al lekue + verduras al vapor (calabacín, zanahoria, unos floretes de brócoli)"
+      }
+    },
+    "2026-10-28": {
+      "pedro": {
+        "comida": "Garbanzo (180g) salteado con espinacas y pimentón + 1 huevo (días con estómago más revuelto: arroz 90g salteado con espinacas y pimentón + 150g de pollo a la plancha)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "rocio": {
+        "comida": "Potaje de garbanzo (180g) con espinacas y pimentón + 1 huevo (o lentejas con verduras, taquitos de jamón + 1 huevo)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "paqui": {
+        "comida": "Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno",
+        "cena": "Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)"
+      },
+      "sole": {
+        "comida": "Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno",
+        "cena": "Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)"
+      },
+      "eva": {
+        "comida": "Arroz basmati (60g en crudo) + langostinos (160g) o calamares salteados con zanahoria, judías verdes",
+        "cena": "Crema de calabacín y curry, sin quesitos ni nata (bol de 250 ml) + 2 huevos (a elección: hervidos, plancha, pochados o en tortilla)"
+      }
+    },
+    "2026-10-29": {
+      "pedro": {
+        "comida": "Salmón (180g) al horno con boniato (½) y calabacín + limón y hierbas aromáticas",
+        "cena": "1 vasito de caldo casero + Revuelto de 2 huevos de espinacas + opcional 120g claras"
+      },
+      "rocio": {
+        "comida": "Salmón (180g) al horno con boniato + ensalada de aguacate + tomate",
+        "cena": "1 vasito de caldo casero con 70g de arroz + Tortilla de 2 huevos"
+      },
+      "paqui": {
+        "comida": "Wok de pollo (120g) con brócoli, coliflor y calabacín",
+        "cena": "Mejillones al vapor + tomate natural con albahaca o menta y palmitos"
+      },
+      "sole": {
+        "comida": "Judías verdes hervidas + 1 huevo, 1 lata de atún reducido en sal, tomatitos cherry",
+        "cena": "Mejillones al vapor + tomate natural con albahaca o menta y palmitos"
+      },
+      "eva": {
+        "comida": "Ensalada de patata roja (1 mediana, hervida el día anterior) + atún al natural o caballa (1 lata), 1 huevo, rúcula, calabacín y zanahoria",
+        "cena": "Hervido de espinacas o acelgas + albóndigas caseras de pavo o pollo (sin pan), o pollo a la plancha (170g)"
+      }
+    },
+    "2026-10-30": {
+      "pedro": {
+        "comida": "Quinoa (70g peso en crudo) con 1 lata de caballa o melva, tomatitos cherry, aceitunas, perejil, 1 huevo",
+        "cena": "Ternera a la plancha (140g) + berenjena y tomate asados"
+      },
+      "rocio": {
+        "comida": "Macarrones (100g) con 1 lata de caballa o melva + aceitunas, tomate triturado + 60g de queso rallado para gratinar",
+        "cena": "Berenjena rellena de carne picada (130g) con tomate triturado, pimentón + 50g de queso para gratinar"
+      },
+      "paqui": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras)"
+      },
+      "eva": {
+        "comida": "Pavo estofado fácil",
+        "cena": "Crema de judías verdes y calabacín con cúrcuma, sin quesitos ni nata (bol de 250 ml) + lubina a la plancha (200g)"
+      }
+    },
+    "2026-10-31": {
+      "pedro": {
+        "comida": "Pollo al wok (180g) + calabacín, pimiento, zanahoria + 60g de tallarines de arroz",
+        "cena": "1 vasito de caldo casero + Calabaza asada + queso fresco sin lactosa (70g), 130g de pollo"
+      },
+      "rocio": {
+        "comida": "Langostinos al wok (200g) + calabacín, pimiento, zanahoria + 70g de tallarines de arroz + salsa de soja",
+        "cena": "1 vasito de caldo casero con 90g de fideos + Hamburguesa casera de pollo y calabacín"
+      },
+      "paqui": {
+        "comida": "Pollo al horno (120g) + pimiento al horno",
+        "cena": "Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Pollo al horno (120g) + berenjena al horno y canónigos",
+        "cena": "Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas"
+      },
+      "eva": {
+        "comida": "Hamburguesa de ternera 100% + ensalada a demanda (hojas verdes, pepino, zanahoria cruda, espárragos con precaución)",
+        "cena": "Sepia o calamar a la plancha (200g) + calabacín y berenjena al horno"
+      }
+    },
+    "2026-11-01": {
+      "pedro": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        "cena": "Crema de calabaza + 2 huevos + 70g de queso fresco sin lactosa"
+      },
+      "rocio": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        "cena": "Tortilla (2 huevos) de queso García Baquero semi y patata"
+      },
+      "paqui": {
+        "comida": "Lubina (120g) al horno con calabaza y calabacín",
+        "cena": "Yogur proteico natural + kiwi + 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Lubina (120g) al horno con canónigos y remolacha",
+        "cena": "Crema de calabacín + 70g de queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (150g) + verduras al horno: patata, berenjena y calabacín",
+        "cena": "Judías verdes salteadas con jamón serrano + 2 huevos"
+      }
+    },
+    "2026-11-02": {
+      "pedro": {
+        "comida": "Pollo al horno (180g) con calabaza, aceitunas, tomates",
+        "cena": "1 vasito de caldo casero + Revuelto de berberechos (2 huevos)"
+      },
+      "rocio": {
+        "comida": "Pollo al horno (180g) con 1 patata, aceitunas, tomates",
+        "cena": "Arroz (90g peso antes de cocer) a la cubana (2 huevos)"
+      },
+      "paqui": {
+        "comida": "Garbanzo (100g) salteado con espinacas, cebolla y pimentón + 30g de feta",
+        "cena": "Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras"
+      },
+      "sole": {
+        "comida": "Espinacas salteadas con pimentón + merluza a la plancha (130g)",
+        "cena": "Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + 1 huevo + opcional claras"
+      },
+      "eva": {
+        "comida": "Berenjena \"rellena\" (al horno con 140g de carne de pollo o pavo picada, salteada con zanahoria rallada, carne de berenjena y espinacas)",
+        "cena": "Revuelto de calabacín de 2 huevos (+ claras a demanda) con orégano"
+      }
+    },
+    "2026-11-03": {
+      "pedro": {
+        "comida": "Patata asada, judía verde hervida + bacalao a la plancha (180g)",
+        "cena": "Crema de calabacín + Hamburguesa de caballo o ternera 100%"
+      },
+      "rocio": {
+        "comida": "Boquerones rebozados (200g) + boniato al airfryer + tomate en rodajas",
+        "cena": "Crema de calabacín + Hamburguesa de ternera 100%"
+      },
+      "paqui": {
+        "comida": "Pollo (120g) con calabaza asada, rúcula y rabanitos",
+        "cena": "Melva (1 lata) + brócoli asado con cebolla roja y tomates cherry"
+      },
+      "sole": {
+        "comida": "Pollo (120g) salteado con espárragos y espinacas",
+        "cena": "Canónigos con remolacha en rodajas + 80g de queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Arroz basmati (60g en crudo) mezclado con canónigos + pechuga de pavo o pollo (140g) salteada con calabacín y zanahoria",
+        "cena": "Merluza (200g) al vapor o al lekue + verduras al vapor (calabacín, zanahoria, unos floretes de brócoli)"
+      }
+    },
+    "2026-11-04": {
+      "pedro": {
+        "comida": "Garbanzo (180g) salteado con espinacas y pimentón + 1 huevo (días con estómago más revuelto: arroz 90g salteado con espinacas y pimentón + 150g de pollo a la plancha)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "rocio": {
+        "comida": "Potaje de garbanzo (180g) con espinacas y pimentón + 1 huevo (o lentejas con verduras, taquitos de jamón + 1 huevo)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "paqui": {
+        "comida": "Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno",
+        "cena": "Sopa de verduras (caldo de pollo o agua + puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)"
+      },
+      "sole": {
+        "comida": "Bacalao al horno (120g) + cebolla roja, perejil y tomates al horno",
+        "cena": "Sopa de verduras (caldo de pollo o agua + pimiento, puerro, apio, zanahoria y calabacín picados) + trocitos de pollo (100g)"
+      },
+      "eva": {
+        "comida": "Arroz basmati (60g en crudo) + langostinos (160g) o calamares salteados con zanahoria, judías verdes",
+        "cena": "Crema de calabacín y curry, sin quesitos ni nata (bol de 250 ml) + 2 huevos (a elección: hervidos, plancha, pochados o en tortilla)"
+      }
+    },
+    "2026-11-05": {
+      "pedro": {
+        "comida": "Salmón (180g) al horno con boniato (½) y calabacín + limón y hierbas aromáticas",
+        "cena": "1 vasito de caldo casero + Revuelto de 2 huevos de espinacas + opcional 120g claras"
+      },
+      "rocio": {
+        "comida": "Salmón (180g) al horno con boniato + ensalada de aguacate + tomate",
+        "cena": "1 vasito de caldo casero con 70g de arroz + Tortilla de 2 huevos"
+      },
+      "paqui": {
+        "comida": "Wok de pollo (120g) con brócoli, coliflor y calabacín",
+        "cena": "Mejillones al vapor + tomate natural con albahaca o menta y palmitos"
+      },
+      "sole": {
+        "comida": "Judías verdes hervidas + 1 huevo, 1 lata de atún reducido en sal, tomatitos cherry",
+        "cena": "Mejillones al vapor + tomate natural con albahaca o menta y palmitos"
+      },
+      "eva": {
+        "comida": "Ensalada de patata roja (1 mediana, hervida el día anterior) + atún al natural o caballa (1 lata), 1 huevo, rúcula, calabacín y zanahoria",
+        "cena": "Hervido de espinacas o acelgas + albóndigas caseras de pavo o pollo (sin pan), o pollo a la plancha (170g)"
+      }
+    },
+    "2026-11-06": {
+      "pedro": {
+        "comida": "Quinoa (70g peso en crudo) con 1 lata de caballa o melva, tomatitos cherry, aceitunas, perejil, 1 huevo",
+        "cena": "Ternera a la plancha (140g) + berenjena y tomate asados"
+      },
+      "rocio": {
+        "comida": "Macarrones (100g) con 1 lata de caballa o melva + aceitunas, tomate triturado + 60g de queso rallado para gratinar",
+        "cena": "Berenjena rellena de carne picada (130g) con tomate triturado, pimentón + 50g de queso para gratinar"
+      },
+      "paqui": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras) o yogur proteico con kiwi y 1 c/s de semillas de chía o lino molidas"
+      },
+      "sole": {
+        "comida": "Filete de dorada (120g) + ensalada de tomates, palmito y perejil",
+        "cena": "Revuelto de ajos tiernos (1 huevo, 120g de claras)"
+      },
+      "eva": {
+        "comida": "Pavo estofado fácil",
+        "cena": "Crema de judías verdes y calabacín con cúrcuma, sin quesitos ni nata (bol de 250 ml) + lubina a la plancha (200g)"
+      }
+    },
+    "2026-11-07": {
+      "pedro": {
+        "comida": "Pollo al wok (180g) + calabacín, pimiento, zanahoria + 60g de tallarines de arroz",
+        "cena": "1 vasito de caldo casero + Calabaza asada + queso fresco sin lactosa (70g), 130g de pollo"
+      },
+      "rocio": {
+        "comida": "Langostinos al wok (200g) + calabacín, pimiento, zanahoria + 70g de tallarines de arroz + salsa de soja",
+        "cena": "1 vasito de caldo casero con 90g de fideos + Hamburguesa casera de pollo y calabacín"
+      },
+      "paqui": {
+        "comida": "Pollo al horno (120g) + pimiento al horno",
+        "cena": "Tortilla de calabacín (1 huevo, 120g de claras) + tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Pollo al horno (120g) + berenjena al horno y canónigos",
+        "cena": "Tortilla de espárragos (1 huevo, 120g de claras) + tomate en rodajas"
+      },
+      "eva": {
+        "comida": "Hamburguesa de ternera 100% + ensalada a demanda (hojas verdes, pepino, zanahoria cruda, espárragos con precaución)",
+        "cena": "Sepia o calamar a la plancha (200g) + calabacín y berenjena al horno"
+      }
+    },
+    "2026-11-08": {
+      "pedro": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        "cena": "Crema de calabaza + 2 huevos + 70g de queso fresco sin lactosa"
+      },
+      "rocio": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        "cena": "Tortilla (2 huevos) de queso García Baquero semi y patata"
+      },
+      "eva": {
+        "comida": "Berenjena rellena de boloñesa de melva + arroz basmati (50g peso en crudo) de guarnición",
+        "cena": "Hervido de zanahoria, judías verdes, calabaza + alitas de pollo (140g)"
+      }
+    },
+    "2026-11-09": {
+      "pedro": {
+        "comida": "Pollo al horno (180g) con calabaza, aceitunas, tomates",
+        "cena": "1 vasito de caldo casero + Revuelto de berberechos (2 huevos)"
+      },
+      "rocio": {
+        "comida": "Pollo al horno (180g) con 1 patata, aceitunas, tomates",
+        "cena": "Arroz (90g peso antes de cocer) a la cubana (2 huevos)"
+      },
+      "paqui": {
+        "comida": "½ lubina a la plancha + brócoli o coliflor hervida + pimentón",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "sole": {
+        "comida": "½ lubina a la plancha + calabacín salteado con champiñones",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "eva": {
+        "comida": "Pollo al curry (140g) con pimiento verde, puerro y zanahoria + arroz basmati (60g peso en crudo)",
+        "cena": "Merluza al horno (150g) con calabaza y berenjena"
+      }
+    },
+    "2026-11-10": {
+      "pedro": {
+        "comida": "Patata asada, judía verde hervida + bacalao a la plancha (180g)",
+        "cena": "Crema de calabacín + Hamburguesa de caballo o ternera 100%"
+      },
+      "rocio": {
+        "comida": "Boquerones rebozados (200g) + boniato al airfryer + tomate en rodajas",
+        "cena": "Crema de calabacín + Hamburguesa de ternera 100%"
+      },
+      "paqui": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Rúcula, calabaza asada + 150g de queso fresco batido o yogur proteico + 2 anchoas"
+      },
+      "sole": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Remolacha con ½ naranja + 1 c/p de nueces troceadas + hojas verdes + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Lentejas rojas (120g peso cocido) guisadas con zanahoria, puerro, tomate + taquitos de jamón (40g)",
+        "cena": "Sepia a la plancha (140g) + judías verdes salteadas"
+      }
+    },
+    "2026-11-11": {
+      "pedro": {
+        "comida": "Garbanzo (180g) salteado con espinacas y pimentón + 1 huevo (días con estómago más revuelto: arroz 90g salteado con espinacas y pimentón + 150g de pollo a la plancha)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "rocio": {
+        "comida": "Potaje de garbanzo (180g) con espinacas y pimentón + 1 huevo (o lentejas con verduras, taquitos de jamón + 1 huevo)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "paqui": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, pimiento, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 80g de pollo desmenuzado"
+      },
+      "sole": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 100g de pollo desmenuzado"
+      },
+      "eva": {
+        "comida": "Salmón a la plancha (140g) + quinoa (1 vasito) + espárragos y pimiento verde",
+        "cena": "Crema de verduras + Tortilla francesa (2 huevos)"
+      }
+    },
+    "2026-11-12": {
+      "pedro": {
+        "comida": "Salmón (180g) al horno con boniato (½) y calabacín + limón y hierbas aromáticas",
+        "cena": "1 vasito de caldo casero + Revuelto de 2 huevos de espinacas + opcional 120g claras"
+      },
+      "rocio": {
+        "comida": "Salmón (180g) al horno con boniato + ensalada de aguacate + tomate",
+        "cena": "1 vasito de caldo casero con 70g de arroz + Tortilla de 2 huevos"
+      },
+      "paqui": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda) + opcional: pepino y tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda)"
+      },
+      "eva": {
+        "comida": "Solomillo de pavo (150g) con shitake, calabacín y manzana salteados",
+        "cena": "Pulpo (140g) a la gallega con patata prebiótica (cocida y enfríada) y pimentón"
+      }
+    },
+    "2026-11-13": {
+      "pedro": {
+        "comida": "Quinoa (70g peso en crudo) con 1 lata de caballa o melva, tomatitos cherry, aceitunas, perejil, 1 huevo",
+        "cena": "Ternera a la plancha (140g) + berenjena y tomate asados"
+      },
+      "rocio": {
+        "comida": "Macarrones (100g) con 1 lata de caballa o melva + aceitunas, tomate triturado + 60g de queso rallado para gratinar",
+        "cena": "Berenjena rellena de carne picada (130g) con tomate triturado, pimentón + 50g de queso para gratinar"
+      },
+      "paqui": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, pepino, zanahoria y hojas verdes",
+        "cena": "Crema de coliflor o brócoli + 1 quesito fresco"
+      },
+      "sole": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, zanahoria y hojas verdes",
+        "cena": "Judías verdes rehogadas con ajo + pimentón + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (160g) con calabaza, pimiento verde, berenjena",
+        "cena": "Crema de verduras + Hamburguesa pollo (100% carne)"
+      }
+    },
+    "2026-11-14": {
+      "pedro": {
+        "comida": "Pollo al wok (180g) + calabacín, pimiento, zanahoria + 60g de tallarines de arroz",
+        "cena": "1 vasito de caldo casero + Calabaza asada + queso fresco sin lactosa (70g), 130g de pollo"
+      },
+      "rocio": {
+        "comida": "Langostinos al wok (200g) + calabacín, pimiento, zanahoria + 70g de tallarines de arroz + salsa de soja",
+        "cena": "1 vasito de caldo casero con 90g de fideos + Hamburguesa casera de pollo y calabacín"
+      },
+      "paqui": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, pepino, cebolla encurtida",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de queso fresco batido (150g) con especias al gusto"
+      },
+      "sole": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, zanahoria",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de yogur sin lactosa con especias al gusto"
+      },
+      "eva": {
+        "comida": "Ternera (140g) + puré de calabaza + judías verdes",
+        "cena": "Tortilla de espinacas (2 huevos)"
+      }
+    },
+    "2026-11-15": {
+      "pedro": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        "cena": "Crema de calabaza + 2 huevos + 70g de queso fresco sin lactosa"
+      },
+      "rocio": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        "cena": "Tortilla (2 huevos) de queso García Baquero semi y patata"
+      },
+      "paqui": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural o queso fresco batido, calabaza asada, canela / cacao puro al gusto"
+      },
+      "sole": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural sin lactosa con frutos rojos + unas nueces"
+      },
+      "eva": {
+        "comida": "Berenjena rellena de boloñesa de melva + arroz basmati (50g peso en crudo) de guarnición",
+        "cena": "Hervido de zanahoria, judías verdes, calabaza + alitas de pollo (140g)"
+      }
+    },
+    "2026-11-16": {
+      "pedro": {
+        "comida": "Pollo al horno (180g) con calabaza, aceitunas, tomates",
+        "cena": "1 vasito de caldo casero + Revuelto de berberechos (2 huevos)"
+      },
+      "rocio": {
+        "comida": "Pollo al horno (180g) con 1 patata, aceitunas, tomates",
+        "cena": "Arroz (90g peso antes de cocer) a la cubana (2 huevos)"
+      },
+      "paqui": {
+        "comida": "½ lubina a la plancha + brócoli o coliflor hervida + pimentón",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "sole": {
+        "comida": "½ lubina a la plancha + calabacín salteado con champiñones",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "eva": {
+        "comida": "Pollo al curry (140g) con pimiento verde, puerro y zanahoria + arroz basmati (60g peso en crudo)",
+        "cena": "Merluza al horno (150g) con calabaza y berenjena"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Pasta con hamburguesa (740 kcal)"
+      }
+    },
+    "2026-11-17": {
+      "pedro": {
+        "comida": "Patata asada, judía verde hervida + bacalao a la plancha (180g)",
+        "cena": "Crema de calabacín + Hamburguesa de caballo o ternera 100%"
+      },
+      "rocio": {
+        "comida": "Boquerones rebozados (200g) + boniato al airfryer + tomate en rodajas",
+        "cena": "Crema de calabacín + Hamburguesa de ternera 100%"
+      },
+      "paqui": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Rúcula, calabaza asada + 150g de queso fresco batido o yogur proteico + 2 anchoas"
+      },
+      "sole": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Remolacha con ½ naranja + 1 c/p de nueces troceadas + hojas verdes + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Lentejas rojas (120g peso cocido) guisadas con zanahoria, puerro, tomate + taquitos de jamón (40g)",
+        "cena": "Sepia a la plancha (140g) + judías verdes salteadas"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-11-18": {
+      "pedro": {
+        "comida": "Garbanzo (180g) salteado con espinacas y pimentón + 1 huevo (días con estómago más revuelto: arroz 90g salteado con espinacas y pimentón + 150g de pollo a la plancha)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "rocio": {
+        "comida": "Potaje de garbanzo (180g) con espinacas y pimentón + 1 huevo (o lentejas con verduras, taquitos de jamón + 1 huevo)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "paqui": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, pimiento, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 80g de pollo desmenuzado"
+      },
+      "sole": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 100g de pollo desmenuzado"
+      },
+      "eva": {
+        "comida": "Salmón a la plancha (140g) + quinoa (1 vasito) + espárragos y pimiento verde",
+        "cena": "Crema de verduras + Tortilla francesa (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-11-19": {
+      "pedro": {
+        "comida": "Salmón (180g) al horno con boniato (½) y calabacín + limón y hierbas aromáticas",
+        "cena": "1 vasito de caldo casero + Revuelto de 2 huevos de espinacas + opcional 120g claras"
+      },
+      "rocio": {
+        "comida": "Salmón (180g) al horno con boniato + ensalada de aguacate + tomate",
+        "cena": "1 vasito de caldo casero con 70g de arroz + Tortilla de 2 huevos"
+      },
+      "paqui": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda) + opcional: pepino y tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda)"
+      },
+      "eva": {
+        "comida": "Solomillo de pavo (150g) con shitake, calabacín y manzana salteados",
+        "cena": "Pulpo (140g) a la gallega con patata prebiótica (cocida y enfríada) y pimentón"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-11-20": {
+      "pedro": {
+        "comida": "Quinoa (70g peso en crudo) con 1 lata de caballa o melva, tomatitos cherry, aceitunas, perejil, 1 huevo",
+        "cena": "Ternera a la plancha (140g) + berenjena y tomate asados"
+      },
+      "rocio": {
+        "comida": "Macarrones (100g) con 1 lata de caballa o melva + aceitunas, tomate triturado + 60g de queso rallado para gratinar",
+        "cena": "Berenjena rellena de carne picada (130g) con tomate triturado, pimentón + 50g de queso para gratinar"
+      },
+      "paqui": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, pepino, zanahoria y hojas verdes",
+        "cena": "Crema de coliflor o brócoli + 1 quesito fresco"
+      },
+      "sole": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, zanahoria y hojas verdes",
+        "cena": "Judías verdes rehogadas con ajo + pimentón + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (160g) con calabaza, pimiento verde, berenjena",
+        "cena": "Crema de verduras + Hamburguesa pollo (100% carne)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-11-21": {
+      "pedro": {
+        "comida": "Pollo al wok (180g) + calabacín, pimiento, zanahoria + 60g de tallarines de arroz",
+        "cena": "1 vasito de caldo casero + Calabaza asada + queso fresco sin lactosa (70g), 130g de pollo"
+      },
+      "rocio": {
+        "comida": "Langostinos al wok (200g) + calabacín, pimiento, zanahoria + 70g de tallarines de arroz + salsa de soja",
+        "cena": "1 vasito de caldo casero con 90g de fideos + Hamburguesa casera de pollo y calabacín"
+      },
+      "paqui": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, pepino, cebolla encurtida",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de queso fresco batido (150g) con especias al gusto"
+      },
+      "sole": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, zanahoria",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de yogur sin lactosa con especias al gusto"
+      },
+      "eva": {
+        "comida": "Ternera (140g) + puré de calabaza + judías verdes",
+        "cena": "Tortilla de espinacas (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-11-22": {
+      "pedro": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        "cena": "Crema de calabaza + 2 huevos + 70g de queso fresco sin lactosa"
+      },
+      "rocio": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        "cena": "Tortilla (2 huevos) de queso García Baquero semi y patata"
+      },
+      "paqui": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural o queso fresco batido, calabaza asada, canela / cacao puro al gusto"
+      },
+      "sole": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural sin lactosa con frutos rojos + unas nueces"
+      },
+      "eva": {
+        "comida": "Berenjena rellena de boloñesa de melva + arroz basmati (50g peso en crudo) de guarnición",
+        "cena": "Hervido de zanahoria, judías verdes, calabaza + alitas de pollo (140g)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-11-23": {
+      "pedro": {
+        "comida": "Pollo al horno (180g) con calabaza, aceitunas, tomates",
+        "cena": "1 vasito de caldo casero + Revuelto de berberechos (2 huevos)"
+      },
+      "rocio": {
+        "comida": "Pollo al horno (180g) con 1 patata, aceitunas, tomates",
+        "cena": "Arroz (90g peso antes de cocer) a la cubana (2 huevos)"
+      },
+      "paqui": {
+        "comida": "½ lubina a la plancha + brócoli o coliflor hervida + pimentón",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "sole": {
+        "comida": "½ lubina a la plancha + calabacín salteado con champiñones",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "eva": {
+        "comida": "Pollo al curry (140g) con pimiento verde, puerro y zanahoria + arroz basmati (60g peso en crudo)",
+        "cena": "Merluza al horno (150g) con calabaza y berenjena"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-11-24": {
+      "pedro": {
+        "comida": "Patata asada, judía verde hervida + bacalao a la plancha (180g)",
+        "cena": "Crema de calabacín + Hamburguesa de caballo o ternera 100%"
+      },
+      "rocio": {
+        "comida": "Boquerones rebozados (200g) + boniato al airfryer + tomate en rodajas",
+        "cena": "Crema de calabacín + Hamburguesa de ternera 100%"
+      },
+      "paqui": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Rúcula, calabaza asada + 150g de queso fresco batido o yogur proteico + 2 anchoas"
+      },
+      "sole": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Remolacha con ½ naranja + 1 c/p de nueces troceadas + hojas verdes + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Lentejas rojas (120g peso cocido) guisadas con zanahoria, puerro, tomate + taquitos de jamón (40g)",
+        "cena": "Sepia a la plancha (140g) + judías verdes salteadas"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-11-25": {
+      "pedro": {
+        "comida": "Garbanzo (180g) salteado con espinacas y pimentón + 1 huevo (días con estómago más revuelto: arroz 90g salteado con espinacas y pimentón + 150g de pollo a la plancha)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "rocio": {
+        "comida": "Potaje de garbanzo (180g) con espinacas y pimentón + 1 huevo (o lentejas con verduras, taquitos de jamón + 1 huevo)",
+        "cena": "Gallineta (160g) con pisto suave (calabacín, berenjena y tomate bien cocinados)"
+      },
+      "paqui": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, pimiento, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 80g de pollo desmenuzado"
+      },
+      "sole": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 100g de pollo desmenuzado"
+      },
+      "eva": {
+        "comida": "Salmón a la plancha (140g) + quinoa (1 vasito) + espárragos y pimiento verde",
+        "cena": "Crema de verduras + Tortilla francesa (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Pasta con hamburguesa (740 kcal)"
+      }
+    },
+    "2026-11-26": {
+      "pedro": {
+        "comida": "Salmón (180g) al horno con boniato (½) y calabacín + limón y hierbas aromáticas",
+        "cena": "1 vasito de caldo casero + Revuelto de 2 huevos de espinacas + opcional 120g claras"
+      },
+      "rocio": {
+        "comida": "Salmón (180g) al horno con boniato + ensalada de aguacate + tomate",
+        "cena": "1 vasito de caldo casero con 70g de arroz + Tortilla de 2 huevos"
+      },
+      "paqui": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda) + opcional: pepino y tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda)"
+      },
+      "eva": {
+        "comida": "Solomillo de pavo (150g) con shitake, calabacín y manzana salteados",
+        "cena": "Pulpo (140g) a la gallega con patata prebiótica (cocida y enfríada) y pimentón"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-11-27": {
+      "pedro": {
+        "comida": "Quinoa (70g peso en crudo) con 1 lata de caballa o melva, tomatitos cherry, aceitunas, perejil, 1 huevo",
+        "cena": "Ternera a la plancha (140g) + berenjena y tomate asados"
+      },
+      "rocio": {
+        "comida": "Macarrones (100g) con 1 lata de caballa o melva + aceitunas, tomate triturado + 60g de queso rallado para gratinar",
+        "cena": "Berenjena rellena de carne picada (130g) con tomate triturado, pimentón + 50g de queso para gratinar"
+      },
+      "paqui": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, pepino, zanahoria y hojas verdes",
+        "cena": "Crema de coliflor o brócoli + 1 quesito fresco"
+      },
+      "sole": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, zanahoria y hojas verdes",
+        "cena": "Judías verdes rehogadas con ajo + pimentón + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (160g) con calabaza, pimiento verde, berenjena",
+        "cena": "Crema de verduras + Hamburguesa pollo (100% carne)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-11-28": {
+      "pedro": {
+        "comida": "Pollo al wok (180g) + calabacín, pimiento, zanahoria + 60g de tallarines de arroz",
+        "cena": "1 vasito de caldo casero + Calabaza asada + queso fresco sin lactosa (70g), 130g de pollo"
+      },
+      "rocio": {
+        "comida": "Langostinos al wok (200g) + calabacín, pimiento, zanahoria + 70g de tallarines de arroz + salsa de soja",
+        "cena": "1 vasito de caldo casero con 90g de fideos + Hamburguesa casera de pollo y calabacín"
+      },
+      "paqui": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, pepino, cebolla encurtida",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de queso fresco batido (150g) con especias al gusto"
+      },
+      "sole": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, zanahoria",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de yogur sin lactosa con especias al gusto"
+      },
+      "eva": {
+        "comida": "Ternera (140g) + puré de calabaza + judías verdes",
+        "cena": "Tortilla de espinacas (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-11-29": {
+      "pedro": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde",
+        "cena": "Crema de calabaza + 2 huevos + 70g de queso fresco sin lactosa"
+      },
+      "rocio": {
+        "comida": "Paella o arroz meloso (60g en crudo) de marisco (calamar 80g, gambas 80g, mejillones/almejas) + judía verde + un chorrito de aceite de oliva",
+        "cena": "Tortilla (2 huevos) de queso García Baquero semi y patata"
+      },
+      "paqui": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural o queso fresco batido, calabaza asada, canela / cacao puro al gusto"
+      },
+      "sole": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural sin lactosa con frutos rojos + unas nueces"
+      },
+      "eva": {
+        "comida": "Berenjena rellena de boloñesa de melva + arroz basmati (50g peso en crudo) de guarnición",
+        "cena": "Hervido de zanahoria, judías verdes, calabaza + alitas de pollo (140g)"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-11-30": {
+      "pedro": {
+        "comida": "Pollo al horno (180g) con calabaza, aceitunas, tomates",
+        "cena": "1 vasito de caldo casero + Revuelto de berberechos (2 huevos)"
+      },
+      "rocio": {
+        "comida": "Pollo al horno (180g) con 1 patata, aceitunas, tomates",
+        "cena": "Arroz (90g peso antes de cocer) a la cubana (2 huevos)"
+      },
+      "paqui": {
+        "comida": "½ lubina a la plancha + brócoli o coliflor hervida + pimentón",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "sole": {
+        "comida": "½ lubina a la plancha + calabacín salteado con champiñones",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "eva": {
+        "comida": "Pollo al curry (140g) con pimiento verde, puerro y zanahoria + arroz basmati (60g peso en crudo)",
+        "cena": "Merluza al horno (150g) con calabaza y berenjena"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Pasta con hamburguesa (740 kcal)"
+      }
+    },
+    "2026-12-01": {
+      "pedro": {
+        "comida": "Patata asada, judía verde hervida + bacalao a la plancha (180g)",
+        "cena": "Crema de calabacín + Hamburguesa de caballo o ternera 100%"
+      },
+      "rocio": {
+        "comida": "Boquerones rebozados (200g) + boniato al airfryer + tomate en rodajas",
+        "cena": "Crema de calabacín + Hamburguesa de ternera 100%"
+      },
+      "paqui": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Rúcula, calabaza asada + 150g de queso fresco batido o yogur proteico + 2 anchoas"
+      },
+      "sole": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Remolacha con ½ naranja + 1 c/p de nueces troceadas + hojas verdes + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Lentejas rojas (120g peso cocido) guisadas con zanahoria, puerro, tomate + taquitos de jamón (40g)",
+        "cena": "Sepia a la plancha (140g) + judías verdes salteadas"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-02": {
+      "paqui": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, pimiento, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 80g de pollo desmenuzado"
+      },
+      "sole": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 100g de pollo desmenuzado"
+      },
+      "eva": {
+        "comida": "Salmón a la plancha (140g) + quinoa (1 vasito) + espárragos y pimiento verde",
+        "cena": "Crema de verduras + Tortilla francesa (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-03": {
+      "paqui": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda) + opcional: pepino y tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda)"
+      },
+      "eva": {
+        "comida": "Solomillo de pavo (150g) con shitake, calabacín y manzana salteados",
+        "cena": "Pulpo (140g) a la gallega con patata prebiótica (cocida y enfríada) y pimentón"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-04": {
+      "paqui": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, pepino, zanahoria y hojas verdes",
+        "cena": "Crema de coliflor o brócoli + 1 quesito fresco"
+      },
+      "sole": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, zanahoria y hojas verdes",
+        "cena": "Judías verdes rehogadas con ajo + pimentón + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (160g) con calabaza, pimiento verde, berenjena",
+        "cena": "Crema de verduras + Hamburguesa pollo (100% carne)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-05": {
+      "paqui": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, pepino, cebolla encurtida",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de queso fresco batido (150g) con especias al gusto"
+      },
+      "sole": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, zanahoria",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de yogur sin lactosa con especias al gusto"
+      },
+      "eva": {
+        "comida": "Ternera (140g) + puré de calabaza + judías verdes",
+        "cena": "Tortilla de espinacas (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-06": {
+      "paqui": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural o queso fresco batido, calabaza asada, canela / cacao puro al gusto"
+      },
+      "sole": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural sin lactosa con frutos rojos + unas nueces"
+      },
+      "eva": {
+        "comida": "Berenjena rellena de boloñesa de melva + arroz basmati (50g peso en crudo) de guarnición",
+        "cena": "Hervido de zanahoria, judías verdes, calabaza + alitas de pollo (140g)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-07": {
+      "paqui": {
+        "comida": "½ lubina a la plancha + brócoli o coliflor hervida + pimentón",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "sole": {
+        "comida": "½ lubina a la plancha + calabacín salteado con champiñones",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "eva": {
+        "comida": "Pollo al curry (140g) con pimiento verde, puerro y zanahoria + arroz basmati (60g peso en crudo)",
+        "cena": "Merluza al horno (150g) con calabaza y berenjena"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-08": {
+      "paqui": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Rúcula, calabaza asada + 150g de queso fresco batido o yogur proteico + 2 anchoas"
+      },
+      "sole": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Remolacha con ½ naranja + 1 c/p de nueces troceadas + hojas verdes + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Lentejas rojas (120g peso cocido) guisadas con zanahoria, puerro, tomate + taquitos de jamón (40g)",
+        "cena": "Sepia a la plancha (140g) + judías verdes salteadas"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-09": {
+      "paqui": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, pimiento, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 80g de pollo desmenuzado"
+      },
+      "sole": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 100g de pollo desmenuzado"
+      },
+      "eva": {
+        "comida": "Salmón a la plancha (140g) + quinoa (1 vasito) + espárragos y pimiento verde",
+        "cena": "Crema de verduras + Tortilla francesa (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Pasta con hamburguesa (740 kcal)"
+      }
+    },
+    "2026-12-10": {
+      "paqui": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda) + opcional: pepino y tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda)"
+      },
+      "eva": {
+        "comida": "Solomillo de pavo (150g) con shitake, calabacín y manzana salteados",
+        "cena": "Pulpo (140g) a la gallega con patata prebiótica (cocida y enfríada) y pimentón"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-11": {
+      "paqui": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, pepino, zanahoria y hojas verdes",
+        "cena": "Crema de coliflor o brócoli + 1 quesito fresco"
+      },
+      "sole": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, zanahoria y hojas verdes",
+        "cena": "Judías verdes rehogadas con ajo + pimentón + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (160g) con calabaza, pimiento verde, berenjena",
+        "cena": "Crema de verduras + Hamburguesa pollo (100% carne)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-12": {
+      "paqui": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, pepino, cebolla encurtida",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de queso fresco batido (150g) con especias al gusto"
+      },
+      "sole": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, zanahoria",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de yogur sin lactosa con especias al gusto"
+      },
+      "eva": {
+        "comida": "Ternera (140g) + puré de calabaza + judías verdes",
+        "cena": "Tortilla de espinacas (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-13": {
+      "paqui": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural o queso fresco batido, calabaza asada, canela / cacao puro al gusto"
+      },
+      "sole": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural sin lactosa con frutos rojos + unas nueces"
+      },
+      "eva": {
+        "comida": "Berenjena rellena de boloñesa de melva + arroz basmati (50g peso en crudo) de guarnición",
+        "cena": "Hervido de zanahoria, judías verdes, calabaza + alitas de pollo (140g)"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-14": {
+      "paqui": {
+        "comida": "½ lubina a la plancha + brócoli o coliflor hervida + pimentón",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "sole": {
+        "comida": "½ lubina a la plancha + calabacín salteado con champiñones",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "eva": {
+        "comida": "Pollo al curry (140g) con pimiento verde, puerro y zanahoria + arroz basmati (60g peso en crudo)",
+        "cena": "Merluza al horno (150g) con calabaza y berenjena"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Pasta con hamburguesa (740 kcal)"
+      }
+    },
+    "2026-12-15": {
+      "paqui": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Rúcula, calabaza asada + 150g de queso fresco batido o yogur proteico + 2 anchoas"
+      },
+      "sole": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Remolacha con ½ naranja + 1 c/p de nueces troceadas + hojas verdes + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Lentejas rojas (120g peso cocido) guisadas con zanahoria, puerro, tomate + taquitos de jamón (40g)",
+        "cena": "Sepia a la plancha (140g) + judías verdes salteadas"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-16": {
+      "paqui": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, pimiento, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 80g de pollo desmenuzado"
+      },
+      "sole": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 100g de pollo desmenuzado"
+      },
+      "eva": {
+        "comida": "Salmón a la plancha (140g) + quinoa (1 vasito) + espárragos y pimiento verde",
+        "cena": "Crema de verduras + Tortilla francesa (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-17": {
+      "paqui": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda) + opcional: pepino y tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda)"
+      },
+      "eva": {
+        "comida": "Solomillo de pavo (150g) con shitake, calabacín y manzana salteados",
+        "cena": "Pulpo (140g) a la gallega con patata prebiótica (cocida y enfríada) y pimentón"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-18": {
+      "paqui": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, pepino, zanahoria y hojas verdes",
+        "cena": "Crema de coliflor o brócoli + 1 quesito fresco"
+      },
+      "sole": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, zanahoria y hojas verdes",
+        "cena": "Judías verdes rehogadas con ajo + pimentón + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (160g) con calabaza, pimiento verde, berenjena",
+        "cena": "Crema de verduras + Hamburguesa pollo (100% carne)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-19": {
+      "paqui": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, pepino, cebolla encurtida",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de queso fresco batido (150g) con especias al gusto"
+      },
+      "sole": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, zanahoria",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de yogur sin lactosa con especias al gusto"
+      },
+      "eva": {
+        "comida": "Ternera (140g) + puré de calabaza + judías verdes",
+        "cena": "Tortilla de espinacas (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-20": {
+      "paqui": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural o queso fresco batido, calabaza asada, canela / cacao puro al gusto"
+      },
+      "sole": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural sin lactosa con frutos rojos + unas nueces"
+      },
+      "eva": {
+        "comida": "Berenjena rellena de boloñesa de melva + arroz basmati (50g peso en crudo) de guarnición",
+        "cena": "Hervido de zanahoria, judías verdes, calabaza + alitas de pollo (140g)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-21": {
+      "paqui": {
+        "comida": "½ lubina a la plancha + brócoli o coliflor hervida + pimentón",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "sole": {
+        "comida": "½ lubina a la plancha + calabacín salteado con champiñones",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "eva": {
+        "comida": "Pollo al curry (140g) con pimiento verde, puerro y zanahoria + arroz basmati (60g peso en crudo)",
+        "cena": "Merluza al horno (150g) con calabaza y berenjena"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-22": {
+      "paqui": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Rúcula, calabaza asada + 150g de queso fresco batido o yogur proteico + 2 anchoas"
+      },
+      "sole": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Remolacha con ½ naranja + 1 c/p de nueces troceadas + hojas verdes + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Lentejas rojas (120g peso cocido) guisadas con zanahoria, puerro, tomate + taquitos de jamón (40g)",
+        "cena": "Sepia a la plancha (140g) + judías verdes salteadas"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-23": {
+      "paqui": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, pimiento, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 80g de pollo desmenuzado"
+      },
+      "sole": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 100g de pollo desmenuzado"
+      },
+      "eva": {
+        "comida": "Salmón a la plancha (140g) + quinoa (1 vasito) + espárragos y pimiento verde",
+        "cena": "Crema de verduras + Tortilla francesa (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Pasta con hamburguesa (740 kcal)"
+      }
+    },
+    "2026-12-24": {
+      "paqui": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda) + opcional: pepino y tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda)"
+      },
+      "eva": {
+        "comida": "Solomillo de pavo (150g) con shitake, calabacín y manzana salteados",
+        "cena": "Pulpo (140g) a la gallega con patata prebiótica (cocida y enfríada) y pimentón"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-25": {
+      "paqui": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, pepino, zanahoria y hojas verdes",
+        "cena": "Crema de coliflor o brócoli + 1 quesito fresco"
+      },
+      "sole": {
+        "comida": "Tellinas o mejillones + tortilla de atún (1 huevo, 1 lata de atún) + ensalada de tomate, zanahoria y hojas verdes",
+        "cena": "Judías verdes rehogadas con ajo + pimentón + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Dorada al horno (160g) con calabaza, pimiento verde, berenjena",
+        "cena": "Crema de verduras + Hamburguesa pollo (100% carne)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-26": {
+      "paqui": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, pepino, cebolla encurtida",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de queso fresco batido (150g) con especias al gusto"
+      },
+      "sole": {
+        "comida": "Ternera a la plancha (120g) + hojas verdes, tomate, zanahoria",
+        "cena": "Berenjena asada con tomatitos cherry + salsa de yogur sin lactosa con especias al gusto"
+      },
+      "eva": {
+        "comida": "Ternera (140g) + puré de calabaza + judías verdes",
+        "cena": "Tortilla de espinacas (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-27": {
+      "paqui": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural o queso fresco batido, calabaza asada, canela / cacao puro al gusto"
+      },
+      "sole": {
+        "comida": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + carne desmenuzada (120g)",
+        "cena": "Yogur proteico natural sin lactosa con frutos rojos + unas nueces"
+      },
+      "eva": {
+        "comida": "Berenjena rellena de boloñesa de melva + arroz basmati (50g peso en crudo) de guarnición",
+        "cena": "Hervido de zanahoria, judías verdes, calabaza + alitas de pollo (140g)"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-28": {
+      "paqui": {
+        "comida": "½ lubina a la plancha + brócoli o coliflor hervida + pimentón",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "sole": {
+        "comida": "½ lubina a la plancha + calabacín salteado con champiñones",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 1 huevo"
+      },
+      "eva": {
+        "comida": "Pollo al curry (140g) con pimiento verde, puerro y zanahoria + arroz basmati (60g peso en crudo)",
+        "cena": "Merluza al horno (150g) con calabaza y berenjena"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Pasta con hamburguesa (740 kcal)"
+      }
+    },
+    "2026-12-29": {
+      "paqui": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Rúcula, calabaza asada + 150g de queso fresco batido o yogur proteico + 2 anchoas"
+      },
+      "sole": {
+        "comida": "Acelga hervida + alitas de pollo (130g)",
+        "cena": "Remolacha con ½ naranja + 1 c/p de nueces troceadas + hojas verdes + 1 queso fresco sin lactosa"
+      },
+      "eva": {
+        "comida": "Lentejas rojas (120g peso cocido) guisadas con zanahoria, puerro, tomate + taquitos de jamón (40g)",
+        "cena": "Sepia a la plancha (140g) + judías verdes salteadas"
+      },
+      "daniel": {
+        "comida": "Pasta boloñesa (815 kcal)",
+        "cena": "Arroz con huevos (795 kcal)"
+      }
+    },
+    "2026-12-30": {
+      "paqui": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, pimiento, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 80g de pollo desmenuzado"
+      },
+      "sole": {
+        "comida": "Lenguado a la plancha (130g) + salteado de verduras (zanahoria, calabacín)",
+        "cena": "Caldo de pollo y hueso (sin fideos) con verduras (zanahoria, calabacín) + 100g de pollo desmenuzado"
+      },
+      "eva": {
+        "comida": "Salmón a la plancha (140g) + quinoa (1 vasito) + espárragos y pimiento verde",
+        "cena": "Crema de verduras + Tortilla francesa (2 huevos)"
+      },
+      "daniel": {
+        "comida": "Arroz con hamburguesa y huevo (830 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    },
+    "2026-12-31": {
+      "paqui": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda) + opcional: pepino y tomate en rodajas"
+      },
+      "sole": {
+        "comida": "Guiso de pollo (120g) con calabacín, zanahoria y calabaza (se puede congelar)",
+        "cena": "Tortilla de acelga (1 huevo, claras a demanda)"
+      },
+      "eva": {
+        "comida": "Solomillo de pavo (150g) con shitake, calabacín y manzana salteados",
+        "cena": "Pulpo (140g) a la gallega con patata prebiótica (cocida y enfríada) y pimentón"
+      },
+      "daniel": {
+        "comida": "Arroz con huevo, atún y tomate (740 kcal)",
+        "cena": "Lomo con patatas (825 kcal)"
+      }
+    }
+  }
+}

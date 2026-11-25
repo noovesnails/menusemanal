@@ -1,0 +1,93 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "menú semanal",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "MenuDelDiaIntent",
+          "slots": [
+            {
+              "name": "persona",
+              "type": "PERSONA"
+            },
+            {
+              "name": "tipo",
+              "type": "TIPO_COMIDA"
+            },
+            {
+              "name": "cuando",
+              "type": "MOMENTO"
+            }
+          ],
+          "samples": [
+            "qué tiene {persona} de {tipo} {cuando}",
+            "qué tiene {persona} de {tipo}",
+            "qué tiene {persona} {cuando}",
+            "qué tiene {persona} hoy",
+            "qué come {persona} {cuando}",
+            "qué come {persona} hoy",
+            "qué cena {persona} {cuando}",
+            "qué cena {persona} hoy",
+            "qué hay de {tipo} para {persona} {cuando}",
+            "qué hay de {tipo} para {persona}",
+            "el menú de {persona} {cuando}",
+            "el menú de {persona}",
+            "el menú de hoy de {persona}",
+            "dime el menú de {persona}",
+            "dime qué tiene {persona} {cuando}",
+            "dime qué tiene {persona} hoy"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "PERSONA",
+          "values": [
+            { "id": "pedro", "name": { "value": "Pedro", "synonyms": [] } },
+            { "id": "nuria", "name": { "value": "Nuria", "synonyms": [] } },
+            { "id": "rocio", "name": { "value": "Rocío", "synonyms": ["Rocio"] } },
+            { "id": "paqui", "name": { "value": "Paqui", "synonyms": ["Paquita"] } },
+            { "id": "sole", "name": { "value": "Sole", "synonyms": ["Soledad"] } },
+            { "id": "eva", "name": { "value": "Eva", "synonyms": [] } },
+            { "id": "marta", "name": { "value": "Marta", "synonyms": [] } },
+            { "id": "daniel", "name": { "value": "Daniel", "synonyms": ["Dani"] } }
+          ]
+        },
+        {
+          "name": "TIPO_COMIDA",
+          "values": [
+            { "id": "comida", "name": { "value": "comida", "synonyms": ["comer", "almuerzo"] } },
+            { "id": "cena", "name": { "value": "cena", "synonyms": ["cenar"] } }
+          ]
+        },
+        {
+          "name": "MOMENTO",
+          "values": [
+            { "id": "hoy", "name": { "value": "hoy", "synonyms": [] } },
+            { "id": "manana", "name": { "value": "mañana", "synonyms": ["manana"] } }
+          ]
+        }
+      ]
+    }
+  }
+}

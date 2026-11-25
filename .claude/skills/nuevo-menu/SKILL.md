@@ -129,3 +129,10 @@ duplicar la misma visita).
    aparte una vez el código esté desplegado.
 4. Verifica en producción tras el deploy (GitHub Pages es automático al llegar a `main`) antes de
    dar el trabajo por terminado.
+5. Si existe `alexa-skill/` (Skill de Alexa "Menú semanal"), regenera `menu-data.json` después del
+   deploy: `node scripts/export-menu-json.js` y commit/push directo a `main` (es un volcado de
+   datos, no código). Si no se hace, Alexa sigue respondiendo con el menú viejo aunque la app web ya
+   esté al día — son dos sitios separados que leen la misma fuente, no se actualizan solos.
+   Si se añade una persona nueva a `PERSONAS`, hay que avisar también de que el slot type `PERSONA`
+   de `alexa-skill/models/es-ES.json` necesita su entrada (y rehacer el "Build Skill" en la consola
+   de Alexa) o esa persona no se reconocerá por voz.

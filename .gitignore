@@ -3,3 +3,7 @@
 
 # Secretos locales
 .env
+
+# Dependencias de la Lambda de Alexa: el .zip listo para subir a AWS se genera y se pasa a Pedro
+# aparte, no hace falta versionar node_modules (ver alexa-skill/README.md).
+alexa-skill/lambda/node_modules/
