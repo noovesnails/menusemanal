@@ -321,6 +321,12 @@
   .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;}
   .video-modal video,.video-modal img{max-width:92vw;max-height:80vh;border-radius:10px;box-shadow:var(--shadow-3);}
   .video-modal-close{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer;}
+  .valorar-plato{display:flex;gap:6px;margin-top:6px;}
+  .valorar-btn{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.55;filter:grayscale(1);transition:opacity .15s,filter .15s,transform .1s;}
+  .valorar-btn:active{transform:scale(.92);}
+  .valorar-btn.on{opacity:1;filter:none;}
+  .valorar-btn.like.on{border-color:var(--ok);background:color-mix(in oklch, var(--ok) 15%, var(--bg));}
+  .valorar-btn.dislike.on{border-color:var(--bad);background:color-mix(in oklch, var(--bad) 15%, var(--bg));}
   .recipe{margin-top:6px;}
   .recipe-btn{font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;display:inline-block;padding:3px 0;}
   .recipe-btn::-webkit-details-marker{display:none;}
@@ -506,6 +512,9 @@
   .sugerencia-fecha{color:var(--muted);font-weight:400;margin-left:auto;font-size:.7rem;}
   .sugerencia-texto{font-size:.85rem;line-height:1.35;}
   .notas-nutri{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:10px;font-size:.8rem;line-height:1.4;color:var(--ink);white-space:pre-wrap;}
+  .valoracion-lista{margin-top:8px;font-size:.82rem;}
+  .valoracion-lista ul{margin:4px 0 0;padding-left:18px;}
+  .valoracion-lista li{margin-bottom:2px;}
   .app-version{text-align:center;font-size:.68rem;color:var(--muted);opacity:.6;padding:24px 0 8px;}
   .changelog{display:flex;flex-direction:column;gap:6px;padding:0 16px 24px;font-size:.78rem;color:var(--muted);}
   .changelog-item b{color:var(--ink);margin-right:4px;}
@@ -1024,7 +1033,7 @@
 const WEEK_START = "2026-09-07"; // lunes
 
 /* Súbela a mano en cada despliegue con cambios visibles — no hay build step que lo automatice. */
-const APP_VERSION = "v2.38.0";
+const APP_VERSION = "v2.39.0";
 
 /* Historial de mejoras de la app (no de datos del menú), más reciente primero. Añadir una entrada
    aquí y subir APP_VERSION en cada despliegue con cambios visibles — mismo criterio que el número
@@ -1032,6 +1041,8 @@ const APP_VERSION = "v2.38.0";
    IMPORTANTE: en el mismo cambio, actualizar también avisoNovedadTexto (más abajo) con esta misma
    novedad en tono de WhatsApp — sin que Pedro tenga que pedirlo, ver el porqué donde se declara. */
 const CHANGELOG = [
+  { fecha:"2026-11-25", texto:"Nuevo: en cada plato de Comida y Cena hay dos botones, 👍 y 👎, para marcar si te gusta o no. En la pestaña Yo, si alguien ha valorado algún plato, sale un resumen de \"Platos para comentar con la nutricionista\" con lo que no le gusta y lo que sí, para llevarlo a la próxima visita." },
+  { fecha:"2026-11-25", texto:"Corregido el menú de Paqui y Sole: por un desfase de un día al meter el plan nuevo, el día que se veía iba un día adelantado respecto al PDF real de la nutricionista. Ya muestra el día que toca." },
   { fecha:"2026-11-16", texto:"Nueva persona en la app: Daniel, con su propio color. Plan de volumen de su nutricionista (2 semanas que rotan, ~3.500 kcal/día), vigente hasta el 31 de diciembre." },
   { fecha:"2026-11-08", texto:"La cuota de JSONBin se agotó del todo (ya iba cada 3 minutos, pero la cuenta llevaba semanas al límite) y no se pudo leer ni para copiar los datos antes de cambiar de cuenta — así que los checks de Nevera/Compra, el peso y las notas de calendario que hubiera guardados se han perdido y hay que volver a marcarlos. Los menús de cada persona no se ven afectados, esos viven en el código. Migrado a una cuenta de JSONBin nueva." },
   { fecha:"2026-11-08", texto:"Corregido el aviso de \"no se actualiza en el móvil\": la app repasaba JSONBin cada 30 segundos en cada móvil y tablet abiertos, y eso agotaba la cuota gratuita de peticiones en un par de semanas de uso familiar — ya nos había pasado dos veces. Ahora el repaso de fondo es cada 3 minutos (al volver a la app se sigue actualizando al instante, como siempre), así la cuota dura bastante más." },
@@ -3104,6 +3115,30 @@ function normalizarClave(texto){
   return texto.trim().toLowerCase();
 }
 
+/* valoraciones (y mediaPorPlato) solo guardan la clave normalizada, no el título legible — para
+   mostrarlo en el informe de "Yo" hay que volver a buscarlo en WEEK/OPCIONES. No hace falta que sea
+   rapidísimo: solo se llama al pintar la pestaña Yo, con listas de cientos de platos como mucho. */
+function tituloDeClave(clave){
+  for(const day of WEEK){
+    for(const id of Object.keys(PERSONAS)){
+      const p = day[id];
+      if(!p) continue;
+      if(p.comida && normalizarClave(p.comida.title)===clave) return p.comida.title;
+      if(p.cena && normalizarClave(p.cena.title)===clave) return p.cena.title;
+    }
+  }
+  for(const id of Object.keys(OPCIONES)){
+    const o = OPCIONES[id];
+    if(!o) continue;
+    for(const cat of Object.keys(o)){
+      for(const opcion of (o[cat]||[])){
+        if(normalizarClave(opcion.texto)===clave) return opcion.texto;
+      }
+    }
+  }
+  return clave; // el plato ya no está en ningún menú actual (cambió la dieta) — mostramos la clave tal cual
+}
+
 async function subirMedia(file, clave){
   const formData = new FormData();
   formData.append('file', file);
@@ -3143,6 +3178,10 @@ let composicion = {};
 let nutriEdits = {};     // { pedro: {proximaVisita?, inicioNuevoPlan?} } correcciones a mano sobre NUTRI
 let opcionElegida = {};  // { "2026-09-07": { pedro: { desayuno: 0, merienda: 2 } } } opción de desayuno/almuerzo/merienda elegida ese día por esa persona
 let mediaPorPlato = {};  // { claveNormalizada: {tipo:'image'|'video', url, thumbUrl?} } fotos/vídeos por plato u opción
+let valoraciones = {};   // { pedro: { claveNormalizada: 'like'|'dislike' } } — "me gusta"/"no me gusta" por
+                         // persona y plato (issue "informe para la nutri"), con la misma clave normalizada
+                         // que mediaPorPlato para que un mismo plato ya repetido en varios días comparta
+                         // valoración en vez de pedirla cada vez.
 let grupoWhatsappLink = '';  // enlace de invitación al grupo de WhatsApp de la familia, para el aviso de cambios (solo lo usa/ve Pedro)
 let sugerencias = [];     // [{id, autor, texto, fecha(ISO)}] buzón de sugerencias visible para toda la familia en Yo, con registro de quién escribe cada una
 // Notas del calendario familiar: { "2026-10-15": [{id, autor, texto, tipo, creada(ISO)}] }. Citas
@@ -3220,7 +3259,7 @@ let sugerenciaDraft = ''; // lo que se esté escribiendo en el cuadro de nueva s
 // olvido (issues #96 y #100): a partir de ahora, actualizar esta línea es un paso obligatorio de
 // CADA cambio visible, en el mismo commit que sube APP_VERSION/CHANGELOG — sin que Pedro tenga que
 // pedirlo cada vez (así lo pidió él mismo). Ver también la nota en .agents/rules/global.md.
-let avisoNovedadTexto = 'bienvenido Daniel a la app 🎉 ya tiene su propio menú con el plan de volumen de su nutri (3.500 kcal/día, 2 semanas que rotan)';
+let avisoNovedadTexto = 'nuevo: en cada plato puedes darle 👍 o 👎, y en Yo sale un resumen con los platos que no gustan para comentar en la próxima visita a la nutri 📋';
 let avisoMensajeDraft = null;
 let saveTimer = null;
 let syncPending = false;  // hay cambios locales que aún no se han confirmado guardados en JSONBin
@@ -3286,6 +3325,7 @@ async function loadRemote(){
     nutriEdits = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.nutriEdits) || {};
     opcionElegida = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.opcionElegida) || {};
     mediaPorPlato = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.mediaPorPlato) || {};
+    valoraciones = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.valoraciones) || {};
     grupoWhatsappLink = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.grupoWhatsappLink) || '';
     sugerencias = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.sugerencias) || [];
     notasCalendario = (remoteRecord.menuSemanal && remoteRecord.menuSemanal.notasCalendario) || {};
@@ -3302,6 +3342,7 @@ async function loadRemote(){
     try{ nutriEdits = JSON.parse(localStorage.getItem('menuSemanalNutriEdits')||'{}'); }catch(_){ nutriEdits = {}; }
     try{ opcionElegida = JSON.parse(localStorage.getItem('menuSemanalOpcionElegida')||'{}'); }catch(_){ opcionElegida = {}; }
     try{ mediaPorPlato = JSON.parse(localStorage.getItem('menuSemanalMedia')||'{}'); }catch(_){ mediaPorPlato = {}; }
+    try{ valoraciones = JSON.parse(localStorage.getItem('menuSemanalValoraciones')||'{}'); }catch(_){ valoraciones = {}; }
     grupoWhatsappLink = localStorage.getItem('menuSemanalGrupoWhatsapp') || '';
     try{ sugerencias = JSON.parse(localStorage.getItem('menuSemanalSugerencias')||'[]'); }catch(_){ sugerencias = []; }
     try{ notasCalendario = JSON.parse(localStorage.getItem('menuSemanalNotasCalendario')||'{}'); }catch(_){ notasCalendario = {}; }
@@ -3322,6 +3363,7 @@ function scheduleSave(){
   localStorage.setItem('menuSemanalNutriEdits', JSON.stringify(nutriEdits));
   localStorage.setItem('menuSemanalOpcionElegida', JSON.stringify(opcionElegida));
   localStorage.setItem('menuSemanalMedia', JSON.stringify(mediaPorPlato));
+  localStorage.setItem('menuSemanalValoraciones', JSON.stringify(valoraciones));
   localStorage.setItem('menuSemanalGrupoWhatsapp', grupoWhatsappLink);
   localStorage.setItem('menuSemanalSugerencias', JSON.stringify(sugerencias));
   localStorage.setItem('menuSemanalNotasCalendario', JSON.stringify(notasCalendario));
@@ -3345,6 +3387,7 @@ async function saveRemote(){
     remoteRecord.menuSemanal.nutriEdits = nutriEdits;
     remoteRecord.menuSemanal.opcionElegida = opcionElegida;
     remoteRecord.menuSemanal.mediaPorPlato = mediaPorPlato;
+    remoteRecord.menuSemanal.valoraciones = valoraciones;
     remoteRecord.menuSemanal.grupoWhatsappLink = grupoWhatsappLink;
     remoteRecord.menuSemanal.sugerencias = sugerencias;
     remoteRecord.menuSemanal.notasCalendario = notasCalendario;
@@ -3992,6 +4035,18 @@ function elegirOpcion(date, who, cat, i){
   scheduleSave();
 }
 
+/* "Me gusta"/"no me gusta" por persona y plato (issue "informe para la nutri"): pulsar el mismo
+   botón otra vez lo quita (toggle), pulsar el contrario lo cambia. La clave normalizada es la misma
+   que usa mediaPorPlato, así que un plato que se repite varios días en la rotación comparte una
+   sola valoración en vez de pedirla cada vez que aparece. */
+function valorarPlato(who, clave, valor){
+  valoraciones[who] = valoraciones[who] || {};
+  if(valoraciones[who][clave] === valor) delete valoraciones[who][clave];
+  else valoraciones[who][clave] = valor;
+  if(!Object.keys(valoraciones[who]).length) delete valoraciones[who];
+  scheduleSave();
+}
+
 /* Recorre los ingredientes de comida/cena y de las opciones elegidas (issue #51) de un día, para
    las personas visibles, y llama a `add(item, who)` por cada uno. Común a la vista de un solo día
    (fridgeItems) y al agrupado semanal (agruparIngredientesSemana). */
@@ -4272,7 +4327,7 @@ function agendaFamiliarHtml(){
 function renderMenu(){
   const day = WEEK[currentDay];
   const el = document.getElementById('viewMenu');
-  const meal = (m,label) => {
+  const meal = (m,label,who) => {
     const clave = normalizarClave(m.title);
     const claveAttr = encodeURIComponent(clave);
     const media = mediaPorPlato[clave];
@@ -4286,6 +4341,11 @@ function renderMenu(){
       : (m.img
           ? `<img class="meal-thumb" src="${m.img}" alt="" loading="lazy">`
           : `<button type="button" class="media-add-btn" data-clave="${claveAttr}" title="Añadir foto o vídeo">📷</button>`);
+    const valorActual = valoraciones[who] && valoraciones[who][clave];
+    const valorarHtml = `<div class="valorar-plato" data-who="${who}" data-clave="${claveAttr}">
+      <button type="button" class="valorar-btn like${valorActual==='like'?' on':''}" data-valor="like" title="Me gusta">👍</button>
+      <button type="button" class="valorar-btn dislike${valorActual==='dislike'?' on':''}" data-valor="dislike" title="No me gusta">👎</button>
+    </div>`;
     return `
     <div class="meal">
       <span class="meal-icon" aria-hidden="true">${iconoPlato(m.title)}</span>
@@ -4296,6 +4356,7 @@ function renderMenu(){
           <div class="meal-title">${m.title}</div>
         </div>
       </div>
+      ${valorarHtml}
       ${m.recipe ? (()=>{
         const r = resolverReceta(m.recipe, modoReceta);
         const ing = r.version.ing || m.ing;
@@ -4373,8 +4434,8 @@ function renderMenu(){
     return `
     <div class="card">
       <div class="person"><span class="dot ${who}"></span>${PERSONAS[who].nombre}${ubicacion ? `<span class="persona-ciudad">${ubicacion.ciudad}</span>` : ''}</div>
-      ${meal(day[who].comida,'Comida')}
-      ${meal(day[who].cena,'Cena')}
+      ${meal(day[who].comida,'Comida',who)}
+      ${meal(day[who].cena,'Cena',who)}
       ${opciones(who)}
     </div>`;
   };
@@ -4404,6 +4465,15 @@ function renderMenu(){
     btn.addEventListener('click', ()=>{
       if(btn.dataset.irTab){ document.querySelector(`nav .tab[data-tab="${btn.dataset.irTab}"]`).click(); return; }
       if(btn.dataset.irVista) cambiarVistaMenu(btn.dataset.irVista);
+    });
+  });
+
+  el.querySelectorAll('.valorar-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const wrap = btn.closest('.valorar-plato');
+      const clave = decodeURIComponent(wrap.dataset.clave || '');
+      valorarPlato(wrap.dataset.who, clave, btn.dataset.valor);
+      renderMenu();
     });
   });
 
@@ -5667,6 +5737,23 @@ function renderYo(){
       </form>
     </div>`;
   };
+  // Informe de platos valorados con 👍/👎 (issue "informe para la nutri"): solo se muestra la
+  // tarjeta de quien tenga alguna valoración, para no llenar la pestaña de tarjetas vacías.
+  const valoracionesCard = (id) => {
+    const v = valoraciones[id];
+    const claves = v ? Object.keys(v) : [];
+    if(!claves.length) return '';
+    const noGustan = claves.filter(c=>v[c]==='dislike');
+    const gustan = claves.filter(c=>v[c]==='like');
+    const lista = (titulo, items) => items.length
+      ? `<div class="valoracion-lista"><b>${titulo}</b><ul>${items.map(c=>`<li>${escapeHtml(tituloDeClave(c))}</li>`).join('')}</ul></div>`
+      : '';
+    return `<div class="card">
+      <div class="reminder ${id}">📋 <span><b>${PERSONAS[id].nombre}</b></span></div>
+      ${lista('👎 No le gustan', noGustan)}
+      ${lista('👍 Le gustan', gustan)}
+    </div>`;
+  };
   const SWATCHES = {
     cristal: 'linear-gradient(135deg, #ffb199, #a78bfa)',
     claro: 'linear-gradient(135deg, #faf7f2 50%, #a9455d 50%)',
@@ -5757,6 +5844,10 @@ function renderYo(){
     avisoHtml +
     `<div class="section-title">Fechas de la nutricionista</div>` +
     (visibles.length ? visibles.map(personaCard).join('') : `<div class="empty">Ninguna persona seleccionada arriba 👆</div>`) +
+    (visibles.some(id=>valoraciones[id] && Object.keys(valoraciones[id]).length) ? (
+      `<div class="section-title">Platos para comentar con la nutricionista</div>` +
+      visibles.map(valoracionesCard).join('')
+    ) : '') +
     `<div class="app-version">Menú semanal · ${APP_VERSION}</div>` +
     `<div class="section-title">Qué ha cambiado</div>` +
     `<div class="changelog">${CHANGELOG.map(c=>`<div class="changelog-item"><b>${fmtDate(c.fecha)}</b> ${escapeHtml(c.texto)}</div>`).join('')}</div>`;
